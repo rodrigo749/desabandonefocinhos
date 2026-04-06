@@ -80,22 +80,22 @@ export default function ModalPet({ pet, onClose }) {
             <div className={styles.infoColumns}>
               <div className={styles.infoGroup}>
                 <p>
-                  <strong>Breed:</strong> {pet.breed}
+                  <strong>Raça:</strong> {pet.breed}
                 </p>
                 <p>
-                  <strong>Gender:</strong> {pet.gender}
+                  <strong>Genero:</strong> {pet.gender}
                 </p>
                 <p>
                   <strong>Location:</strong> {pet.location}
                 </p>
                 <p>
-                  <strong>Date:</strong> {pet.date || "-"}
+                  <strong>Data:</strong> {pet.date || "-"}
                 </p>
               </div>
 
               <div className={styles.respEndGroup}>
                 <p>
-                  <strong>Reward:</strong> {pet.reward}
+                  <strong>idade:</strong> {pet.age}
                 </p>
               </div>
             </div>
