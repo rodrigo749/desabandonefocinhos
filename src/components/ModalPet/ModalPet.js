@@ -7,6 +7,8 @@ import ModalLogin from "@/components/ModalLogin/ModalLogin";
 export default function ModalPet({ pet, onClose }) {
   const [showLoginModal, setShowLoginModal] = useState(false);
 
+  const description = pet?.description ?? "Sem descrição disponível.";
+
   function handleBackgroundClick(e) {
     if (e.target === e.currentTarget) {
       onClose();
@@ -37,14 +39,11 @@ export default function ModalPet({ pet, onClose }) {
     <>
 <div className={styles.overlay} onClick={handleBackgroundClick}>
   <div className={styles.modal}>
-    
+    <button className={styles.closeBtn} onClick={onClose}>
+      &times;
+    </button>
 
     <div className={styles.modalContent}>
-      {/* BOTÃO DE FECHAR */}
-        <button className={styles.closeBtn} onClick={onClose}>
-          &times;
-        </button>
-
           {/* LEFT SIDE - IMAGE */}
           <div className={styles.imageBox}>
             <img src={pet.image || "/images/default.png"} alt={pet.name} />
@@ -104,7 +103,7 @@ export default function ModalPet({ pet, onClose }) {
             {/* DESCRIPTION */}
             <div className={styles.descriptionBox}>
               <p className={styles.descLabel}>Description:</p>
-              <p className={styles.descText}>{pet.description}</p>
+              <p className={styles.descText}>{description}</p>
             </div>
 
         {/* BOTÃO */}
