@@ -90,6 +90,16 @@ export default function CadastroAdocao() {
     if (fieldErrors[field]) setFieldErrors((prev) => ({ ...prev, [field]: null }));
   };
 
+  const handleAgeChange = (raw) => {
+    if (raw === "") {
+      setFormData((p) => ({ ...p, idade: "" }));
+      return;
+    }
+    const num = parseInt(raw, 10);
+    if (Number.isNaN(num) || num < 0) return;
+    setFormData((p) => ({ ...p, idade: String(num) }));
+  };
+
   const handleImagem = (e) => {
     const arquivo = e.target.files?.[0];
     if (!arquivo) return;
@@ -347,44 +357,35 @@ export default function CadastroAdocao() {
                 type="number"
                 placeholder="Idade (anos)"
                 value={formData.idade}
-                onChange={(e) => handleChange("idade", e.target.value)}
+                onChange={(e) => handleAgeChange(e.target.value)}
                 onFocus={handleFocus}
                 onBlur={handleBlur}
                 min="0"
                 className={styles.inputIdade}
               />
               <div className={styles.botoesIdade}>
-                <button 
-                  type="button" 
+                <button
+                  type="button"
                   className={styles.btnIdade}
                   onClick={() => {
-                    const current = parseInt(formData.idade) || 0;
-                    handleChange("idade", String(current + 1));
+                    const current = parseInt(formData.idade, 10) || 0;
+                    handleAgeChange(String(current + 1));
                   }}
                 >
                   ▲
                 </button>
-                <button 
-                  type="button" 
+                <button
+                  type="button"
                   className={styles.btnIdade}
                   onClick={() => {
-                    const current = parseInt(formData.idade) || 0;
-                    if (current > 0) handleChange("idade", String(current - 1));
+                    const current = parseInt(formData.idade, 10) || 0;
+                    if (current > 0) handleAgeChange(String(current - 1));
                   }}
                 >
                   ▼
                 </button>
               </div>
             </div>
-
-            <button
-              type="submit"
-              className={styles.btnCadastrar}
-              disabled={loading}
-              style={{ opacity: loading ? 0.7 : 1, cursor: loading ? "not-allowed" : "pointer" }}
-            >
-              {loading ? "Cadastrando..." : "Cadastrar"}
-            </button>
           </form>
         </section>
 

@@ -4,6 +4,7 @@ import { useState, useEffect } from "react";
 import useSafeToast from "@/components/Toast/useSafeToast";
 import { useRouter, useParams } from "next/navigation";
 import styles from "../editarpetperdidos.module.css";
+import ConfirmModal from "@/components/ConfirmModal/ConfirmModal";
 
 const getBaseUrl = () =>
   (process.env.NEXT_PUBLIC_PETZ_API_URL || "http://localhost:3000")
@@ -120,7 +121,6 @@ export default function EditarPetPerdidosId() {
         fd.append("image", imagemFile);
       }
 
-<<<<<<< HEAD
   const payload = {
         name: formData.nome,
         breed: formData.raca,
@@ -132,8 +132,6 @@ export default function EditarPetPerdidosId() {
         image: imagemURL || "",
       };
 
-=======
->>>>>>> 26e08815dbc705182b8036ec57cb0a05667b42c0
       const logged = JSON.parse(localStorage.getItem('usuarioLogado') || 'null');
       const headers = {};
       if (logged && logged.id) headers['x-usuario-id'] = String(logged.id);
@@ -159,24 +157,28 @@ export default function EditarPetPerdidosId() {
 
   const excluirPet = async () => {
     if (!id) return setStatusMessage("ID não disponível");
-  const conf = typeof confirm === 'function' ? confirm("Tem certeza que deseja excluir este pet?") : true;
-  if (!conf) return;
+    setShowConfirm(true);
+  };
 
+  const [showConfirm, setShowConfirm] = useState(false);
+
+  const handleConfirmDelete = async () => {
+    setShowConfirm(false);
     try {
       setLoading(true);
-  const logged = JSON.parse(localStorage.getItem('usuarioLogado') || 'null');
-  const delHeaders = {};
-  if (logged && logged.id) delHeaders['x-usuario-id'] = String(logged.id);
-  const token = localStorage.getItem("token") || "";
-  if (token) delHeaders['Authorization'] = `Bearer ${token}`;
+      const logged = JSON.parse(localStorage.getItem('usuarioLogado') || 'null');
+      const delHeaders = {};
+      if (logged && logged.id) delHeaders['x-usuario-id'] = String(logged.id);
+      const token = localStorage.getItem("token") || "";
+      if (token) delHeaders['Authorization'] = `Bearer ${token}`;
 
-  const res = await fetch(`${getBaseUrl()}/api/pets/${id}`, { method: "DELETE", headers: delHeaders });
+      const res = await fetch(`${getBaseUrl()}/api/pets/${id}`, { method: "DELETE", headers: delHeaders });
       if (!res.ok) throw new Error("Falha ao remover");
-  showToast("Pet excluído com sucesso!", "success");
-  setTimeout(() => router.push("/perdidos"), 800);
+      showToast("Pet excluído com sucesso!", "success");
+      setTimeout(() => router.push("/perdidos"), 800);
     } catch (err) {
       console.error(err);
-  showToast(err.message || "Erro ao excluir", "error");
+      showToast(err.message || "Erro ao excluir", "error");
     } finally {
       setLoading(false);
     }
@@ -185,6 +187,7 @@ export default function EditarPetPerdidosId() {
   if (carregando) return <p style={{ color: '#fff', textAlign: 'center' }}>Carregando pet...</p>;
 
   return (
+    <>
     <main className={styles.cadastroPetContainer}>
       <div className={styles.cadastroWrapper}>
 
@@ -328,5 +331,15 @@ export default function EditarPetPerdidosId() {
         </section>
       </div>
     </main>
+    <ConfirmModal
+      open={showConfirm}
+      title="Excluir pet"
+      message="Tem certeza que deseja excluir este pet? Esta ação é irreversível."
+      onCancel={() => setShowConfirm(false)}
+      onConfirm={handleConfirmDelete}
+      confirmLabel="Excluir"
+      cancelLabel="Cancelar"
+    />
+    </>
   );
 }

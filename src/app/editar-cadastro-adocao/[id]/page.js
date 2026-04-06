@@ -4,6 +4,7 @@ import { useState, useEffect } from "react";
 import useSafeToast from "@/components/Toast/useSafeToast";
 import { useRouter, useParams } from "next/navigation";
 import styles from "../editaradocao.module.css";
+import ConfirmModal from "@/components/ConfirmModal/ConfirmModal";
 
 const getBaseUrl = () =>
   (process.env.NEXT_PUBLIC_PETZ_API_URL || "http://localhost:3000")
@@ -84,6 +85,17 @@ export default function EditarCadastroAdocao() {
     setFormData((prev) => ({ ...prev, [name]: value }));
   };
 
+  const handleAgeChange = (raw) => {
+    // allow empty string for controlled input
+    if (raw === "") {
+      setFormData((p) => ({ ...p, idade: "" }));
+      return;
+    }
+    const num = parseInt(raw, 10);
+    if (Number.isNaN(num) || num < 0) return;
+    setFormData((p) => ({ ...p, idade: String(num) }));
+  };
+
   const handleImagem = (e) => {
     const arquivo = e.target.files[0];
     if (arquivo) setImagemFile(arquivo);
@@ -126,9 +138,14 @@ export default function EditarCadastroAdocao() {
   };
 
   const excluirPet = async () => {
-    const confirmed = typeof confirm === 'function' ? confirm("Tem certeza que deseja excluir este pet?") : true;
-    if (!confirmed) return;
+    // abrir modal para confirmar; fluxo real é executado em handleConfirmDelete
+    setShowConfirm(true);
+  };
 
+  const [showConfirm, setShowConfirm] = useState(false);
+
+  const handleConfirmDelete = async () => {
+    setShowConfirm(false);
     try {
       const token = localStorage.getItem("token") || "";
       const res = await fetch(`${getBaseUrl()}/api/pets/${petId}`, {
@@ -155,6 +172,7 @@ export default function EditarCadastroAdocao() {
   }
 
   return (
+    <>
     <main className={styles.cadastroPetContainer}>
       <div className={styles.adocaoContainer}>
 
@@ -248,7 +266,6 @@ export default function EditarCadastroAdocao() {
                 <option value="other">Outro</option>
               </select>
             </div>
-+
             <div className={styles.campo}>
               <img src="/images/patinha.png" className={styles.iconeInput} />
               <input
@@ -261,7 +278,6 @@ export default function EditarCadastroAdocao() {
                 onChange={handleChange}
               />
             </div>
-+
             <div className={styles.campo} style={{ marginTop: 6 }}>
               <img src="/images/patinha.png" className={styles.iconeInput} />
               <select
@@ -275,18 +291,42 @@ export default function EditarCadastroAdocao() {
                 <option value="Fêmea">Fêmea</option>
               </select>
             </div>
-
-            <div className={styles.campo}>
+            
+            <div className={`${styles.campo} ${styles.campoIdade}`}>
               <img src="/images/patinha.png" className={styles.iconeInput} />
               <input
-                type="text"
+                type="number"
                 name="idade"
                 placeholder="Idade"
                 value={formData.idade}
                 onFocus={handleFocus}
                 onBlur={handleBlur}
-                onChange={handleChange}
+                onChange={(e) => handleAgeChange(e.target.value)}
+                min="0"
+                className={styles.inputIdade}
               />
+              <div className={styles.botoesIdade}>
+                <button
+                  type="button"
+                  className={styles.btnIdade}
+                  onClick={() => {
+                    const current = parseInt(formData.idade, 10) || 0;
+                    handleAgeChange(String(current + 1));
+                  }}
+                >
+                  ▲
+                </button>
+                <button
+                  type="button"
+                  className={styles.btnIdade}
+                  onClick={() => {
+                    const current = parseInt(formData.idade, 10) || 0;
+                    if (current > 0) handleAgeChange(String(current - 1));
+                  }}
+                >
+                  ▼
+                </button>
+              </div>
             </div>
 
             <div className={styles.botoesEdicao}>
@@ -305,6 +345,16 @@ export default function EditarCadastroAdocao() {
         </section>
 
       </div>
-    </main>
+  </main>
+  <ConfirmModal
+      open={showConfirm}
+      title="Excluir pet"
+      message="Tem certeza que deseja excluir este pet? Esta ação é irreversível."
+      onCancel={() => setShowConfirm(false)}
+      onConfirm={handleConfirmDelete}
+      confirmLabel="Excluir"
+      cancelLabel="Cancelar"
+    />
+    </>
   );
 }
