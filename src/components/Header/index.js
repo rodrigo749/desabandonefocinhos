@@ -47,6 +47,7 @@ export default function Header() {
     : [
         { label: "Editar perfil", href: "/editar-usuario" },
         { label: "Meus pets Perdidos", href: "/meus-pets-perdidos" },
+        { label: "Meus pets Adoção", href: "/seus-pets-para-adocao" },
         { label: "Sair", href: "/logout" },
       ];
 

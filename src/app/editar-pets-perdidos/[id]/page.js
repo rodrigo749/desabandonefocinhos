@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useEffect } from "react";
+import useSafeToast from "@/components/Toast/useSafeToast";
 import { useRouter, useParams } from "next/navigation";
 import styles from "../editarpetperdidos.module.css";
 
@@ -31,6 +32,7 @@ export default function EditarPetPerdidosId() {
   const [carregando, setCarregando] = useState(true);
   const [loading, setLoading] = useState(false);
   const [statusMessage, setStatusMessage] = useState("");
+  const { showToast } = useSafeToast();
 
   useEffect(() => {
     async function carregarPet() {
@@ -117,7 +119,7 @@ export default function EditarPetPerdidosId() {
         imagemURL = uploadData.url;
       }
 
-      const payload = {
+  const payload = {
         name: formData.nome,
         breed: formData.raca,
         gender: formData.genero,
@@ -140,16 +142,12 @@ export default function EditarPetPerdidosId() {
         body: JSON.stringify(payload),
       });
 
-      if (!res.ok) throw new Error("Falha ao salvar");
-
-      setStatusMessage("Pet atualizado com sucesso!");
-      setTimeout(() => setStatusMessage(""), 1800);
-      // redireciona para a listagem pública de perdidos
-      router.push("/perdidos");
+  if (!res.ok) throw new Error("Falha ao salvar");
+  showToast("Pet atualizado com sucesso!", "success");
+  router.push("/perdidos");
     } catch (err) {
       console.error(err);
-      setStatusMessage(err.message || "Erro ao salvar");
-      setTimeout(() => setStatusMessage(""), 2200);
+  showToast(err.message || "Erro ao salvar", "error");
     } finally {
       setLoading(false);
     }
@@ -157,7 +155,8 @@ export default function EditarPetPerdidosId() {
 
   const excluirPet = async () => {
     if (!id) return setStatusMessage("ID não disponível");
-    if (!confirm("Tem certeza que deseja excluir este pet?")) return;
+  const conf = typeof confirm === 'function' ? confirm("Tem certeza que deseja excluir este pet?") : true;
+  if (!conf) return;
 
     try {
       setLoading(true);
@@ -169,12 +168,11 @@ export default function EditarPetPerdidosId() {
 
   const res = await fetch(`${getBaseUrl()}/api/pets/${id}`, { method: "DELETE", headers: delHeaders });
       if (!res.ok) throw new Error("Falha ao remover");
-      setStatusMessage("Pet excluído com sucesso!");
-      setTimeout(() => router.push("/perdidos"), 1000);
+  showToast("Pet excluído com sucesso!", "success");
+  setTimeout(() => router.push("/perdidos"), 800);
     } catch (err) {
       console.error(err);
-      setStatusMessage(err.message || "Erro ao excluir");
-      setTimeout(() => setStatusMessage(""), 2000);
+  showToast(err.message || "Erro ao excluir", "error");
     } finally {
       setLoading(false);
     }
@@ -253,17 +251,18 @@ export default function EditarPetPerdidosId() {
               />
             </div>
 
-            <div className={styles.campo}>
+            <div className={styles.campo} style={/* style kept for error highlighting */ {}}>
               <img src="/images/patinha.png" className={styles.iconeInput} />
-              <input
-                type="text"
+              <select
                 name="genero"
-                placeholder="Gênero"
                 value={formData.genero}
-                onFocus={handleFocus}
-                onBlur={handleBlur}
                 onChange={handleChange}
-              />
+                className={!formData.genero ? styles.selectPlaceholder : ""}
+              >
+                <option value="" disabled>Selecione o gênero</option>
+                <option value="Macho">Macho</option>
+                <option value="Fêmea">Fêmea</option>
+              </select>
             </div>
 
             <div className={styles.campo}>

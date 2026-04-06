@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useEffect } from "react";
+import useSafeToast from "@/components/Toast/useSafeToast";
 import { useRouter, useParams } from "next/navigation";
 import styles from "../editaradocao.module.css";
 
@@ -15,7 +16,8 @@ export default function EditarCadastroAdocao() {
 
   const [formData, setFormData] = useState({
     nome: "",
-    raca: "",
+  especie: "",
+  raca: "",
     genero: "",
     idade: "",
     descricao: "",
@@ -49,6 +51,7 @@ export default function EditarCadastroAdocao() {
 
         setFormData({
           nome: pet.nome || pet.name || "",
+          especie: pet.especie || pet.species || "",
           raca: pet.raca || pet.breed || "",
           genero: pet.genero || pet.gender || "",
           idade: pet.idade || pet.age || "",
@@ -124,18 +127,19 @@ export default function EditarCadastroAdocao() {
         body: JSON.stringify(petAtualizado),
       });
 
-      if (!res.ok) throw new Error("Erro ao atualizar pet");
+  if (!res.ok) throw new Error("Erro ao atualizar pet");
 
-      alert("Pet atualizado com sucesso!");
-      router.push("/seus-pets-para-adocao");
+  showToast("Pet atualizado com sucesso!", "success");
+  router.push("/seus-pets-para-adocao");
     } catch (error) {
       console.error("Erro ao salvar edição:", error);
-      alert("Erro ao salvar edição do pet.");
+  showToast("Erro ao salvar edição do pet.", "error");
     }
   };
 
   const excluirPet = async () => {
-    if (!confirm("Tem certeza que deseja excluir este pet?")) return;
+    const confirmed = typeof confirm === 'function' ? confirm("Tem certeza que deseja excluir este pet?") : true;
+    if (!confirmed) return;
 
     try {
       const token = localStorage.getItem("token") || "";
@@ -148,11 +152,11 @@ export default function EditarCadastroAdocao() {
 
       if (!res.ok) throw new Error("Erro ao excluir pet");
 
-      alert("Pet excluído com sucesso!");
+      showToast("Pet excluído com sucesso!", "success");
       router.push("/seus-pets-para-adocao");
     } catch (error) {
       console.error("Erro ao excluir pet:", error);
-      alert("Erro ao excluir pet.");
+      showToast("Erro ao excluir pet.", "error");
     }
   };
 
@@ -244,6 +248,21 @@ export default function EditarCadastroAdocao() {
 
             <div className={styles.campo}>
               <img src="/images/patinha.png" className={styles.iconeInput} />
+              <select
+                name="especie"
+                value={formData.especie}
+                onChange={handleChange}
+                className={!formData.especie ? styles.selectPlaceholder : ""}
+              >
+                <option value="" disabled>Selecione a espécie</option>
+                <option value="dog">Cachorro</option>
+                <option value="cat">Gato</option>
+                <option value="other">Outro</option>
+              </select>
+            </div>
++
+            <div className={styles.campo}>
+              <img src="/images/patinha.png" className={styles.iconeInput} />
               <input
                 type="text"
                 name="raca"
@@ -254,18 +273,19 @@ export default function EditarCadastroAdocao() {
                 onChange={handleChange}
               />
             </div>
-
-            <div className={styles.campo}>
++
+            <div className={styles.campo} style={{ marginTop: 6 }}>
               <img src="/images/patinha.png" className={styles.iconeInput} />
-              <input
-                type="text"
+              <select
                 name="genero"
-                placeholder="Gênero"
                 value={formData.genero}
-                onFocus={handleFocus}
-                onBlur={handleBlur}
                 onChange={handleChange}
-              />
+                className={!formData.genero ? styles.selectPlaceholder : ""}
+              >
+                <option value="" disabled>Selecione o gênero</option>
+                <option value="Macho">Macho</option>
+                <option value="Fêmea">Fêmea</option>
+              </select>
             </div>
 
             <div className={styles.campo}>

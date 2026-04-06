@@ -28,6 +28,7 @@ export default function PetCard({ pet, tipoPagina }) {
   const idade = pet.idade || pet.age || "Não informada";
   const descricao = pet.descricao || pet.description || "Sem descrição";
   const userId = pet.usuarioId || pet.userId || null;
+  const status = pet.status || pet.estado || pet.state || null;
 
   const ehDoUsuario = usuarioLogado && userId === usuarioLogado.id;
 
@@ -92,9 +93,18 @@ export default function PetCard({ pet, tipoPagina }) {
                 Adotado
               </button>
 
-              <Link href={`/editar-cadastro-adocao/${id}`}>
-                <button className={styles["btn-editar"]}>Editar</button>
-              </Link>
+              {
+                // choose edit route based on pet status
+                (() => {
+                  const isLost = status === "lost" || status === "perdido";
+                  const editHref = isLost ? `/editar-pets-perdidos/${id}` : `/editar-cadastro-adocao/${id}`;
+                  return (
+                    <Link href={editHref}>
+                      <button className={styles["btn-editar"]}>Editar</button>
+                    </Link>
+                  );
+                })()
+              }
             </div>
           )}
         </div>
