@@ -13,6 +13,7 @@ export default function CadastroAdocao() {
     nome: "",
     especie: "",
     raca: "",
+    genero: "",
     idade: "",
     descricao: "",
     imagemPreview: "",
@@ -139,6 +140,12 @@ export default function CadastroAdocao() {
       setLoading(false);
       return;
     }
+    // novo campo obrigatório: gênero
+    if (!formData.genero) {
+      setFieldErrors((prev) => ({ ...prev, genero: "Selecione o gênero." }));
+      setLoading(false);
+      return;
+    }
 
     // verifica usuário logado
     let usuario = null;
@@ -201,6 +208,7 @@ export default function CadastroAdocao() {
         nome: "",
         especie: "",
         raca: "",
+  genero: "",
         idade: "",
         descricao: "",
         imagemPreview: "",
@@ -318,6 +326,20 @@ export default function CadastroAdocao() {
                 onBlur={handleBlur}
               />
             </div>
+
+            <div className={styles.campo} style={fieldErrors.genero ? { borderColor: "red" } : {}}>
+              <img src="/images/patinha.png" className={styles.iconeInput} />
+              <select
+                value={formData.genero}
+                onChange={(e) => handleChange("genero", e.target.value)}
+                className={!formData.genero ? styles.selectPlaceholder : ""}
+              >
+                <option value="" disabled>Selecione o gênero</option>
+                <option value="Macho">Macho</option>
+                <option value="Fêmea">Fêmea</option>
+              </select>
+            </div>
+            {fieldErrors.genero && <span className={styles.errorText}>{fieldErrors.genero}</span>}
 
             <div className={`${styles.campo} ${styles.campoIdade}`}>
               <img src="/images/patinha.png" className={styles.iconeInput} />
