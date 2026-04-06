@@ -1,6 +1,7 @@
 'use client'
 
 import { useState, useEffect } from "react";
+import useSafeToast from "@/components/Toast/useSafeToast";
 import { useRouter } from "next/navigation";
 import styles from "./perdidos.module.css";
 
@@ -8,6 +9,7 @@ const API_URL = process.env.NEXT_PUBLIC_API_URL || "http://localhost:3000";
 
 export default function CadastrarPerdidos() {
   const router = useRouter();
+  const { showToast } = useSafeToast();
 
   const [formData, setFormData] = useState({
     name: "",
@@ -56,12 +58,12 @@ export default function CadastrarPerdidos() {
 
     const maxMB = 5;
     if (arquivo.size > maxMB * 1024 * 1024) {
-      alert(`Imagem maior que ${maxMB}MB`);
+  showToast(`Imagem maior que ${maxMB}MB`, "warning");
       return;
     }
 
     if (!arquivo.type.startsWith("image/")) {
-      alert("Arquivo inválido");
+  showToast("Arquivo inválido", "warning");
       return;
     }
 
@@ -119,7 +121,7 @@ const salvarPet = async (e) => {
     const usuarioLogado = JSON.parse(localStorage.getItem("usuarioLogado"));
 
     if (!usuarioLogado || !usuarioLogado.id) {
-      alert("Usuário não está logado.");
+      showToast("Usuário não está logado.", "warning");
       setLoading(false);
       return;
     }
@@ -157,11 +159,13 @@ const salvarPet = async (e) => {
 
     if (!res.ok) {
       console.error("Erro backend:", respData);
-      throw new Error(respData?.message || "Erro ao cadastrar pet");
+      const msg = respData?.message || respData?.error || respData?.raw || "Erro ao cadastrar pet";
+      showToast(msg, "error");
+      setLoading(false);
+      return;
     }
 
-    alert("Pet cadastrado com sucesso!");
-
+    showToast("Pet cadastrado com sucesso!", "success");
     setFormData({
       name: "",
       species: "",
@@ -179,7 +183,7 @@ const salvarPet = async (e) => {
     router.push("/meus-pets-perdidos");
   } catch (error) {
     console.error(error);
-    alert(error.message || "Erro ao cadastrar pet");
+    showToast(error.message || "Erro ao cadastrar pet", "error");
   } finally {
     setLoading(false);
   }
@@ -283,17 +287,19 @@ const salvarPet = async (e) => {
               />
             </div>
 
-            <div className={styles.campo}>
+            <div className={styles.campo} style={fieldErrors.genero ? { borderColor: "red" } : {}}>
               <img src="/images/patinha.png" className={styles.iconeInput} />
-              <input
-                type="text"
-                placeholder="Genero"
+              <select
                 value={formData.genero}
                 onChange={(e) => handleChange("genero", e.target.value)}
-                onFocus={handleFocus}
-                onBlur={handleBlur}
-              />
+                className={!formData.genero ? styles.selectPlaceholder : ""}
+              >
+                <option value="" disabled>Selecione o gênero</option>
+                <option value="Macho">Macho</option>
+                <option value="Fêmea">Fêmea</option>
+              </select>
             </div>
+            {fieldErrors.genero && <span className={styles.errorText}>{fieldErrors.genero}</span>}
 
           <div className={`${styles.campo} ${styles.campoIdade}`}>
               <img src="/images/patinha.png" className={styles.iconeInput} />
