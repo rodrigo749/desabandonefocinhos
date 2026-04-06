@@ -7,6 +7,14 @@ import styles from "../admin.module.css";
 
 const API_URL = process.env.NEXT_PUBLIC_PETZ_API_URL || process.env.NEXT_PUBLIC_API_URL || "http://localhost:3000";
 
+// Função para obter URL da imagem (BLOB ou URL direta)
+const getImageUrl = (pet) => {
+  if (pet.hasImage) {
+    return `${API_URL}/api/pets/${pet.id}/image`;
+  }
+  return pet.imagem || pet.image || "/images/semfoto.jpg";
+};
+
 export default function AdminPetsAdocao() {
   const router = useRouter();
   const [pets, setPets] = useState([]);
@@ -120,7 +128,7 @@ export default function AdminPetsAdocao() {
                 <tr key={pet.id}>
                   <td>
                     <img
-                      src={pet.imagem || pet.image || "/images/semfoto.jpg"}
+                      src={getImageUrl(pet)}
                       alt={pet.nome || pet.name}
                     />
                   </td>

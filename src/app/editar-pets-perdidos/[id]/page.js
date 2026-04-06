@@ -104,32 +104,22 @@ export default function EditarPetPerdidosId() {
     try {
       setLoading(true);
 
-      let imagemURL = formData.imagem;
-      if (imagemFile) {
-        const imgData = new FormData();
-        imgData.append("file", imagemFile);
+      // Usar FormData para enviar imagem + dados juntos
+      const fd = new FormData();
+      fd.append("name", formData.nome || "");
+      fd.append("breed", formData.raca || "");
+      fd.append("gender", formData.genero || "");
+      fd.append("location", formData.local || "");
+      fd.append("dateLost", formData.data || "");
+      fd.append("description", formData.descricao || "");
+      fd.append("reward", formData.recompensa || "0");
 
-        const uploadRes = await fetch("/api/upload", {
-          method: "POST",
-          body: imgData,
-        });
-        const uploadData = await uploadRes.json();
-        imagemURL = uploadData.url;
+      if (imagemFile) {
+        fd.append("image", imagemFile);
       }
 
-      const payload = {
-        name: formData.nome,
-        breed: formData.raca,
-        gender: formData.genero,
-        location: formData.local,
-        dateLost: formData.data,
-        description: formData.descricao,
-        reward: Number(formData.recompensa) || 0,
-        image: imagemURL || "",
-      };
-
       const logged = JSON.parse(localStorage.getItem('usuarioLogado') || 'null');
-      const headers = { "Content-Type": "application/json" };
+      const headers = {};
       if (logged && logged.id) headers['x-usuario-id'] = String(logged.id);
       const token = localStorage.getItem("token") || "";
       if (token) headers['Authorization'] = `Bearer ${token}`;
@@ -137,7 +127,7 @@ export default function EditarPetPerdidosId() {
       const res = await fetch(`${getBaseUrl()}/api/pets/${id}`, {
         method: "PUT",
         headers,
-        body: JSON.stringify(payload),
+        body: fd,
       });
 
       if (!res.ok) throw new Error("Falha ao salvar");
