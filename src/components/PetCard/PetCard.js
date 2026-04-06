@@ -10,6 +10,16 @@ const getBaseUrl = () =>
     .trim()
     .replace(/\/$/, "");
 
+// Função para obter URL da imagem (BLOB ou URL direta)
+const getImageUrl = (pet) => {
+  // Se tem hasImage, usar endpoint de BLOB
+  if (pet.hasImage) {
+    return `${getBaseUrl()}/api/pets/${pet.id}/image`;
+  }
+  // Fallback para URL direta ou imagem padrão
+  return pet.imagem || pet.image || "/images/default.png";
+};
+
 export default function PetCard({ pet, tipoPagina }) {
   const [open, setOpen] = useState(false);
   const [usuarioLogado, setUsuarioLogado] = useState(null);
@@ -22,7 +32,7 @@ export default function PetCard({ pet, tipoPagina }) {
   // aceita tanto português quanto inglês
   const id = pet.id;
   const nome = pet.nome || pet.name || "Sem nome";
-  const imagem = pet.imagem || pet.image || "/images/default.png";
+  const imagem = getImageUrl(pet);
   const raca = pet.raca || pet.breed || "Não informada";
   const genero = pet.genero || pet.gender || "Não informado";
   const idade = pet.idade || pet.age || "Não informada";

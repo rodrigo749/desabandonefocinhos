@@ -5,7 +5,7 @@ import path from "path";
 export async function POST(request) {
   try {
     const data = await request.formData();
-    const file = data.get("file");
+    const file = data.get("imagem") || data.get("file");
 
     if (!file) {
       return NextResponse.json({ error: "Nenhum arquivo enviado." }, { status: 400 });

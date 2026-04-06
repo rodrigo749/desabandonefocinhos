@@ -93,38 +93,26 @@ export default function EditarCadastroAdocao() {
     e.preventDefault();
 
     try {
-      let imagemURL = formData.imagem;
+      // Usar FormData para enviar imagem + dados juntos
+      const fd = new FormData();
+      fd.append("name", formData.nome || "");
+      fd.append("breed", formData.raca || "");
+      fd.append("gender", formData.genero || "");
+      fd.append("age", formData.idade || "");
+      fd.append("description", formData.descricao || "");
 
       if (imagemFile) {
-        const imgData = new FormData();
-        imgData.append("file", imagemFile);
-
-        const uploadRes = await fetch("/api/upload", {
-          method: "POST",
-          body: imgData,
-        });
-
-        const uploadData = await uploadRes.json();
-        imagemURL = uploadData.url;
+        fd.append("image", imagemFile);
       }
 
-      const petAtualizado = {
-        name: formData.nome,
-        breed: formData.raca,
-        gender: formData.genero,
-        age: formData.idade,
-        description: formData.descricao,
-        image: imagemURL,
-      };
-
       const token = localStorage.getItem("token") || "";
+      const headers = {};
+      if (token) headers.Authorization = `Bearer ${token}`;
+
       const res = await fetch(`${getBaseUrl()}/api/pets/${petId}`, {
         method: "PUT",
-        headers: {
-          "Content-Type": "application/json",
-          ...(token ? { Authorization: `Bearer ${token}` } : {}),
-        },
-        body: JSON.stringify(petAtualizado),
+        headers,
+        body: fd,
       });
 
   if (!res.ok) throw new Error("Erro ao atualizar pet");

@@ -39,41 +39,7 @@
 
 /* ===========================
    COLUNA ESQUERDA
-/* Reuse styles from cadastrar-pets-perdidos (perdidos.module.css) to keep a consistent UI */
-.cadastroPetContainer {
-  width: 100%;
-  background-color: var(--bg-soft);
-  display: flex;
-  justify-content: center;
-  padding: 50px 0;
-  position: relative;
-  min-height: 100vh;
-  overflow: hidden;
-}
-
-.cadastroPetContainer::before {
-  content: "";
-  position: absolute;
-  inset: 0;
-  background-image: none;
-  background-repeat: repeat;
-  background-size: 600px;
-  opacity: 0.50;
-  z-index: 0;
-  filter: brightness(0) saturate(100%) invert(77%) sepia(97%) saturate(686%) hue-rotate(319deg) brightness(101%) contrast(101%);
-}
-
-.adocaoContainer {
-  width: 90%;
-  max-width: 1300px;
-  background: var(--bg-soft);
-  padding: 40px;
-  display: flex;
-  justify-content: space-between;
-  gap: 40px;
-  border-radius: 28px;
-  border: 6px solid var(--bg-soft);
-}
+=========================== */
 
 .leftSide {
   width: 48%;
@@ -85,6 +51,7 @@
   z-index: 1;
 }
 
+/* UPLOAD DE IMAGEM */
 .uploadBox {
   width: 240px;
   height: 240px;
@@ -117,12 +84,14 @@
   color: #ffffff;
 }
 
+/* UPLOAD IMAGEM WRAPPER */
 .uploadImagem {
   display: flex;
   justify-content: center;
   align-items: center;
 }
 
+/* DESCRIÃ‡ÃƒO */
 .campoDescricao {
   position: relative;
   width: 100%;
@@ -142,7 +111,7 @@
 .descricaoTextarea {
   width: 100%;
   min-height: 250px;
-  padding: 20px 20px 20px 60px;
+  padding: 20px 20px 20px 60px; /* deixa espaÃ§o para a patinha */
   border-radius: 25px;
   border: 4px solid var(--heading);
   font-size: 16px;
@@ -153,7 +122,14 @@
   color: #333333;
 }
 
-.descricaoTextarea:focus { border-color: var(--heading); }
+.descricaoTextarea:focus {
+  border-color: var(--heading);
+}
+
+
+/* ===========================
+   COLUNA DIREITA
+=========================== */
 
 .rightSide {
   width: 48%;
@@ -168,125 +144,604 @@
   z-index: 1;
 }
 
-.tituloCadastro { font-size: 32px; font-weight: 700; color: var(--heading); margin-bottom: 20px; }
-
-.formCadastro { width: 80%; display: flex; flex-direction: column; gap: 18px; }
-
-.botoesIdade { position: absolute; right: 14px; top: 50%; transform: translateY(-50%); display: flex; flex-direction: column; gap: 2px; }
-.btnIdade { width: 20px; height: 17px; background-color: var(--heading); border: none; border-radius: 8px; color: white; font-size: 12px; cursor: pointer; display: flex; align-items: center; justify-content: center; transition: background-color 0.2s ease; }
-
-.campo { position: relative; width: 100%; }
-.campo input, .campo select { width: 100%; padding: 12px 20px 12px 55px; border-radius: 40px; border: 4px solid var(--heading); font-size: 16px; outline: none; background-color: #ffffff; font-family: inherit; color: #333; box-sizing: border-box; height: 50px; }
-.campo input:focus, .campo select:focus { border-color: var(--heading); }
-.campo select { appearance: none; -webkit-appearance: none; -moz-appearance: none; cursor: pointer; }
-.campo select.selectPlaceholder { color: #757575; }
-.campo select option { color: #333; }
-.iconeInput { position: absolute; left: 15px; top: 50%; transform: translateY(-50%); width: 28px; height: 28px; opacity: 0.9; }
-.dateInput { width: 100%; padding: 12px 20px 12px 55px; border-radius: 40px; border: 4px solid var(--heading); font-size: 16px; outline: none; background-color: #ffffff; font-family: inherit; color: #333; box-sizing: border-box; height: 50px; }
-.dateInput:focus { border-color: var(--heading); }
-.calendarIcon { position: absolute; right: 18px; top: 50%; transform: translateY(-50%); width: 22px; height: 22px; opacity: 0.7; color: var(--heading); pointer-events: none; }
-
-/* styles for action buttons row and nice Save/Delete buttons */
-.actionsRow { display: flex; gap: 12px; margin-top: 12px; }
-.btnEditar, .btnExcluir {
-  padding: 12px 20px;
-  border-radius: 14px;
-  font-size: 18px;
+/* TÃTULO */
+.tituloCadastro {
+  font-size: 32px;
   font-weight: 700;
+  color: var(--heading);
+  margin-bottom: 20px;
+}
+
+/* FORM */
+.formCadastro {
+  width: 80%;
+  display: flex;
+  flex-direction: column;
+  gap: 18px;
+}
+
+.botoesIdade {
+  position: absolute;
+  right: 14px;
+  top: 50%;
+  transform: translateY(-50%);
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.btnIdade {
+  width: 20px;
+  height: 17px;
+  background-color: var(--heading);
+  border: none;
+  border-radius: 8px;
+  color: white;
+  font-size: 12px;
   cursor: pointer;
-  border: 4px solid var(--border);
-  box-shadow: 0 6px 12px rgba(0,0,0,0.12);
-  transition: transform 0.15s ease, background-color 0.15s ease;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: background-color 0.2s ease;
 }
-.btnEditar {
+
+/* CAMPOS COM PATINHA */
+.campo {
+  position: relative;
+  width: 100%;
+}
+
+.campo input,
+.campo select {
+  width: 100%;
+  padding: 12px 20px 12px 55px;
+  border-radius: 40px;
+  border: 4px solid var(--heading);
+  font-size: 16px;
+  outline: none;
+  background-color: #ffffff;
+  font-family: inherit;
+  color: #333;
+  box-sizing: border-box;
+  height: 50px;
+}
+
+.campo input:focus,
+.campo select:focus {
+  border-color: var(--heading);
+}
+
+.campo select {
+  appearance: none;
+  -webkit-appearance: none;
+  -moz-appearance: none;
+  cursor: pointer;
+}
+
+.campo select.selectPlaceholder {
+  color: #757575;
+}
+
+.campo select option {
+  color: #333;
+}
+
+/* ÃCONE PATINHA NOS INPUTS */
+.iconeInput {
+  position: absolute;
+  left: 15px;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 28px;
+  height: 28px;
+  opacity: 0.9;
+}
+
+/* DATA INPUT COM CALENDÃRIO */
+.dateInput {
+  width: 100%;
+  padding: 12px 20px 12px 55px;
+  border-radius: 40px;
+  border: 4px solid var(--heading);
+  font-size: 16px;
+  outline: none;
+  background-color: #ffffff;
+  font-family: inherit;
+  color: #333;
+  box-sizing: border-box;
+  height: 50px;
+}
+
+.dateInput:focus {
+  border-color: var(--heading);
+}
+
+/* ÃCONE CALENDÃRIO */
+.calendarIcon {
+  position: absolute;
+  right: 18px;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 22px;
+  height: 22px;
+  opacity: 0.7;
+  color: var(--heading);
+  pointer-events: none;
+}
+
+/* BOTÃƒO */
+.btnCadastrar {
+  margin-top: 15px;
+  width: 80%;
+  padding: 12px;
+  border-radius: 18px;
+  font-size: 22px;
+  font-weight: 700;
+  color: white;
   background-color: var(--nav);
-  color: #fff;
+  border: 4px solid var(--border);
+  cursor: pointer;
+  transition: 0.25s ease-in-out;
+  box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.25);
+  margin-left: 38px;
 }
-.btnEditar:hover { transform: translateY(-3px); background-color: var(--nav-hover); }
-.btnExcluir {
-  background-color: transparent;
+
+.btnCadastrar:hover {
+  background-color: var(--nav-hover);
+  transform: translateY(-2px);
+}
+
+.inputIdade::-webkit-outer-spin-button,
+.inputIdade::-webkit-inner-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}
+
+.inputIdade:focus {
+  border-color: var(--heading);
+}
+
+
+.previewImagem {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  border-radius: 18px;
+}
+
+/* TEXTO DE ERRO */
+.errorText {
+  color: red;
+  font-size: 13px;
+  margin-top: -10px;
+  margin-bottom: 4px;
+  padding-left: 15px;
+  display: block;
+}
+
+/* ===========================
+   RECOMPENSA - SLIDER WITH VISUAL INDICATOR
+=========================== */
+
+.campoRecompensa {
+  position: relative;
+  width: 100%;
+}
+
+.campoRecompensa .iconeInput {
+  position: absolute;
+  left: 15px;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 28px;
+  height: 28px;
+  opacity: 0.9;
+  z-index: 2;
+}
+
+.sliderContainer {
+  width: 100%;
+  padding: 15px 20px 15px 55px;
+  border-radius: 40px;
+  border: 4px solid var(--heading);
+  background-color: #ffffff;
+  box-sizing: border-box;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.sliderContainer:hover {
+  border-color: var(--heading);
+}
+
+.sliderHeader {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.sliderLabel {
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--heading);
+}
+
+.valorRecompensa {
+  font-size: 22px;
+  font-weight: 800;
   color: var(--nav);
+  background: linear-gradient(135deg, var(--nav) 0%, var(--heading) 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  text-shadow: 0px 2px 4px rgba(0, 0, 0, 0.1);
 }
-.btnExcluir:hover { transform: translateY(-3px); background-color: rgba(0,0,0,0.04); }
 
-.btnCadastrar { margin-top: 15px; width: 80%; padding: 12px; border-radius: 18px; font-size: 22px; font-weight: 700; color: white; background-color: var(--nav); border: 4px solid var(--border); cursor: pointer; transition: 0.25s ease-in-out; box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.25); margin-left: 38px; }
-.btnCadastrar:hover { background-color: var(--nav-hover); transform: translateY(-2px); }
+.slider {
+  width: 100%;
+  height: 12px;
+  border-radius: 6px;
+  background: linear-gradient(to right, var(--nav) 0%, var(--border) 50%, var(--nav) 100%);
+  outline: none;
+  cursor: pointer;
+  -webkit-appearance: none;
+  appearance: none;
+}
 
-.inputIdade::-webkit-outer-spin-button, .inputIdade::-webkit-inner-spin-button { -webkit-appearance: none; margin: 0; }
-.inputIdade:focus { border-color: var(--heading); }
-.previewImagem { width: 100%; height: 100%; object-fit: cover; border-radius: 18px; }
-.errorText { color: red; font-size: 13px; margin-top: -10px; margin-bottom: 4px; padding-left: 15px; display: block; }
+.slider::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  appearance: none;
+  width: 26px;
+  height: 26px;
+  border-radius: 50%;
+  background: #ffffff;
+  border: 4px solid var(--nav);
+  cursor: pointer;
+  box-shadow: 0px 3px 8px rgba(0, 0, 0, 0.25);
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
 
-.campoRecompensa { position: relative; width: 100%; }
-.campoRecompensa .iconeInput { position: absolute; left: 15px; top: 50%; transform: translateY(-50%); width: 28px; height: 28px; opacity: 0.9; z-index: 2; }
-.sliderContainer { width: 100%; padding: 15px 20px 15px 55px; border-radius: 40px; border: 4px solid var(--heading); background-color: #ffffff; box-sizing: border-box; display: flex; flex-direction: column; gap: 12px; }
-.sliderContainer:hover { border-color: var(--heading); }
-.sliderHeader { display: flex; justify-content: space-between; align-items: center; }
-.sliderLabel { font-size: 14px; font-weight: 600; color: var(--heading); }
-.valorRecompensa { font-size: 22px; font-weight: 800; color: var(--nav); background: linear-gradient(135deg, var(--nav) 0%, var(--heading) 100%); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; text-shadow: 0px 2px 4px rgba(0, 0, 0, 0.1); }
-.slider { width: 100%; height: 12px; border-radius: 6px; background: linear-gradient(to right, var(--nav) 0%, var(--border) 50%, var(--nav) 100%); outline: none; cursor: pointer; -webkit-appearance: none; appearance: none; }
-.slider::-webkit-slider-thumb { -webkit-appearance: none; appearance: none; width: 26px; height: 26px; border-radius: 50%; background: #ffffff; border: 4px solid var(--nav); cursor: pointer; box-shadow: 0px 3px 8px rgba(0, 0, 0, 0.25); transition: transform 0.2s ease, box-shadow 0.2s ease; }
-.slider::-webkit-slider-thumb:hover { transform: scale(1.1); box-shadow: 0px 4px 12px rgba(0, 0, 0, 0.35); }
-.slider::-moz-range-thumb { width: 26px; height: 26px; border-radius: 50%; background: #ffffff; border: 4px solid var(--nav); cursor: pointer; box-shadow: 0px 3px 8px rgba(0, 0, 0, 0.25); }
-.sliderMinMax { display: flex; justify-content: space-between; font-size: 12px; color: #757575; margin-top: -5px; }
-.sliderOptions { display: flex; gap: 10px; margin-top: 5px; }
-.sliderOption { padding: 6px 14px; border-radius: 20px; border: 2px solid var(--heading); background-color: transparent; color: var(--heading); font-size: 13px; font-weight: 600; cursor: pointer; transition: all 0.2s ease; }
-.sliderOption:hover { background-color: #f0f0f0; }
-.sliderOption.active { background-color: var(--nav); color: #ffffff; border-color: var(--nav); }
+.slider::-webkit-slider-thumb:hover {
+  transform: scale(1.1);
+  box-shadow: 0px 4px 12px rgba(0, 0, 0, 0.35);
+}
 
+.slider::-moz-range-thumb {
+  width: 26px;
+  height: 26px;
+  border-radius: 50%;
+  background: #ffffff;
+  border: 4px solid var(--nav);
+  cursor: pointer;
+  box-shadow: 0px 3px 8px rgba(0, 0, 0, 0.25);
+}
+
+.sliderMinMax {
+  display: flex;
+  justify-content: space-between;
+  font-size: 12px;
+  color: #757575;
+  margin-top: -5px;
+}
+
+/* Free reward option */
+.sliderOptions {
+  display: flex;
+  gap: 10px;
+  margin-top: 5px;
+}
+
+.sliderOption {
+  padding: 6px 14px;
+  border-radius: 20px;
+  border: 2px solid var(--heading);
+  background-color: transparent;
+  color: var(--heading);
+  font-size: 13px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.sliderOption:hover {
+  background-color: #f0f0f0;
+}
+
+.sliderOption.active {
+  background-color: var(--nav);
+  color: #ffffff;
+  border-color: var(--nav);
+}
+
+/* ===========================
+   MEDIA QUERIES - RESPONSIVO
+=========================== */
+
+/* TABLETS (atÃ© 1024px) */
 @media (max-width: 1024px) {
-  .adocaoContainer { width: 95%; padding: 30px; gap: 30px; flex-direction: column; }
-  .leftSide, .rightSide { width: 100%; }
-  .tituloCadastro { font-size: 28px; margin-bottom: 15px; }
-  .formCadastro { width: 90%; }
-  .uploadBox { width: 200px; height: 200px; }
-  .iconeAddImg { width: 75px; height: 75px; }
-  .uploadBox span { font-size: 16px; }
+  .adocaoContainer {
+    width: 95%;
+    padding: 30px;
+    gap: 30px;
+    flex-direction: column;
+  }
+
+  .leftSide,
+  .rightSide {
+    width: 100%;
+  }
+
+  .tituloCadastro {
+    font-size: 28px;
+    margin-bottom: 15px;
+  }
+
+  .formCadastro {
+    width: 90%;
+  }
+
+  .uploadBox {
+    width: 200px;
+    height: 200px;
+  }
+
+  .iconeAddImg {
+    width: 75px;
+    height: 75px;
+  }
+
+  .uploadBox span {
+    font-size: 16px;
+  }
 }
 
+/* TABLETS PEQUENOS (atÃ© 768px) */
 @media (max-width: 768px) {
-  .cadastroPetContainer { padding: 30px 0; min-height: auto; }
-  .adocaoContainer { width: 90%; padding: 25px; gap: 25px; border-radius: 20px; }
-  .leftSide, .rightSide { padding: 20px; border-radius: 20px; border: 4px solid var(--card); }
-  .tituloCadastro { font-size: 24px; margin-bottom: 15px; }
-  .formCadastro { width: 100%; gap: 15px; }
-  .uploadBox { width: 180px; height: 180px; border-radius: 18px; border: 3px solid var(--border); }
-  .iconeAddImg { width: 65px; height: 65px; }
-  .uploadBox span { font-size: 14px; margin-top: 8px; }
-  .descricaoTextarea { min-height: 120px; padding: 15px 15px 15px 50px; font-size: 14px; border-radius: 20px; border: 3px solid var(--heading); }
-  .btnCadastrar { width: 90%; padding: 10px; font-size: 18px; border-radius: 15px; margin-left: 0; }
+  .cadastroPetContainer {
+    padding: 30px 0;
+    min-height: auto;
+  }
+
+  .adocaoContainer {
+    width: 90%;
+    padding: 25px;
+    gap: 25px;
+    border-radius: 20px;
+  }
+
+  .leftSide,
+  .rightSide {
+    padding: 20px;
+    border-radius: 20px;
+    border: 4px solid var(--card);
+  }
+
+  .tituloCadastro {
+    font-size: 24px;
+    margin-bottom: 15px;
+  }
+
+  .formCadastro {
+    width: 100%;
+    gap: 15px;
+  }
+
+  .campo input,
+  .campo select {
+    padding: 10px 15px 10px 45px;
+    font-size: 14px;
+    border-radius: 30px;
+  }
+
+  .iconeInput {
+    width: 24px;
+    height: 24px;
+    left: 12px;
+  }
+
+  .uploadBox {
+    width: 180px;
+    height: 180px;
+    border-radius: 18px;
+    border: 3px solid var(--border);
+  }
+
+  .iconeAddImg {
+    width: 65px;
+    height: 65px;
+  }
+
+  .uploadBox span {
+    font-size: 14px;
+    margin-top: 8px;
+  }
+
+  .descricaoTextarea {
+    min-height: 120px;
+    padding: 15px 15px 15px 50px;
+    font-size: 14px;
+    border-radius: 20px;
+    border: 3px solid var(--heading);
+  }
+
+  .btnCadastrar {
+    width: 90%;
+    padding: 10px;
+    font-size: 18px;
+    border-radius: 15px;
+    margin-left: 0;
+  }
 }
 
+/* MOBILE (atÃ© 480px) */
 @media (max-width: 480px) {
-  .cadastroPetContainer { padding: 20px 0; }
-  .adocaoContainer { width: 100%; padding: 15px; gap: 15px; border-radius: 15px; border: 4px solid var(--bg-soft); }
-  .leftSide, .rightSide { padding: 15px; border-radius: 15px; border: 3px solid var(--card); }
-  .tituloCadastro { font-size: 20px; margin-bottom: 12px; }
-  .formCadastro { width: 100%; gap: 12px; }
-  .campo input, .campo select { padding: 8px 12px 8px 40px; font-size: 13px; border-radius: 25px; border: 3px solid var(--heading); }
-  .iconeInput { width: 24px; height: 24px; left: 12px; }
-  .uploadBox { width: 150px; height: 150px; border-radius: 15px; border: 3px solid var(--border); }
-  .iconeAddImg { width: 55px; height: 55px; }
-  .uploadBox span { font-size: 12px; margin-top: 6px; }
-  .campoDescricao { margin-top: 15px; }
-  .iconeDescricao { width: 24px; height: 24px; left: 12px; top: 14px; }
-  .descricaoTextarea { min-height: 100px; padding: 12px 12px 12px 45px; font-size: 14px; border-radius: 15px; border: 3px solid var(--heading); }
-  .btnCadastrar { width: 95%; padding: 8px; font-size: 16px; border-radius: 12px; border: 3px solid var(--border); margin-left: 0; margin-top: 10px; }
-  .btnCadastrar:hover { transform: translateY(-1px); }
+  .cadastroPetContainer {
+    padding: 20px 0;
+  }
+
+  .adocaoContainer {
+    width: 100%;
+    padding: 15px;
+    gap: 15px;
+    border-radius: 15px;
+    border: 4px solid var(--bg-soft);
+  }
+
+  .leftSide,
+  .rightSide {
+    padding: 15px;
+    border-radius: 15px;
+    border: 3px solid var(--card);
+  }
+
+  .tituloCadastro {
+    font-size: 20px;
+    margin-bottom: 12px;
+  }
+
+  .formCadastro {
+    width: 100%;
+    gap: 12px;
+  }
+
+  .campo input,
+  .campo select {
+    padding: 8px 12px 8px 40px;
+    font-size: 13px;
+    border-radius: 25px;
+    border: 3px solid var(--heading);
+  }
+
+  .iconeInput {
+    width: 20px;
+    height: 20px;
+    left: 10px;
+  }
+
+  .dateInput {
+    padding: 8px 12px 8px 40px;
+    font-size: 13px;
+    border-radius: 25px;
+    border: 3px solid var(--heading);
+  }
+
+  .calendarIcon {
+    width: 18px;
+    height: 18px;
+    right: 12px;
+  }
+
+  .uploadBox {
+    width: 150px;
+    height: 150px;
+    border-radius: 15px;
+    border: 3px solid var(--border);
+  }
+
+  .iconeAddImg {
+    width: 55px;
+    height: 55px;
+  }
+
+  .uploadBox span {
+    font-size: 12px;
+    margin-top: 6px;
+  }
+
+  .campoDescricao {
+    margin-top: 15px;
+  }
+
+  .iconeDescricao {
+    width: 24px;
+    height: 24px;
+    left: 12px;
+    top: 14px;
+  }
+
+  .descricaoTextarea {
+    min-height: 100px;
+    padding: 12px 12px 12px 45px;
+    font-size: 13px;
+    border-radius: 15px;
+    border: 3px solid var(--heading);
+  }
+
+  .btnCadastrar {
+    width: 95%;
+    padding: 8px;
+    font-size: 16px;
+    border-radius: 12px;
+    border: 3px solid var(--border);
+    margin-left: 0;
+    margin-top: 10px;
+  }
+
+  .btnCadastrar:hover {
+    transform: translateY(-1px);
+  }
 }
 
+/* MOBILE MUITO PEQUENO (atÃ© 360px) */
 @media (max-width: 360px) {
-  .adocaoContainer { width: 100%; padding: 10px; gap: 12px; }
-  .leftSide, .rightSide { padding: 12px; }
-  .tituloCadastro { font-size: 18px; }
-  .uploadBox { width: 130px; height: 130px; }
-  .iconeAddImg { width: 45px; height: 45px; }
-  .uploadBox span { font-size: 11px; }
-  .campo input, .campo select { padding: 6px 10px 6px 35px; font-size: 12px; }
-  .dateInput { padding: 6px 10px 6px 35px; font-size: 12px; }
-  .calendarIcon { width: 16px; height: 16px; right: 10px; }
-  .descricaoTextarea { min-height: 80px; padding: 10px 10px 10px 40px; font-size: 12px; }
-  .btnCadastrar { width: 100%; padding: 6px; font-size: 14px; }
+  .adocaoContainer {
+    width: 100%;
+    padding: 10px;
+    gap: 12px;
+  }
+
+  .leftSide,
+  .rightSide {
+    padding: 12px;
+  }
+
+  .tituloCadastro {
+    font-size: 18px;
+  }
+
+  .uploadBox {
+    width: 130px;
+    height: 130px;
+  }
+
+  .iconeAddImg {
+    width: 45px;
+    height: 45px;
+  }
+
+  .uploadBox span {
+    font-size: 11px;
+  }
+
+  .campo input,
+  .campo select {
+    padding: 6px 10px 6px 35px;
+    font-size: 12px;
+  }
+
+  .dateInput {
+    padding: 6px 10px 6px 35px;
+    font-size: 12px;
+  }
+
+  .calendarIcon {
+    width: 16px;
+    height: 16px;
+    right: 10px;
+  }
+
+  .descricaoTextarea {
+    min-height: 80px;
+    padding: 10px 10px 10px 40px;
+    font-size: 12px;
+  }
+
+  .btnCadastrar {
+    width: 100%;
+    padding: 6px;
+    font-size: 14px;
+  }
 }
 
 

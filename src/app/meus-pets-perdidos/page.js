@@ -3,6 +3,7 @@
 import { useEffect, useState } from "react";
 import PetCard from "@/components/PetCard/PetCard";
 import styles from "./meus-pets-perdidos.module.css";
+import Link from "next/link";
 
 const getBaseUrl = () =>
   (process.env.NEXT_PUBLIC_PETZ_API_URL || "http://localhost:3000")
@@ -75,26 +76,46 @@ export default function MeusPetsPerdidos() {
     carregarPets();
   }, [usuario]);
 
-  return (
-    <main className={styles["pets-page"]}>
-      <div className={styles["cards-wrapper-container"]}>
-        <h1 className={styles.titulo}>Meus Pets Perdidos</h1>
+return (
+  <main className={styles["pets-page"]}>
+    <div className={styles["cards-wrapper-container"]}>
 
-        {loading && <p>Carregando pets...</p>}
-        {erro && <p>{erro}</p>}
+      <h1 className={styles.titulo}>Meus Pets Perdidos</h1>
 
-        {!loading && !erro && (
-          <section className={styles["grid-pets"]}>
-            {pets.length > 0 ? (
-              pets.map((pet) => (
-                <PetCard key={pet.id} pet={pet} tipoPagina="usuario" />
-              ))
-            ) : (
-              <p>Você não tem pets perdidos registrados.</p>
-            )}
-          </section>
-        )}
+      {/* BOTÃO CENTRALIZADO */}
+      <div className={styles.areaBotao}>
+        <Link
+          href="/cadastrar-pets-perdidos"
+          className={styles.botaoCadastrar}
+        >
+          + Cadastrar pet
+        </Link>
       </div>
-    </main>
-  );
+
+      {/* ESTADOS */}
+    {loading && (
+  <p className={styles.mensagemCentral}>
+    Carregando pets...
+  </p>
+)}
+
+{erro && <p>{erro}</p>}
+
+{!loading && !erro && (
+  pets.length > 0 ? (
+    <section className={styles["grid-pets"]}>
+      {pets.map((pet) => (
+        <PetCard key={pet.id} pet={pet} tipoPagina="usuario" />
+      ))}
+    </section>
+  ) : (
+    <p className={styles.mensagemCentral}>
+      Você não tem pets perdidos registrados.
+    </p>
+  )
+)}
+
+    </div>
+  </main>
+);
 }
