@@ -37,9 +37,7 @@ export default function CadastroAdocao() {
 
     const baseUrl = getBaseUrl();
     const configs = [
-      { url: `${baseUrl}/api/upload`, field: "file" },
       { url: `${baseUrl}/api/upload`, field: "imagem" },
-      { url: `${baseUrl}/upload`, field: "file" },
       { url: `${baseUrl}/upload`, field: "imagem" },
     ];
 
@@ -142,50 +140,38 @@ export default function CadastroAdocao() {
       return;
     }
 
-    // verifica usuário logado (desabilitado para testes)
-    //let usuario = { id: 1 };
-     //try {
-      //usuario = JSON.parse(localStorage.getItem("usuarioLogado") || "null");
-     //} catch {}
+    // verifica usuário logado
+    let usuario = null;
+    try {
+      usuario = JSON.parse(localStorage.getItem("usuarioLogado") || "null");
+    } catch {}
 
-     //if (!usuario || !usuario.id) {
-      //showToast("Você precisa estar logado para cadastrar um pet.", "warning");
-      //setLoading(false);
-      //return;
-     //}
+    if (!usuario || !usuario.id) {
+      showToast("Você precisa estar logado para cadastrar um pet.", "warning");
+      setLoading(false);
+      return;
+    }
 
     try {
-      // 1. upload da imagem (se houver)
-      let finalImageUrl = "";
+      // Montar FormData para enviar imagem + dados juntos
+      const baseUrl = getBaseUrl();
+      const fd = new FormData();
+      fd.append("name", formData.nome.trim());
+      fd.append("species", formData.especie);
+      fd.append("breed", formData.raca.trim() || "");
+      fd.append("age", formData.idade || "");
+      fd.append("description", formData.descricao.trim() || "");
+      fd.append("status", "available");
+      fd.append("userId", usuario.id);
+
       if (imagemFile) {
-        try {
-          finalImageUrl = await uploadImage(imagemFile);
-        } catch (uploadErr) {
-          console.error("Erro upload:", uploadErr);
-          showToast("Erro ao enviar imagem. Verifique o servidor.", "error");
-          setLoading(false);
-          return;
-        }
+        fd.append("image", imagemFile);
       }
 
-      // 2. montar payload conforme model Pet do backend
-      const baseUrl = getBaseUrl();
-      const payload = {
-        name: formData.nome.trim(),
-        species: formData.especie,               // 'dog' ou 'cat'
-        breed: formData.raca.trim() || null,
-        age: formData.idade ? Number(formData.idade) : null,
-        description: formData.descricao.trim() || null,
-        status: "available",                      // pet para adoção
-        userId: usuario.id,
-        imagem: finalImageUrl || "/images/semfoto.jpg",
-      };
-
-      // 3. enviar para o backend
+      // Enviar para o backend
       const res = await fetch(`${baseUrl}/api/pets`, {
         method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(payload),
+        body: fd,
       });
 
       const respData = await res.json().catch(() => ({}));

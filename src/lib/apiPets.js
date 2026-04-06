@@ -1,7 +1,7 @@
 export async function uploadImage(file) {
   if (!file) return null;
   const form = new FormData();
-  form.append('file', file, file.name);
+  form.append('imagem', file, file.name);
   const res = await fetch('/api/upload', { method: 'POST', body: form });
   if (!res.ok) {
     const err = await res.json().catch(()=>({ error: 'Erro no upload' }));

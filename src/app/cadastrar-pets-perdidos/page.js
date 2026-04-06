@@ -33,10 +33,10 @@ export default function CadastrarPerdidos() {
       .replace(/\/$/, "");
 
   // ================= UPLOAD =================
-  const uploadImage = async (file) => {
+  const uploadImage = async (imagem) => {
     const baseUrl = getBaseUrl();
     const fd = new FormData();
-    fd.append("file", file);
+    fd.append("imagem", imagem);
 
     const res = await fetch(`${baseUrl}/api/upload`, {
       method: "POST",
@@ -124,33 +124,27 @@ const salvarPet = async (e) => {
       return;
     }
 
-    let finalImageUrl = "/images/semfoto.jpg";
+    // Usar FormData para enviar imagem + dados juntos
+    const fd = new FormData();
+    fd.append("name", formData.name.trim());
+    fd.append("species", formData.species || "");
+    fd.append("breed", formData.breed || "");
+    fd.append("gender", formData.genero || "");
+    fd.append("age", formData.age || "");
+    fd.append("dateLost", formData.dateLost || "");
+    fd.append("location", formData.location || "");
+    fd.append("reward", formData.reward || "0");
+    fd.append("description", formData.description || "");
+    fd.append("status", "lost");
+    fd.append("userId", usuarioLogado.id);
 
     if (imagemFile) {
-      finalImageUrl = await uploadImage(imagemFile);
+      fd.append("image", imagemFile);
     }
-
-    const payload = {
-      name: formData.name.trim(),
-      species: formData.species,
-      breed: formData.breed || null,
-      gender: formData.genero || null,
-      age: formData.age ? Number(formData.age) : null,
-      dateLost: formData.dateLost || null,
-      location: formData.location || null,
-      reward: formData.reward ? Number(formData.reward) : 0,
-      description: formData.description || null,
-      image: finalImageUrl,
-      status: "lost",
-      userId: usuarioLogado.id,
-    };
 
     const res = await fetch(`${getBaseUrl()}/api/pets`, {
       method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify(payload),
+      body: fd,
     });
 
     const respData = await res.json().catch(() => ({}));
