@@ -76,46 +76,50 @@ export default function MeusPetsPerdidos() {
     carregarPets();
   }, [usuario]);
 
-return (
-  <main className={styles["pets-page"]}>
-    <div className={styles["cards-wrapper-container"]}>
+  return (
+    <main className={styles["pets-page"]}>
+      <div className={styles["cards-wrapper-container"]}>
+        <h1 className={styles.titulo}>Meus Pets Perdidos</h1>
 
-      <h1 className={styles.titulo}>Meus Pets Perdidos</h1>
+        <div className={styles.areaBotao}>
+          <Link
+            href="/cadastrar-pets-perdidos"
+            className={styles.botaoCadastrar}
+          >
+            + Cadastrar pet
+          </Link>
+        </div>
 
-      {/* BOTÃO CENTRALIZADO */}
-      <div className={styles.areaBotao}>
-        <Link
-          href="/cadastrar-pets-perdidos"
-          className={styles.botaoCadastrar}
-        >
-          + Cadastrar pet
-        </Link>
+        {loading && (
+          <p className={styles.mensagemCentral}>
+            Carregando pets...
+          </p>
+        )}
+
+        {erro && (
+          <p className={styles.mensagemCentral}>
+            {erro}
+          </p>
+        )}
+
+        {!loading && !erro && pets.length > 0 && (
+          <section className={styles["grid-pets"]}>
+            {pets.map((pet) => (
+              <PetCard
+                key={pet.id}
+                pet={pet}
+                tipoPagina="meus-perdidos"
+              />
+            ))}
+          </section>
+        )}
+
+        {!loading && !erro && pets.length === 0 && (
+          <p className={styles.mensagemCentral}>
+            Você não tem pets perdidos registrados.
+          </p>
+        )}
       </div>
-
-      {/* ESTADOS */}
-    {loading && (
-  <p className={styles.mensagemCentral}>
-    Carregando pets...
-  </p>
-)}
-
-{erro && <p>{erro}</p>}
-
-{!loading && !erro && (
-  pets.length > 0 ? (
-    <section className={styles["grid-pets"]}>
-      {pets.map((pet) => (
-        <PetCard key={pet.id} pet={pet} tipoPagina="usuario" />
-      ))}
-    </section>
-  ) : (
-    <p className={styles.mensagemCentral}>
-      Você não tem pets perdidos registrados.
-    </p>
-  )
-)}
-
-    </div>
-  </main>
-);
+    </main>
+  );
 }

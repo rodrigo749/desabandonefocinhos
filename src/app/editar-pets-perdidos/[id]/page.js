@@ -29,7 +29,7 @@ export default function EditarPetPerdidosId() {
   });
 
   const [imagemFile, setImagemFile] = useState(null);
-  const [preview, setPreview] = useState(null);
+  const [previewUrl, setPreviewUrl] = useState(null);
   const [carregando, setCarregando] = useState(true);
   const [loading, setLoading] = useState(false);
   const [statusMessage, setStatusMessage] = useState("");
@@ -60,7 +60,7 @@ export default function EditarPetPerdidosId() {
           recompensa: pet.recompensa || pet.reward || 0,
           imagem: pet.imagem || pet.image || "",
         });
-        setPreview(pet.imagem || pet.image || null);
+        setPreviewUrl(pet.imagem || pet.image || null);
       } catch (err) {
         console.error("Erro ao carregar pet:", err);
       } finally {
@@ -87,14 +87,19 @@ export default function EditarPetPerdidosId() {
 
   const handleImagem = (e) => {
     const arquivo = e.target.files?.[0] || null;
-    setImagemFile(arquivo);
-    if (arquivo) {
-      const reader = new FileReader();
-      reader.onload = () => setPreview(reader.result);
-      reader.readAsDataURL(arquivo);
-    } else {
-      setPreview(null);
+    if (!arquivo) {
+      setImagemFile(null);
+      setPreviewUrl(null);
+      return;
     }
+
+    // revoga preview anterior se blob
+    if (previewUrl && previewUrl.startsWith("blob:")) {
+      try { URL.revokeObjectURL(previewUrl); } catch {}
+    }
+
+    setImagemFile(arquivo);
+    setPreviewUrl(URL.createObjectURL(arquivo));
   };
 
   const salvarEdicao = async (e) => {
@@ -120,23 +125,9 @@ export default function EditarPetPerdidosId() {
       if (imagemFile) {
         fd.append("image", imagemFile);
       }
-
-  const payload = {
-        name: formData.nome,
-        breed: formData.raca,
-        gender: formData.genero,
-        location: formData.local,
-        dateLost: formData.data,
-        description: formData.descricao,
-        reward: Number(formData.recompensa) || 0,
-        image: imagemURL || "",
-      };
-
-      const logged = JSON.parse(localStorage.getItem('usuarioLogado') || 'null');
-      const headers = {};
-      if (logged && logged.id) headers['x-usuario-id'] = String(logged.id);
       const token = localStorage.getItem("token") || "";
-      if (token) headers['Authorization'] = `Bearer ${token}`;
+      const headers = {};
+      if (token) headers.Authorization = `Bearer ${token}`;
 
       const res = await fetch(`${getBaseUrl()}/api/pets/${id}`, {
         method: "PUT",
@@ -144,9 +135,9 @@ export default function EditarPetPerdidosId() {
         body: fd,
       });
 
-  if (!res.ok) throw new Error("Falha ao salvar");
-  showToast("Pet atualizado com sucesso!", "success");
-  router.push("/perdidos");
+      if (!res.ok) throw new Error("Falha ao salvar");
+      showToast("Pet atualizado com sucesso!", "success");
+      router.push("/perdidos");
     } catch (err) {
       console.error(err);
   showToast(err.message || "Erro ao salvar", "error");
@@ -189,47 +180,67 @@ export default function EditarPetPerdidosId() {
   return (
     <>
     <main className={styles.cadastroPetContainer}>
-      <div className={styles.cadastroWrapper}>
+      <div className={styles.adocaoContainer}>
 
-        <section className={styles.colEsquerda}>
+        <section className={styles.leftSide}>
           <div className={styles.uploadImagem}>
             <label htmlFor="pet-imagem">
               <div className={styles.uploadBox}>
-                {preview ? (
-                  <img src={preview} alt="preview" className={styles.uploadPreview} />
+                {imagemFile ? (
+                  <img
+                    src={URL.createObjectURL(imagemFile)}
+                    alt="Pré-visualização"
+                    className={styles.previewImagem}
+                  />
+                ) : previewUrl ? (
+                  <img
+                    src={previewUrl}
+                    alt="Imagem atual"
+                    className={styles.previewImagem}
+                  />
+                ) : formData.imagem ? (
+                  <img
+                    src={formData.imagem}
+                    alt="Imagem atual"
+                    className={styles.previewImagem}
+                  />
                 ) : (
                   <>
-                    <img src="/images/iconephoto.png" className={styles.iconeAddImg} />
-                    <span className={styles.uploadText}>Adicionar imagem</span>
+                    <img
+                      src="/images/iconephoto.png"
+                      alt="Adicionar imagem"
+                      className={styles.iconeAddImg}
+                    />
+                    <span>Adicionar imagem</span>
                   </>
                 )}
               </div>
             </label>
+
             <input type="file" id="pet-imagem" hidden accept="image/*" onChange={handleImagem} />
           </div>
 
-          <div className={styles.descricaoBox}>
-            <label className={styles.descLabel}>
-              <img src="/images/patinha.png" className={styles.descIcon} />
-              Descrição:
-            </label>
+          <div className={styles.campoDescricao}>
+            <img
+              src="/images/patinha.png"
+              alt="patinha"
+              className={styles.iconeDescricao}
+            />
+
             <textarea
               name="descricao"
               className={styles.descricaoTextarea}
               placeholder="Descreva o pet aqui..."
-              rows="8"
               value={formData.descricao}
+              onChange={handleChange}
               onFocus={handleFocus}
               onBlur={handleBlur}
-              onChange={handleChange}
             ></textarea>
           </div>
         </section>
 
-        <section className={styles.colDireita}>
-          <div className={styles.tituloArea}>
-            <h2 className={styles.tituloCadastro}>Editar Pet Perdido</h2>
-          </div>
+        <section className={styles.rightSide}>
+          <h2 className={styles.tituloCadastro}>Editar Pet Perdido</h2>
 
           <form className={styles.formCadastro} onSubmit={salvarEdicao}>
             <div className={styles.campo}>
@@ -304,7 +315,7 @@ export default function EditarPetPerdidosId() {
                   <label className={styles.recompensaLabel}>Recompensa</label>
                 </div>
                 <div className={styles.recompensaRow}>
-                  <img src="/images/patinha.png" className={styles.iconeRecompensa} />
+                 
                   <input
                     type="range"
                     min="0"

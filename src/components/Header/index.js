@@ -9,6 +9,8 @@ import { NAV_LINKS } from "@/constants/navigation";
 import Avatar from '../Avatar'
 import styles from "./header.module.css";
 
+const API_URL = process.env.NEXT_PUBLIC_API_URL || "http://localhost:3000";
+
 export default function Header() {
   const [menuOpen, setMenuOpen] = useState(false);
   const [dropdownOpen, setDropdownOpen] = useState(null);
@@ -132,7 +134,15 @@ export default function Header() {
             >
               <span className={styles.avatarIcon}>
                 <img
-                  src={usuarioLogado.imagem || "/images/icone-perfil.jpg"}
+                  src={
+                    usuarioLogado.imagem
+                      ? usuarioLogado.imagem.startsWith("blob:")
+                        ? usuarioLogado.imagem
+                        : usuarioLogado.imagem.startsWith("http")
+                          ? usuarioLogado.imagem
+                          : `${API_URL}${usuarioLogado.imagem}`
+                      : "/images/icone-perfil.jpg"
+                  }
                   alt="Perfil"
                   className={styles.avatarImage}
                 />
