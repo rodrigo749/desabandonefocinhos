@@ -47,6 +47,30 @@
   box-shadow: 0 4px 10px rgba(0,0,0,0.08);
 }
 
+.areaBotao {
+  display: flex;
+  justify-content: center;
+  margin: 20px 0 30px 0;
+}
+
+.botaoCadastrar {
+  display: inline-block;
+  background-color: #0f7c82;
+  color: #ffffff;
+  text-decoration: none;
+  padding: 10px 18px;
+  border-radius: 16px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background-color 0.2s ease, transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.botaoCadastrar:hover {
+  background-color: #20959b;
+  transform: translateY(-2px);
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.15);
+}
+
 /* Grid de cards */
 .grid-pets {
   display: grid;

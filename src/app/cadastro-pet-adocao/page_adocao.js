@@ -176,6 +176,7 @@ export default function CadastroAdocao() {
       fd.append("name", formData.nome.trim());
       fd.append("species", formData.especie);
       fd.append("breed", formData.raca.trim() || "");
+  fd.append("gender", formData.genero || "");
       fd.append("age", formData.idade || "");
       fd.append("description", formData.descricao.trim() || "");
       fd.append("status", "available");
@@ -386,6 +387,15 @@ export default function CadastroAdocao() {
                 </button>
               </div>
             </div>
+            <button 
+              type="submit" 
+              disabled={loading}
+              className={styles.btnCadastrar}
+              style={{ opacity: loading ? 0.7 : 1, cursor: loading ? "not-allowed" : "pointer" }}
+            >
+              {loading ? "Cadastrando..." : "Cadastrar"}
+            </button>
+
           </form>
         </section>
 

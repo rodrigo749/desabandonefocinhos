@@ -27,38 +27,55 @@ export default function EditarCadastroAdocao() {
 
   const [imagemFile, setImagemFile] = useState(null);
   const [carregando, setCarregando] = useState(true);
+  const [previewUrl, setPreviewUrl] = useState(null);
+  const { showToast } = useSafeToast();
 
   // ========= CARREGAR DADOS DO PET =========
   useEffect(() => {
     async function carregarPet() {
       try {
         if (!petId) return;
+        console.debug("[editar-cadastro-adocao] petId param:", petId);
 
         const res = await fetch(`${getBaseUrl()}/api/pets/${petId}`, {
           cache: "no-store",
         });
 
         if (!res.ok) {
-          console.error("Erro ao buscar pet:", res.status);
+          const text = await res.text().catch(() => "");
+          console.error("Erro ao buscar pet:", res.status, text);
           return;
         }
 
-        const pet = await res.json();
+        const payload = await res.json().catch(() => null);
+        console.debug("[editar-cadastro-adocao] raw payload:", payload);
 
-        if (!pet || !pet.id) {
-          console.error("Pet não encontrado para o id:", petId);
+        // try to normalize: backend may return { pet: {...} } or { data: {...} } or the pet itself
+        const pet = (payload && (payload.pet || payload.data)) || payload || null;
+
+        if (!pet || (!pet.id && !pet.nome && !pet.name)) {
+          console.error("Pet não encontrado/no formato esperado para o id:", petId, pet);
           return;
         }
+
+        const nomeVal = pet.nome || pet.name || "";
+        const especieVal = pet.especie || pet.species || "";
+        const racaVal = pet.raca || pet.breed || "";
+        const generoVal = pet.genero || pet.gender || "";
+        const idadeVal = pet.idade || pet.age || "";
+        const descricaoVal = pet.descricao || pet.description || "";
+        const imagemVal = pet.imagem || pet.image || null;
 
         setFormData({
-          nome: pet.nome || pet.name || "",
-          especie: pet.especie || pet.species || "",
-          raca: pet.raca || pet.breed || "",
-          genero: pet.genero || pet.gender || "",
-          idade: pet.idade || pet.age || "",
-          descricao: pet.descricao || pet.description || "",
-          imagem: pet.imagem || pet.image || "",
+          nome: nomeVal,
+          especie: especieVal,
+          raca: racaVal,
+          genero: generoVal,
+          idade: idadeVal,
+          descricao: descricaoVal,
+          imagem: imagemVal || "",
         });
+        setPreviewUrl(imagemVal || null);
       } catch (error) {
         console.error("Erro ao carregar pet:", error);
       } finally {
@@ -185,6 +202,12 @@ export default function EditarCadastroAdocao() {
                   <img
                     src={URL.createObjectURL(imagemFile)}
                     alt="Pré-visualização"
+                    className={styles.previewImagem}
+                  />
+                ) : previewUrl ? (
+                  <img
+                    src={previewUrl}
+                    alt="Imagem atual"
                     className={styles.previewImagem}
                   />
                 ) : formData.imagem ? (
