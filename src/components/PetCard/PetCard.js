@@ -22,7 +22,7 @@ export default function PetCard({ pet, tipoPagina }) {
   // aceita tanto português quanto inglês
   const id = pet.id;
   const nome = pet.nome || pet.name || "Sem nome";
-  const imagem = pet.imagem || pet.image || "/images/default.png";
+  const imagem = pet.imagem || pet.image || "/images/semfoto.jpg";
   const raca = pet.raca || pet.breed || "Não informada";
   const genero = pet.genero || pet.gender || "Não informado";
   const idade = pet.idade || pet.age || "Não informada";

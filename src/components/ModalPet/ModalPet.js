@@ -70,12 +70,7 @@ export default function ModalPet({ pet, onClose }) {
               )}
             </div>
 
-            {/* Paw icon */}
-            <img
-              src="/images/paw.png"
-              alt="paw"
-              className={styles.pawIcon}
-            />
+          
 
             <div className={styles.infoColumns}>
               <div className={styles.infoGroup}>
