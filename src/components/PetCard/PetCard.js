@@ -31,19 +31,44 @@ export default function PetCard({ pet, tipoPagina }) {
 
   const ehDoUsuario = usuarioLogado && userId === usuarioLogado.id;
 
-  async function marcarComoAdotado() {
-    try {
-      await fetch(`${getBaseUrl()}/api/pets/${id}`, {
-        method: "PUT",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ status: "adotado" }),
-      });
+async function marcarComoAdotado() {
+  try {
+    await fetch(`${getBaseUrl()}/api/pets/${id}`, {
+      method: "PUT",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ status: "adotado" }),
+    });
 
-      window.location.reload();
-    } catch (error) {
-      console.error("Erro ao marcar como adotado:", error);
-    }
+    window.location.reload();
+  } catch (error) {
+    console.error("Erro ao marcar como adotado:", error);
   }
+}
+
+async function marcarComoEncontrado() {
+  try {
+    console.log("Função marcarComoEncontrado foi chamada. ID do pet:", id);
+
+    const res = await fetch(`${getBaseUrl()}/api/pets/${id}`, {
+      method: "PUT",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ status: "found" }),
+    });
+
+    console.log("Resposta HTTP:", res.status);
+
+    const data = await res.json();
+    console.log("Resposta da API:", data);
+
+    if (!res.ok) {
+      throw new Error("Não foi possível marcar como encontrado.");
+    }
+
+    window.location.reload();
+  } catch (error) {
+    console.error("Erro ao marcar como encontrado:", error);
+  }
+}
 
   return (
     <>
@@ -83,16 +108,20 @@ export default function PetCard({ pet, tipoPagina }) {
             </button>
           )}
 
-          {tipoPagina === "usuario" && ehDoUsuario && (
+          {(tipoPagina === "usuario" || tipoPagina === "meus-perdidos") && ehDoUsuario && (
             <div className={styles["actions-wrapper"]}>
               <button
                 className={styles["btn-adotado"]}
-                onClick={marcarComoAdotado}
+                onClick={
+                  tipoPagina === "meus-perdidos"
+                    ? marcarComoEncontrado
+                    : marcarComoAdotado
+                }
               >
-                Adotado
+                {tipoPagina === "meus-perdidos" ? "Encontrado" : "Adotado"}
               </button>
 
-              <Link href={`/editar-cadastro-adocao/${id}`}>
+              <Link href={`/editar-pets-perdidos/${id}`}>
                 <button className={styles["btn-editar"]}>Editar</button>
               </Link>
             </div>
