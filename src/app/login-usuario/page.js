@@ -68,9 +68,15 @@ export default function LoginPage() {
         throw new Error("Token não retornado pelo backend.");
       }
 
+      // Prepara o objeto do usuário com a URL da imagem
+      const userObj = data.user || {};
+      if (userObj.hasImage && userObj.id) {
+        userObj.imagem = `${API_URL}/api/users/${userObj.id}/image`;
+      }
+
       // Salva token e usuário
       localStorage.setItem("token", data.token);
-      localStorage.setItem("usuarioLogado", JSON.stringify(data.user || {}));
+      localStorage.setItem("usuarioLogado", JSON.stringify(userObj));
 
       // Dispara evento para o Header atualizar imediatamente
       window.dispatchEvent(new Event("auth-changed"));

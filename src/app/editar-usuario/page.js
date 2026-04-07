@@ -151,7 +151,14 @@ export default function EditarUsuarioPage() {
         return;
       }
 
-      localStorage.setItem("usuarioLogado", JSON.stringify(data));
+      // Se o usuário tem imagem (hasImage), define a URL do endpoint de imagem
+      const userObj = { ...data };
+      if (userObj.hasImage && logged.id) {
+        userObj.imagem = `${API_URL}/api/users/${logged.id}/image`;
+      }
+
+      localStorage.setItem("usuarioLogado", JSON.stringify(userObj));
+      window.dispatchEvent(new Event("auth-changed"));
       showToast("Dados atualizados com sucesso!", "success");
 
       setTimeout(() => {
@@ -206,7 +213,15 @@ export default function EditarUsuarioPage() {
     }
   };
 
-  const previewSrc = imagePreview || (formData.imagem ? `${API_URL}${formData.imagem}` : null);
+  // Helper para obter URL completa da imagem
+  const getImageUrl = (imagem) => {
+    if (!imagem) return null;
+    if (imagem.startsWith("blob:")) return imagem;
+    if (imagem.startsWith("http")) return imagem;
+    return `${API_URL}${imagem}`;
+  };
+
+  const previewSrc = imagePreview || getImageUrl(formData.imagem);
 
   return (
     <div className={styles.container}>

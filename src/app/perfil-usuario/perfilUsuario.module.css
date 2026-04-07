@@ -38,6 +38,21 @@
   margin-bottom: 1rem;
 }
 
+.avatarSection {
+  display: flex;
+  justify-content: center;
+  margin-bottom: 1.5rem;
+}
+
+.avatarImage {
+  width: 120px;
+  height: 120px;
+  border-radius: 50%;
+  object-fit: cover;
+  border: 3px solid var(--nav, #ff6b6b);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+}
+
 .icon {
   display: inline-flex;
   align-items: center;
