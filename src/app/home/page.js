@@ -12,6 +12,14 @@ const getBaseUrl = () =>
     .trim()
     .replace(/\/$/, "");
 
+// Função para obter URL da imagem (BLOB ou URL direta)
+const getImageUrl = (pet) => {
+  if (pet.hasImage) {
+    return `${getBaseUrl()}/api/pets/${pet.id}/image`;
+  }
+  return pet.imagem || pet.image || "/images/semfoto.jpg";
+};
+
 export default function HomePage() {
   const router = useRouter()
 
@@ -63,7 +71,7 @@ export default function HomePage() {
           breed: pet.raca || pet.breed,
           gender: pet.genero || pet.gender,
           location: pet.local || pet.location || pet.descricao || pet.description || "",
-          img: pet.imagem || pet.image || "/images/semfoto.jpg",
+          img: getImageUrl(pet),
           link: "/pets-perdidos"
         }));
 
@@ -81,7 +89,7 @@ export default function HomePage() {
           breed: pet.raca || pet.breed,
           gender: pet.genero || pet.gender,
           age: pet.idade || pet.age || "",
-          img: pet.imagem || pet.image || "/images/semfoto.jpg",
+          img: getImageUrl(pet),
           link: "/pets-para-adocao"
         }));
       setAdocao(petsParaAdocao);

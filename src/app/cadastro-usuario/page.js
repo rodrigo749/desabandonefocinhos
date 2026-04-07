@@ -40,9 +40,7 @@ export default function CadastroPage() {
 
     const baseUrl = getBaseUrl();
     const configs = [
-      { url: `${baseUrl}/api/upload`, field: "file" },
       { url: `${baseUrl}/api/upload`, field: "imagem" },
-      { url: `${baseUrl}/upload`, field: "file" },
       { url: `${baseUrl}/upload`, field: "imagem" }
     ];
 
