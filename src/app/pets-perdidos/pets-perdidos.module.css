@@ -1,16 +1,26 @@
 .pets-page {
-  position: relative;
   width: 100%;
   min-height: 100vh;
   background-color: var(--bg-soft);
   padding: 40px 0;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  display: flex;
+  position: relative;
+  overflow: hidden;
 }
 
+/* Background de patinhas */
+.pets-page::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background-image: none;
+  background-repeat: repeat;
+  background-size: 600px;
+  opacity: 0.50;
+  z-index: 0;
+  filter: brightness(0) saturate(100%) invert(77%) sepia(97%) saturate(686%) hue-rotate(319deg) brightness(101%) contrast(101%);
+}
 
+/* Container branco central */
 .cards-wrapper-container {
   width: 95%;
   max-width: 1400px;
@@ -19,24 +29,8 @@
   border-radius: 40px;
   padding: 20px 20px;
   box-shadow: 0 0 15px rgba(0, 0, 0, 0.08);
-  inset: 1;
+  position: relative;
   z-index: 1;
-}
-
-.pets-page::before {
-  content: "";
-  position: absolute;
-  inset: 0;
-  background-image: none;
-  background-repeat: repeat;
-  background-size: 756px;
-  background-position: center;
-  opacity: 0.5;
-  filter: brightness(0) saturate(100%) invert(77%) sepia(97%)
-          saturate(686%) hue-rotate(319deg)
-          brightness(101%) contrast(101%);
-  z-index: 0;
-  pointer-events: none;
 }
 
 .titulo {
@@ -44,9 +38,10 @@
   color: #FFFFFF;
   font-size: 20px;
   font-weight: 700;
-  padding: 7px 2rem;
+  padding: 7px 520px;
   border-radius: 50px;
   text-align: center;
+  width: fit-content;
   margin: 0 auto 50px auto;
   border: 5px solid var(--heading);
   box-shadow: 0 4px 10px rgba(0,0,0,0.08);
@@ -188,7 +183,8 @@
 
 .card-pet {
   background: var(--heading);
-  border-radius: 16px;
+  /* increased radius to match adoÃ§Ã£o page */
+  border-radius: 25px;
   padding: 15px;
   display: flex;
   gap: 12px;
@@ -197,8 +193,8 @@
 
   width: 100%;
   max-width: 360px;   /* todos com a mesma largura */
-  height: 490px;      /* todos com a mesma altura */
-  box-sizing: none;
+  height: 190px;      /* todos com a mesma altura */
+  box-sizing: border-box;
   align-items: flex-start;
 }
 
