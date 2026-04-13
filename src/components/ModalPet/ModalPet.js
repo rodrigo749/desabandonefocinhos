@@ -14,7 +14,7 @@ const getImageUrl = (pet) => {
   if (pet.hasImage) {
     return `${getBaseUrl()}/api/pets/${pet.id}/image`;
   }
-  return pet.imagem || pet.image || "/images/default.png";
+  return pet.imagem || pet.image || "/images/semfoto.jpg";
 };
 
 export default function ModalPet({ pet, onClose }) {
@@ -41,7 +41,7 @@ export default function ModalPet({ pet, onClose }) {
       return;
     }
 
-    const text = `Hello ${ownerName || "owner"}, I'm contacting you through the app about the pet ${pet.name || ""}.`;
+    const text = `Hello ${name || "owner"}, I'm contacting you through the app about the pet ${pet.name || ""}.`;
     const url = `https://wa.me/${phoneDigits}?text=${encodeURIComponent(text)}`;
     window.open(url, "_blank");
   }

@@ -17,7 +17,7 @@ const getImageUrl = (pet) => {
     return `${getBaseUrl()}/api/pets/${pet.id}/image`;
   }
   // Fallback para URL direta ou imagem padrão
-  return pet.imagem || pet.image || "/images/default.png";
+  return pet.imagem || pet.image || "/images/semfoto.jpg";
 };
 
 export default function PetCard({ pet, tipoPagina }) {
