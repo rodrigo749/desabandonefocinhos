@@ -3,6 +3,7 @@
 import { useEffect, useState } from "react";
 import PetCard from "@/components/PetCard/PetCard";
 import styles from "./meus-pets-perdidos.module.css";
+import Link from "next/link";
 
 const getBaseUrl = () =>
   (process.env.NEXT_PUBLIC_PETZ_API_URL || "http://localhost:3000")
@@ -80,19 +81,43 @@ export default function MeusPetsPerdidos() {
       <div className={styles["cards-wrapper-container"]}>
         <h1 className={styles.titulo}>Meus Pets Perdidos</h1>
 
-        {loading && <p>Carregando pets...</p>}
-        {erro && <p>{erro}</p>}
+        <div className={styles.areaBotao}>
+          <Link
+            href="/cadastrar-pets-perdidos"
+            className={styles.botaoCadastrar}
+          >
+            + Cadastrar pet
+          </Link>
+        </div>
 
-        {!loading && !erro && (
+        {loading && (
+          <p className={styles.mensagemCentral}>
+            Carregando pets...
+          </p>
+        )}
+
+        {erro && (
+          <p className={styles.mensagemCentral}>
+            {erro}
+          </p>
+        )}
+
+        {!loading && !erro && pets.length > 0 && (
           <section className={styles["grid-pets"]}>
-            {pets.length > 0 ? (
-              pets.map((pet) => (
-                <PetCard key={pet.id} pet={pet} tipoPagina="usuario" />
-              ))
-            ) : (
-              <p>Você não tem pets perdidos registrados.</p>
-            )}
+            {pets.map((pet) => (
+              <PetCard
+                key={pet.id}
+                pet={pet}
+                tipoPagina="meus-perdidos"
+              />
+            ))}
           </section>
+        )}
+
+        {!loading && !erro && pets.length === 0 && (
+          <p className={styles.mensagemCentral}>
+            Você não tem pets perdidos registrados.
+          </p>
         )}
       </div>
     </main>

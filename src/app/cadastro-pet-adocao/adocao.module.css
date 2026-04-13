@@ -56,7 +56,7 @@
 .uploadBox {
   width: 240px;
   height: 240px;
-  background-color: var(--card);
+  background-color: #E0E0E0;
   margin: 0 auto;
   border-radius: 22px;
   border: 4px solid var(--border);

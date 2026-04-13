@@ -1,205 +1,86 @@
 .header {
   position: sticky;
   top: 0;
-  z-index: 50;
+  z-index: 30;
   background: var(--nav);
-  box-shadow: 0 2px 10px rgba(7, 51, 55, 0.18);
+  box-shadow: 0 2px 12px rgba(7, 51, 55, 0.16);
 }
 
 .nav {
-  max-width: 100vw;
-  margin: 0;
-  padding: 0 1rem 0 1rem;
-  height: 80px;
+  height: 78px;
   display: flex;
   align-items: center;
   justify-content: space-between;
+  padding: 0 1rem;
 }
 
-/* Logo */
 .logo {
-  margin-left: 0;
-  display: flex;
+  display: inline-flex;
   align-items: center;
   text-decoration: none;
-  transition: opacity 0.2s;
+  transition: opacity 0.2s ease;
 }
 
 .logo:hover {
-  opacity: 0.9;
-}
-
-.logoContent {
-  display: flex;
-  align-items: center;
-  gap: 0.75rem;
+  opacity: 0.92;
 }
 
 .logoImage {
+  width: 210px;
   height: auto;
-  width: 243px;
-  max-height: 300px;
-  margin-top: -21px;
 }
 
-/* Desktop Menu */
-.desktop {
+.desktopMenu {
   display: none;
   align-items: center;
-  gap: 2.5rem;
 }
 
-.dropdown {
-  position: relative;
+.desktopLinks {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.45rem;
 }
 
-.link {
-  color: white;
+.desktopLink {
+  color: #e9f5f6;
   text-decoration: none;
   font-weight: 600;
-  font-size: 1.1rem;
-  transition: all 0.2s;
-  padding: 0.5rem 0;
-  border-bottom: 2px solid transparent;
+  padding: 10px 60px;
   border-radius: 12px;
-  background-color: transparent;
-  width: 135px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  gap: 5px;
-  border: none;
-  cursor: pointer;
+  transition: background-color 0.2s ease, color 0.2s ease;
+  font-size: medium;
 }
 
-.link:hover {
-  background-color: rgba(255, 255, 255, 0.14);
+.desktopLink:hover {
+  background: rgba(255, 255, 255, 0.18);
 }
 
-.dropdownMenu {
-  position: absolute;
-  top: 100%;
-  left: 0;
-  background-color: #f2f5f5;
-  border-radius: 8px;
-  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.12);
-  min-width: 180px;
-  z-index: 1000;
-  animation: fadeInDown 0.4s;
-  /* no external border to match desired flat look */
-}
-
-.dropdownItem {
-  display: block;
-  color: var(--text);
-  text-decoration: none;
-  padding: 0.75rem 1rem;
-  font-weight: 500;
-  transition: background-color 0.2s;
-  border: none; /* ensure link/button has no visible border */
+.desktopLinkActive {
   background: transparent;
-  font-size: 0.95rem;
+  color: #e9f5f6;
 }
 
-/* Ensure any anchor or button inside dropdown uses the same font-weight */
-.dropdownItem,
-.dropdownItem a,
-button.dropdownItem,
-.profileWrap .dropdownMenu .dropdownItem,
-.dropdownMenu .dropdownItem {
-  font-weight: 500 !important;
-}
-
-.dropdownItem:hover {
-  background-color: #dce6e7;
-}
-
-/* Match image: first item lighter, second item darker */
-.dropdownMenu .dropdownItem:first-child {
-  background: #f4f7f7;
-  color: var(--muted);
-}
-.dropdownMenu .dropdownItem:nth-child(2) {
-  background: #e4ecec;
-}
-
-/* Make sure button elements using .dropdownItem don't show default button borders */
-.dropdownItem[role="button"], .dropdownItem button {
-  border: none;
-  background: transparent;
-  padding: 0.75rem 1rem;
-  width: 100%;
-  text-align: center;
-  font-size: 0.95rem;
-}
-
-/* explicit selectors to catch buttons that themselves carry the .dropdownItem class */
-button.dropdownItem,
-.profileWrap .dropdownMenu button.dropdownItem {
-  font-size: 0.95rem;
-  line-height: 1.2;
-}
-
-.dropdownItem:first-child {
-  border-top-left-radius: 8px;
-  border-top-right-radius: 8px;
-}
-
-.dropdownItem:last-child {
-  border-bottom-left-radius: 8px;
-  border-bottom-right-radius: 8px;
-}
-
-/* Mobile Toggle */
-.toggle {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  padding: 0.5rem;
-  background: rgba(255, 255, 255, 0.1);
-  border: 1px solid rgba(255, 255, 255, 0.3);
-  border-radius: 0.5rem;
-  color: white;
-  cursor: pointer;
-  transition: all 0.2s;
-}
-
-.toggle:hover {
-  background: rgba(255, 255, 255, 0.2);
-}
-
-/* Profile avatar */
 .profileWrap {
-  position: relative;
-  display: flex;
-  align-items: center;
-  margin-left: 0.75rem;
-  /* padding-bottom creates an invisible "bridge" so the mouse
-     can travel from the avatar to the dropdown without triggering
-     mouseleave — same technique used by .dropdown containers */
-  padding-bottom: 4px;
-}
-
-/* Position the profile dropdown to the right edge of the avatar */
-.profileWrap .dropdownMenu {
-  left: auto;
+  position: absolute;
   right: 0;
-  min-width: 170px;
 }
 
-.avatarLink {
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  width: 44px;
-  height: 44px;
-  border-radius: 999px;
-  overflow: hidden;
-  background: white;
-  box-shadow: 0 2px 6px rgba(0,0,0,0.15);
-  border: 2px solid rgba(255, 255, 255, 0.35);
-  cursor: pointer;
+.avatarButton {
+  width: 46px;
+  height: 46px;
+  border-radius: 50%;
+  border: 2px solid rgba(255, 255, 255, 0.45);
+  background: #ffffff;
   padding: 0;
+  overflow: hidden;
+  cursor: pointer;
+  box-shadow: 0 4px 12px rgba(10, 42, 44, 0.22);
+  transition: transform 0.2s ease;
+}
+
+.avatarButton:hover {
+  transform: translateY(-1px);
 }
 
 .avatarImage {
@@ -209,199 +90,57 @@ button.dropdownItem,
   display: block;
 }
 
-.avatarIcon {
-  display: inline-flex;
-  width: 100%;
-  height: 100%;
-  align-items: center;
-  justify-content: center;
-  color: var(--heading);
-}
-
-/* Profile dropdown items — reuse .dropdownMenu + .dropdownItem from nav */
-
-.profileWrap .dropdownMenu .dropdownItem {
-  color: var(--muted);
-  text-decoration: none;
-  padding: 8px 12px;
-  font-weight: 500;
-  font-size: 0.95rem;
-  text-align: center;
-  background: transparent;
-  border-radius: 8px;
-  width: 100%;
-  border: none;
-  cursor: pointer;
-  outline: none;
-  appearance: none;
-  -webkit-appearance: none;
-}
-
-.profileWrap .dropdownMenu .dropdownItem:hover,
-.profileWrap .dropdownMenu .dropdownItem:focus {
-  background-color: #e7efef;
-}
-
-/* Mobile Menu */
-.mobile {
-  position: fixed;
-  inset: 0;
-  z-index: 60;
-}
-
-.overlay {
+.accountDropdown {
   position: absolute;
-  inset: 0;
-  background: rgba(0, 0, 0, 0.7);
-  animation: fadeIn 0.2s;
-}
-
-.sheet {
-  position: absolute;
+  top: calc(100% + 10px);
   right: 0;
-  top: 0;
-  bottom: 0;
-  width: 85%;
-  max-width: 400px;
-  background: var(--nav);
-  display: flex;
-  flex-direction: column;
-  animation: slideInRight 0.3s;
-  box-shadow: 2px 0 10px rgba(0, 0, 0, 0.3);
+  min-width: 240px;
+  padding: 0.45rem;
+  border-radius: 14px;
+  background: #f8fbfb;
+  box-shadow: 0 12px 24px rgba(6, 28, 30, 0.2);
+  border: 1px solid rgba(16, 57, 61, 0.14);
+  z-index: 50;
 }
 
-.sheetHeader {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  padding: 1.5rem;
-  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
-}
-
-.sheetHeader img,
-.sheetHeader .logoImage {
-  max-width: 150px;
-  height: auto;
-  object-fit: contain;
-}
-
-.sheetHeader button {
-  background: none;
-  border: none;
-  cursor: pointer;
-  color: white;
-  padding: 0.5rem;
-}
-
-.sheetLinks {
-  flex: 1;
-  padding: 2rem 1.5rem;
-  display: flex;
-  flex-direction: column;
-  gap: 0.5rem;
-  overflow-y: auto;
-}
-
-.mobileLink {
-  color: white;
+.accountItem {
+  display: block;
   text-decoration: none;
+  color: #1d3f43;
   font-weight: 600;
-  font-size: 1.1rem;
-  padding: 1rem;
-  border-radius: 0.5rem;
-  transition: all 0.2s;
-  display: flex;
-  align-items: center;
-  gap: 5px;
+  padding: 0.62rem 0.7rem;
+  border-radius: 10px;
+  transition: background-color 0.2s ease;
 }
 
-.mobileLink:hover {
-  background: rgba(255, 255, 255, 0.14);
+.accountItem:hover {
+  background: #e8f2f3;
 }
 
-.mobileSubLinks {
-  margin-left: 1rem;
-  display: flex;
-  flex-direction: column;
-  gap: 0.5rem;
+.accountItemActive {
+  background: #dff0f2;
 }
 
-.mobileSubLink {
-  color: white;
-  text-decoration: none;
-  font-weight: 500;
-  font-size: 1rem;
-  padding: 0.75rem 1rem;
-  border-radius: 0.5rem;
-  transition: all 0.2s;
-  background: rgba(255, 255, 255, 0.1);
-}
-
-.mobileSubLink:hover {
-  background: rgba(255, 255, 255, 0.2);
-}
-
-/* Animations */
-@keyframes fadeIn {
-  from {
-    opacity: 0;
-  }
-  to {
-    opacity: 1;
-  }
-}
-
-@keyframes slideInRight {
-  from {
-    transform: translateX(100%);
-  }
-  to {
-    transform: translateX(0);
-  }
-}
-
-@keyframes fadeInDown {
-  from {
-    opacity: 0;
-    transform: translateY(-10px);
-  }
-  to {
-    opacity: 1;
-    transform: translateY(0);
-  }
-}
-
-/* Responsive */
 @media (min-width: 1024px) {
-  .desktop {
+  .nav {
+    justify-content: flex-start;
+  }
+
+  .desktopMenu {
     display: flex;
-  }
-  .toggle {
-    display: none;
+    flex: 1;
+    justify-content: center;
+    position: relative;
+    margin-left: 1rem;
   }
 }
 
-/* Ajustes para telas médias */
-@media (min-width: 768px) and (max-width: 1023px) {
+@media (max-width: 600px) {
   .nav {
-    padding: 0 1.5rem;
+    height: 68px;
   }
 
   .logoImage {
-    max-height: auto;
+    width: 170px;
   }
 }
-
-/* Ajustes para mobile pequeno */
-@media (max-width: 480px) {
-  .nav {
-    padding: 0 1rem;
-    height: 70px;
-  }
-
-  .logoImage {
-    max-height: 400px
-    ;
-  }
-}
-

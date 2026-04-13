@@ -1,6 +1,7 @@
 'use client'
 
 import { useState, useEffect } from "react";
+import useSafeToast from "@/components/Toast/useSafeToast";
 import { useRouter } from "next/navigation";
 import styles from "./perdidos.module.css";
 
@@ -8,6 +9,7 @@ const API_URL = process.env.NEXT_PUBLIC_API_URL || "http://localhost:3000";
 
 export default function CadastrarPerdidos() {
   const router = useRouter();
+  const { showToast } = useSafeToast();
 
   const [formData, setFormData] = useState({
     name: "",
@@ -33,10 +35,10 @@ export default function CadastrarPerdidos() {
       .replace(/\/$/, "");
 
   // ================= UPLOAD =================
-  const uploadImage = async (file) => {
+  const uploadImage = async (imagem) => {
     const baseUrl = getBaseUrl();
     const fd = new FormData();
-    fd.append("file", file);
+    fd.append("imagem", imagem);
 
     const res = await fetch(`${baseUrl}/api/upload`, {
       method: "POST",
@@ -56,12 +58,12 @@ export default function CadastrarPerdidos() {
 
     const maxMB = 5;
     if (arquivo.size > maxMB * 1024 * 1024) {
-      alert(`Imagem maior que ${maxMB}MB`);
+  showToast(`Imagem maior que ${maxMB}MB`, "warning");
       return;
     }
 
     if (!arquivo.type.startsWith("image/")) {
-      alert("Arquivo inválido");
+  showToast("Arquivo inválido", "warning");
       return;
     }
 
@@ -119,49 +121,45 @@ const salvarPet = async (e) => {
     const usuarioLogado = JSON.parse(localStorage.getItem("usuarioLogado"));
 
     if (!usuarioLogado || !usuarioLogado.id) {
-      alert("Usuário não está logado.");
+      showToast("Usuário não está logado.", "warning");
       setLoading(false);
       return;
     }
 
-    let finalImageUrl = "/images/semfoto.jpg";
+    // Usar FormData para enviar imagem + dados juntos
+    const fd = new FormData();
+    fd.append("name", formData.name.trim());
+    fd.append("species", formData.species || "");
+    fd.append("breed", formData.breed || "");
+    fd.append("gender", formData.genero || "");
+    fd.append("age", formData.age || "");
+    fd.append("dateLost", formData.dateLost || "");
+    fd.append("location", formData.location || "");
+    fd.append("reward", formData.reward || "0");
+    fd.append("description", formData.description || "");
+    fd.append("status", "lost");
+    fd.append("userId", usuarioLogado.id);
 
     if (imagemFile) {
-      finalImageUrl = await uploadImage(imagemFile);
+      fd.append("image", imagemFile);
     }
-
-    const payload = {
-      name: formData.name.trim(),
-      species: formData.species,
-      breed: formData.breed || null,
-      gender: formData.genero || null,
-      age: formData.age ? Number(formData.age) : null,
-      dateLost: formData.dateLost || null,
-      location: formData.location || null,
-      reward: formData.reward ? Number(formData.reward) : 0,
-      description: formData.description || null,
-      image: finalImageUrl,
-      status: "lost",
-      userId: usuarioLogado.id,
-    };
 
     const res = await fetch(`${getBaseUrl()}/api/pets`, {
       method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify(payload),
+      body: fd,
     });
 
     const respData = await res.json().catch(() => ({}));
 
     if (!res.ok) {
       console.error("Erro backend:", respData);
-      throw new Error(respData?.message || "Erro ao cadastrar pet");
+      const msg = respData?.message || respData?.error || respData?.raw || "Erro ao cadastrar pet";
+      showToast(msg, "error");
+      setLoading(false);
+      return;
     }
 
-    alert("Pet cadastrado com sucesso!");
-
+    showToast("Pet cadastrado com sucesso!", "success");
     setFormData({
       name: "",
       species: "",
@@ -179,7 +177,7 @@ const salvarPet = async (e) => {
     router.push("/meus-pets-perdidos");
   } catch (error) {
     console.error(error);
-    alert(error.message || "Erro ao cadastrar pet");
+    showToast(error.message || "Erro ao cadastrar pet", "error");
   } finally {
     setLoading(false);
   }
@@ -231,8 +229,8 @@ const salvarPet = async (e) => {
             />
             <textarea
               placeholder="Descreva o pet aqui..."
-              value={formData.descdescriptionricao}
-              onChange={(e) => handleChange("descricao", e.target.value)}
+              value={formData.description}
+              onChange={(e) => handleChange("description", e.target.value)}
               onFocus={handleFocus}
               onBlur={handleBlur}
               className={styles.descricaoTextarea}
@@ -250,7 +248,7 @@ const salvarPet = async (e) => {
               <img src="/images/patinha.png" className={styles.iconeInput} />
               <input
                 type="text"
-                placeholder="Name"
+                placeholder="Nome"
                 value={formData.name}
                 onChange={(e) => handleChange("name", e.target.value)}
                 onFocus={handleFocus}
@@ -264,10 +262,10 @@ const salvarPet = async (e) => {
                 value={formData.species}
                 onChange={(e) => handleChange("species", e.target.value)}
               >
-                <option value="" disabled>Select species</option>
-                <option value="dog">Dog</option>
-                <option value="cat">Cat</option>
-                <option value="other">Other</option>
+                <option value="" disabled>Selecione a espécie</option>
+                <option value="dog">Cachorro</option>
+                <option value="cat">Gato</option>
+                <option value="other">Outro</option>
               </select>
             </div>
 
@@ -275,7 +273,7 @@ const salvarPet = async (e) => {
               <img src="/images/patinha.png" className={styles.iconeInput} />
               <input
                 type="text"
-                placeholder="Breed"
+                placeholder="Raça"
                 value={formData.breed}
                 onChange={(e) => handleChange("breed", e.target.value)}
                 onFocus={handleFocus}
@@ -283,59 +281,61 @@ const salvarPet = async (e) => {
               />
             </div>
 
-            <div className={styles.campo}>
+            <div className={styles.campo} style={fieldErrors.genero ? { borderColor: "red" } : {}}>
               <img src="/images/patinha.png" className={styles.iconeInput} />
-              <input
-                type="text"
-                placeholder="Gender"
+              <select
                 value={formData.genero}
                 onChange={(e) => handleChange("genero", e.target.value)}
-                onFocus={handleFocus}
-                onBlur={handleBlur}
-              />
+                className={!formData.genero ? styles.selectPlaceholder : ""}
+              >
+                <option value="" disabled>Selecione o gênero</option>
+                <option value="Macho">Macho</option>
+                <option value="Fêmea">Fêmea</option>
+              </select>
             </div>
+            {fieldErrors.genero && <span className={styles.errorText}>{fieldErrors.genero}</span>}
 
           <div className={`${styles.campo} ${styles.campoIdade}`}>
-              <img src="/images/patinha.png" className={styles.iconeInput} />
-              <input
-                type="number"
-                placeholder="Age"
-                value={formData.idade}
-                onChange={(e) => handleChange("idade", e.target.value)}
-                onFocus={handleFocus}
-                onBlur={handleBlur}
-                min="0"
-                className={styles.inputIdade}
-              />
-              <div className={styles.botoesIdade}>
-                <button 
-                  type="button" 
-                  className={styles.btnIdade}
-                  onClick={() => {
-                    const current = parseInt(formData.idade) || 0;
-                    handleChange("idade", String(current + 1));
-                  }}
-                >
-                  ▲
-                </button>
-                <button 
-                  type="button" 
-                  className={styles.btnIdade}
-                  onClick={() => {
-                    const current = parseInt(formData.idade) || 0;
-                    if (current > 0) handleChange("idade", String(current - 1));
-                  }}
-                >
-                  ▼
-                </button>
-              </div>
+            <img src="/images/patinha.png" className={styles.iconeInput} />
+            <input
+              type="number"
+              placeholder="Idade(anos)"
+              value={formData.age}
+              onChange={(e) => handleChange("age", e.target.value)}
+              onFocus={handleFocus}
+              onBlur={handleBlur}
+              min="0"
+              className={styles.inputIdade}
+            />
+            <div className={styles.botoesIdade}>
+              <button
+                type="button"
+                className={styles.btnIdade}
+                onClick={() => {
+                  const current = parseInt(formData.age) || 0;
+                  handleChange("age", String(current + 1));
+                }}
+              >
+                ▲
+              </button>
+              <button
+                type="button"
+                className={styles.btnIdade}
+                onClick={() => {
+                  const current = parseInt(formData.age) || 0;
+                  if (current > 0) handleChange("age", String(current - 1));
+                }}
+              >
+                ▼
+              </button>
             </div>
+          </div>
 
             <div className={styles.campo}>
               <img src="/images/patinha.png" className={styles.iconeInput} />
               <input
                 type="text"
-                placeholder="Location"
+                placeholder="Localização"
                 value={formData.location}
                 onChange={(e) => handleChange("location", e.target.value)}
                 onFocus={handleFocus}
@@ -374,7 +374,7 @@ const salvarPet = async (e) => {
               <img src="/images/patinha.png" className={styles.iconeInput} />
               <div className={styles.sliderContainer}>
                 <div className={styles.sliderHeader}>
-                  <span className={styles.sliderLabel}>Reward:</span>
+                  <span className={styles.sliderLabel}>Recompensa:</span>
                   <span className={styles.valorRecompensa}>R$ {formData.reward}</span>
                 </div>
                 <input

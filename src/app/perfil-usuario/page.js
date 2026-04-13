@@ -5,6 +5,16 @@ import { useRouter } from "next/navigation";
 import { FaPaw } from "react-icons/fa";
 import styles from "./perfilUsuario.module.css";
 
+const API_URL = process.env.NEXT_PUBLIC_API_URL || "http://localhost:3000";
+
+// Helper para obter URL completa da imagem
+const getImageUrl = (imagem) => {
+  if (!imagem) return "/images/icone-perfil.jpg";
+  if (imagem.startsWith("blob:")) return imagem;
+  if (imagem.startsWith("http")) return imagem;
+  return `${API_URL}${imagem}`;
+};
+
 export default function PerfilUsuario() {
   const router = useRouter();
   const [usuario, setUsuario] = useState(null);
@@ -42,6 +52,14 @@ export default function PerfilUsuario() {
             <FaPaw />
           </span>
           <h1 className={styles.title}>Meu Perfil</h1>
+        </div>
+
+        <div className={styles.avatarSection}>
+          <img
+            src={getImageUrl(usuario.imagem)}
+            alt="Foto de perfil"
+            className={styles.avatarImage}
+          />
         </div>
 
         <div className={styles.info}>

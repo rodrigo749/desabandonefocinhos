@@ -4,6 +4,19 @@ import { useState } from "react";
 import styles from "./ModalPet.module.css";
 import ModalLogin from "@/components/ModalLogin/ModalLogin";
 
+const getBaseUrl = () =>
+  (process.env.NEXT_PUBLIC_PETZ_API_URL || "http://localhost:3000")
+    .trim()
+    .replace(/\/$/, "");
+
+// Função para obter URL da imagem (BLOB ou URL direta)
+const getImageUrl = (pet) => {
+  if (pet.hasImage) {
+    return `${getBaseUrl()}/api/pets/${pet.id}/image`;
+  }
+  return pet.imagem || pet.image || "/images/semfoto.jpg";
+};
+
 export default function ModalPet({ pet, onClose }) {
   const [showLoginModal, setShowLoginModal] = useState(false);
 
@@ -30,10 +43,12 @@ export default function ModalPet({ pet, onClose }) {
       return;
     }
 
-    const text = `Hello ${ownerName || "owner"}, I'm contacting you through the app about the pet ${pet.name || ""}.`;
+    const text = `Hello ${name || "owner"}, I'm contacting you through the app about the pet ${pet.name || ""}.`;
     const url = `https://wa.me/${phoneDigits}?text=${encodeURIComponent(text)}`;
     window.open(url, "_blank");
   }
+
+  const imagemUrl = getImageUrl(pet);
 
   return (
     <>
@@ -46,7 +61,7 @@ export default function ModalPet({ pet, onClose }) {
     <div className={styles.modalContent}>
           {/* LEFT SIDE - IMAGE */}
           <div className={styles.imageBox}>
-            <img src={pet.image || "/images/default.png"} alt={pet.name} />
+            <img src={imagemUrl} alt={pet.name} />
             <h2 className={styles.petName}>{pet.name}</h2>
           </div>
 
