@@ -177,6 +177,140 @@
   border: 2px solid #ee9530;
 }
 
+.mensagemCentral {
+  width: 100%;
+  text-align: center;
+  margin-top: 40px;
+  font-size: 16px;
+  color: #555;
+}
 
+@media (min-width:1200px) {
+  .titulo {
+    padding: 7px 6rem;
+    font-size: 22px;
+  }
+}
+
+@media screen and (min-width: 901px) and (max-width: 1200px) {
+  .titulo {
+    padding: 7px 400px;
+    font-size: 20px;
+  }
+}
+@media screen and (min-width: 700px) and (max-width: 900px) {
+  .titulo {
+    padding: 7px 200px;
+    font-size: 18px;
+  }
+}
+@media (min-width:300px) and (max-width:699px) {
+  .titulo {
+    padding: 7px 10px;
+    width: 90%;
+    font-size: 16px;
+    justify-content: center;
+    display: flex;
+  }
+
+  .grid-pets {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(360px, 1fr));
+  gap: 10px;
+  justify-items: center; /* centraliza os cards em cada coluna */
+}
+
+
+.card-pet {
+  background: var(--heading);
+  /* increased radius to match adoÃ§Ã£o page */
+  border-radius: 25px;
+  padding: 15px;
+  display: flex;
+  gap: 12px;
+  position: relative;
+  color: white;
+
+  width: 100%;
+  max-width: 360px;   /* todos com a mesma largura */
+  height: 190px;      /* todos com a mesma altura */
+  box-sizing: border-box;
+  align-items: flex-start;
+}
+
+
+.card-image-wrapper {
+  width: 130px;
+  height: 160px;
+  /* match uploadBox radius from adocao page */
+  border-radius: 22px;
+  overflow: hidden;
+  flex-shrink: 0;    
+}
+
+.card-image {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.card-text-box {
+  background: white;
+  /* larger inner box radius to match adocao styling */
+  border-radius: 22px;
+  padding: 6px 10px;
+  color: var(--heading);
+
+  flex: 1;
+  height: 160px;   
+  width: 170px;
+  max-width: none;
+  flex: none;       /* mesma altura em todos */
+  box-sizing: border-box;
+  overflow: hidden;       /* impede o texto de estourar o card */
+
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-start;
+}
+
+.card-text-box h3 {
+  font-size: 16px;
+  font-weight: bold;
+  margin-bottom: 6px;
+}
+
+.card-text-box p {
+  font-size: 13px;
+  margin-bottom: 4px;
+  line-height: 1.25;
+}
+
+
+.icone-casa-circle {
+  position: absolute;
+  top: 10px;
+  right: 10px;
+
+  width: 30px;
+  height: 30px;
+
+  background: white;
+  border-radius: 50%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+
+  z-index: 5;
+}
+
+.icone-casa {
+  width: 20px;
+  height: 20px;
+  object-fit: contain;
+}
+
+
+}
 
 

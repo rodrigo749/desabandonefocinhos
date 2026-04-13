@@ -52,9 +52,6 @@ export default function PetsPerdidos() {
   }
 
   // ================= CARREGAR AO ABRIR PÁGINA =================
-  useEffect(() => {
-    carregarPets();
-  }, []);
 
   return (
     <main className={styles["pets-page"]}>

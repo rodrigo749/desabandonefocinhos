@@ -101,8 +101,8 @@
 
   width: 100%;
   max-width: 360px;   /* todos com a mesma largura */
-  height: 190px;      /* todos com a mesma altura */
-  box-sizing: border-box;
+  height: 490px;      /* todos com a mesma altura */
+  box-sizing: none;
   align-items: flex-start;
 }
 
@@ -132,7 +132,7 @@
   width: 170px;
   max-width: none;
   flex: none;       /* mesma altura em todos */
-  box-sizing: border-box;
+  box-sizing: none;
   overflow: hidden;       /* impede o texto de estourar o card */
 
   display: flex;

@@ -77,14 +77,22 @@ export default function SeusPetsParaAdocao() {
           </Link>
         </div>
 
-        {!loading && !erro && (
+        {!loading && !erro && pets.length > 0 && (
           <section className={styles["grid-pets"]}>
-            {pets.length > 0 ? (
-              pets.map((pet) => <PetCard key={pet.id} pet={pet} tipoPagina="usuario" />)
-            ) : (
-              <p>Você ainda não cadastrou nenhum pet para adoção.</p>
-            )}
+            {pets.map((pet) => (
+              <PetCard
+                key={pet.id}
+                pet={pet}
+                tipoPagina="meus-perdidos"
+              />
+            ))}
           </section>
+        )}
+
+        {!loading && !erro && pets.length === 0 && (
+          <p className={styles.mensagemCentral}>
+            Você não tem pets para adoção registrados.
+          </p>
         )}
       </div>
     </main>

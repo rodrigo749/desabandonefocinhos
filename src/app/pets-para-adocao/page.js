@@ -44,9 +44,6 @@ export default function PetsParaAdocao() {
     }
   }
 
-  useEffect(() => {
-    carregarPets();
-  }, []);
 
   return (
     <main className={styles["pets-page"]}>
