@@ -1,13 +1,24 @@
 import Link from "next/link";
 import {
+  RiLoginCircleLine,
+  RiUserAddLine,
   RiLogoutCircleRLine,
   RiUser3Line,
 } from "react-icons/ri";
 import { IoPawOutline } from "react-icons/io5";
 import styles from "./bottomNav.module.css";
 
-export default function AccountMenu({ open, menuRef, onClose, isAdmin }) {
-  const accountLinks = isAdmin
+export function getAccountLinks(usuarioLogado) {
+  if (!usuarioLogado) {
+    return [
+      { label: "Entrar", href: "/login-usuario", Icon: RiLoginCircleLine },
+      { label: "Me cadastrar", href: "/cadastro-usuario", Icon: RiUserAddLine },
+    ];
+  }
+
+  const isAdmin = usuarioLogado?.tipo === "admin";
+
+  return isAdmin
     ? [
         { label: "Painel de Admin", href: "/admin", Icon: RiUser3Line },
         { label: "Gerenciar Pets Perdidos", href: "/admin/pets-perdidos", Icon: IoPawOutline },
@@ -20,6 +31,10 @@ export default function AccountMenu({ open, menuRef, onClose, isAdmin }) {
         { label: "Meus Pets para Adoção", href: "/seus-pets-para-adocao", Icon: IoPawOutline },
         { label: "Sair", href: "/logout", Icon: RiLogoutCircleRLine },
       ];
+}
+
+export default function AccountMenu({ open, menuRef, onClose, usuarioLogado }) {
+  const accountLinks = getAccountLinks(usuarioLogado);
 
   return (
     <>

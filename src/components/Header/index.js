@@ -6,6 +6,7 @@ import Image from "next/image";
 import { usePathname } from "next/navigation";
 import BottomNav from "@/components/BottomNav";
 import { NAV_LINKS } from "@/constants/navigation";
+import { getAccountLinks } from "@/components/BottomNav/AccountMenu";
 import styles from "./header.module.css";
 
 export default function Header() {
@@ -54,21 +55,7 @@ export default function Header() {
     };
   }, []);
 
-  const isAdmin = usuarioLogado?.tipo === "admin";
-
-  const accountLinks = isAdmin
-    ? [
-        { label: "Painel de Admin", href: "/admin" },
-        { label: "Gerenciar Pets Perdidos", href: "/admin/pets-perdidos" },
-        { label: "Gerenciar Pets para Adoção", href: "/admin/pets-adocao" },
-        { label: "Sair", href: "/logout" },
-      ]
-    : [
-        { label: "Meu Perfil", href: "/perfil-usuario" },
-        { label: "Meus Pets Perdidos", href: "/meus-pets-perdidos" },
-        { label: "Meus Pets para Adoção", href: "/seus-pets-para-adocao" },
-        { label: "Sair", href: "/logout" },
-      ];
+  const accountLinks = getAccountLinks(usuarioLogado);
 
   const avatarSrc = usuarioLogado?.imagem
     ? usuarioLogado.imagem.startsWith("blob:") || usuarioLogado.imagem.startsWith("http")
