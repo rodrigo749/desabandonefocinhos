@@ -69,6 +69,30 @@ export default function AdminPetsPerdidos() {
     }
   }
 
+  function getSpeciesLabel(pet) {
+    const species = (pet.especie || pet.species || "").toLowerCase();
+    if (species === "dog") return "Cachorro";
+    if (species === "cat") return "Gato";
+    if (species === "other") return "Outro";
+    return pet.especie || pet.species || "-";
+  }
+
+  function getGenderLabel(pet) {
+    const gender = (pet.genero || pet.gender || "").toLowerCase();
+    if (gender === "macho" || gender === "male") return "Macho";
+    if (gender === "fêmea" || gender === "femea" || gender === "female") return "Fêmea";
+    return pet.genero || pet.gender || "-";
+  }
+
+  function getDateLostLabel(pet) {
+    const raw = pet.dateLost || pet.data;
+    if (!raw) return "-";
+
+    const d = new Date(raw);
+    if (Number.isNaN(d.getTime())) return "-";
+    return d.toLocaleDateString("pt-BR");
+  }
+
   if (loading) {
     return (
       <div className={styles.container}>
@@ -94,54 +118,56 @@ export default function AdminPetsPerdidos() {
         {pets.length === 0 ? (
           <div className={styles.empty}>Nenhum pet perdido encontrado.</div>
         ) : (
-          <table className={styles.table}>
-            <thead>
-              <tr>
-                <th>Imagem</th>
-                <th>Nome</th>
-                <th>Raça</th>
-                <th>Local</th>
-                <th>Recompensa</th>
-                <th>Ações</th>
-              </tr>
-            </thead>
-            <tbody>
-              {pets.map((pet) => (
-                <tr key={pet.id}>
-                  <td>
-                    <img
-                      src={getImageUrl(pet)}
-                      alt={pet.nome || pet.name}
-                    />
-                  </td>
-                  <td>{pet.nome || pet.name}</td>
-                  <td>{pet.raca || pet.breed || "-"}</td>
-                  <td>{pet.local || pet.location || "-"}</td>
-                  <td>
-                    {pet.recompensa || pet.reward
-                      ? `R$ ${pet.recompensa || pet.reward}`
-                      : "-"}
-                  </td>
-                  <td>
-                    <div className={styles.actions}>
-                      <Link
-                        href={`/editar-pets-perdidos/${pet.id}`}
-                        className={styles.btnEditar}
-                      >
-                        Editar
-                      </Link>
-                      <button
-                        className={styles.btnExcluir}
-                        onClick={() => handleExcluir(pet.id)}
-                      >
-                        Excluir
-                      </button>
-                    </div>
-                  </td>
+          <div className={styles.tableScroll}>
+            <table className={styles.table}>
+              <thead>
+                <tr>
+                  <th>Imagem</th>
+                  <th>Nome</th>
+                  <th>Espécie</th>
+                  <th>Raça</th>
+                  <th>Gênero</th>
+                  <th>Local</th>
+                  <th>Data</th>
+                  <th>Ações</th>
                 </tr>
-              ))}
-            </tbody>
-          </table>
+              </thead>
+              <tbody>
+                {pets.map((pet) => (
+                  <tr key={pet.id}>
+                    <td data-label="Imagem">
+                      <img
+                        src={getImageUrl(pet)}
+                        alt={pet.nome || pet.name}
+                      />
+                    </td>
+                    <td data-label="Nome">{pet.nome || pet.name}</td>
+                    <td data-label="Espécie">{getSpeciesLabel(pet)}</td>
+                    <td data-label="Raça">{pet.raca || pet.breed || "-"}</td>
+                    <td data-label="Gênero">{getGenderLabel(pet)}</td>
+                    <td data-label="Local">{pet.local || pet.location || "-"}</td>
+                    <td data-label="Data">{getDateLostLabel(pet)}</td>
+                    <td data-label="Ações">
+                      <div className={styles.actions}>
+                        <Link
+                          href={`/editar-pets-perdidos/${pet.id}`}
+                          className={styles.btnEditar}
+                        >
+                          Editar
+                        </Link>
+                        <button
+                          className={styles.btnExcluir}
+                          onClick={() => handleExcluir(pet.id)}
+                        >
+                          Excluir
+                        </button>
+                      </div>
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
         )}
       </div>
     </div>

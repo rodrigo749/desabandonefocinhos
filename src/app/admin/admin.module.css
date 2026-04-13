@@ -229,6 +229,13 @@
   box-shadow: 0 4px 12px rgba(13, 56, 60, 0.12);
 }
 
+.tableScroll {
+  width: 100%;
+  overflow-x: auto;
+  -webkit-overflow-scrolling: touch;
+  border-radius: 12px;
+}
+
 .table th {
   background: var(--nav);
   color: #fff;
@@ -336,23 +343,160 @@
 }
 
 @media (max-width: 640px) {
+  .container {
+    padding: 1.25rem 0.85rem;
+    min-height: auto;
+  }
+
+  .pageInner,
+  .tableContainer {
+    max-width: 100%;
+  }
+
   .statsRow,
   .actionsGrid {
     grid-template-columns: 1fr;
+    gap: 0.85rem;
+  }
+
+  .header {
+    margin-bottom: 1rem;
   }
 
   .headerText h1 {
     font-size: 1.5rem;
   }
 
-  .table th,
+  .headerText p {
+    font-size: 0.95rem;
+  }
+
+  .divider {
+    margin-bottom: 1.2rem;
+  }
+
+  .sectionLabel {
+    margin-bottom: 0.65rem;
+  }
+
+  .statCard {
+    padding: 1rem;
+    gap: 0.9rem;
+  }
+
+  .statIconWrap {
+    width: 48px;
+    height: 48px;
+  }
+
+  .statNumber {
+    font-size: 1.9rem;
+  }
+
+  .btnAction {
+    width: 100%;
+    min-height: 52px;
+    padding: 0.95rem 1rem;
+    font-size: 0.95rem;
+    white-space: normal;
+    justify-content: flex-start;
+  }
+
+  .btnAction span {
+    line-height: 1.25;
+  }
+
+  .topBar {
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  .btnNovo,
+  .btnVoltar {
+    width: 100%;
+    text-align: center;
+    padding: 11px 16px;
+  }
+
+  .tableScroll {
+    margin-top: 0.3rem;
+    overflow-x: visible;
+  }
+
+  .table {
+    display: block;
+    background: transparent;
+    box-shadow: none;
+    border-radius: 0;
+  }
+
+  .table thead {
+    display: none;
+  }
+
+  .table tbody {
+    display: block;
+  }
+
+  .table tr {
+    display: block;
+    background: #fff;
+    border: 1px solid #d6e1e2;
+    border-radius: 12px;
+    padding: 0.5rem 0.75rem;
+    margin-bottom: 0.75rem;
+    box-shadow: 0 3px 10px rgba(13, 56, 60, 0.08);
+  }
+
   .table td {
-    padding: 8px 10px;
-    font-size: 0.8rem;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 0.75rem;
+    text-align: right;
+    border-bottom: 1px solid #e9eff0;
+    padding: 0.55rem 0;
+  }
+
+  .table td::before {
+    content: attr(data-label);
+    color: var(--heading);
+    font-weight: 700;
+    text-align: left;
+    flex: 0 0 44%;
+  }
+
+  .table td:last-child {
+    border-bottom: none;
+  }
+
+  .table img {
+    width: 56px;
+    height: 56px;
+    margin-left: auto;
+  }
+
+  .statusBadge {
+    margin-left: auto;
   }
 
   .actions {
+    width: 100%;
     flex-direction: column;
-    gap: 4px;
+    align-items: stretch;
+    gap: 6px;
+  }
+
+  .btnEditar,
+  .btnExcluir {
+    width: 100%;
+    text-align: center;
+    padding: 8px 10px;
+    font-size: 0.82rem;
+  }
+
+  .empty,
+  .loading {
+    font-size: 1rem;
   }
 }
