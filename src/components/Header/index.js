@@ -1,33 +1,29 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import Link from "next/link";
 import Image from "next/image";
-import { Menu, X } from "lucide-react";
-import { FaChevronDown, FaChevronUp } from "react-icons/fa";
+import { usePathname } from "next/navigation";
+import BottomNav from "@/components/BottomNav";
 import { NAV_LINKS } from "@/constants/navigation";
-import Avatar from '../Avatar'
 import styles from "./header.module.css";
 
-const API_URL = process.env.NEXT_PUBLIC_API_URL || "http://localhost:3000";
-
 export default function Header() {
-  const [menuOpen, setMenuOpen] = useState(false);
-  const [dropdownOpen, setDropdownOpen] = useState(null);
+  const pathname = usePathname();
   const [usuarioLogado, setUsuarioLogado] = useState(null);
+  const [accountOpen, setAccountOpen] = useState(false);
+  const accountWrapRef = useRef(null);
 
-  // 🔐 sincroniza estado de autenticação
+  const API_URL = process.env.NEXT_PUBLIC_API_URL || "http://localhost:3000";
+
   useEffect(() => {
     const syncAuth = () => {
-      const u = JSON.parse(localStorage.getItem("usuarioLogado") || "null");
-      setUsuarioLogado(u);
+      const user = JSON.parse(localStorage.getItem("usuarioLogado") || "null");
+      setUsuarioLogado(user);
     };
 
     syncAuth();
-
-    // outras abas
     window.addEventListener("storage", syncAuth);
-    // mesma aba (login/logout)
     window.addEventListener("auth-changed", syncAuth);
 
     return () => {
@@ -36,14 +32,35 @@ export default function Header() {
     };
   }, []);
 
+  useEffect(() => {
+    const handleOutsideClick = (event) => {
+      if (accountWrapRef.current && !accountWrapRef.current.contains(event.target)) {
+        setAccountOpen(false);
+      }
+    };
+
+    const handleEscape = (event) => {
+      if (event.key === "Escape") {
+        setAccountOpen(false);
+      }
+    };
+
+    document.addEventListener("mousedown", handleOutsideClick);
+    document.addEventListener("keydown", handleEscape);
+
+    return () => {
+      document.removeEventListener("mousedown", handleOutsideClick);
+      document.removeEventListener("keydown", handleEscape);
+    };
+  }, []);
+
   const isAdmin = usuarioLogado?.tipo === "admin";
 
-  // sublinks do dropdown de perfil do usuário logado
-  const userProfileSubLinks = isAdmin
+  const accountLinks = isAdmin
     ? [
-        { label: "Painel Admin", href: "/admin" },
-        { label: "Pets para Adoção", href: "/admin/pets-adocao" },
-        { label: "Pets Perdidos", href: "/admin/pets-perdidos" },
+        { label: "Painel de Admin", href: "/admin" },
+        { label: "Gerenciar Pets Perdidos", href: "/admin/pets-perdidos" },
+        { label: "Gerenciar Pets para Adoção", href: "/admin/pets-adocao" },
         { label: "Sair", href: "/logout" },
       ]
     : [
@@ -53,203 +70,87 @@ export default function Header() {
         { label: "Sair", href: "/logout" },
       ];
 
-  // 🔍 filtra links conforme login
-  const navLinksFiltrados = NAV_LINKS.filter((link) => {
-    if (link.id === "login" && usuarioLogado) return false;
-    return true;
+  const avatarSrc = usuarioLogado?.imagem
+    ? usuarioLogado.imagem.startsWith("blob:") || usuarioLogado.imagem.startsWith("http")
+      ? usuarioLogado.imagem
+      : `${API_URL}${usuarioLogado.imagem}`
+    : "/images/icone-perfil.jpg";
+
+  const desktopLinks = NAV_LINKS.filter((link) => {
+    if (usuarioLogado && link.id === "login") return false;
+    return ["adocao", "perdidos", "apoiar", "login"].includes(link.id);
   });
 
   return (
-    <header className={styles.header}>
-      <nav className={styles.nav}>
-        <Link href="/" className={styles.logo}>
-          <Image
-            src="/images/logo.svg"
-            alt="Patas Perdidas"
-            width={180}
-            height={60}
-            priority
-            className={styles.logoImage}
-          />
-        </Link>
+    <>
+      <header className={styles.header}>
+        <nav className={styles.nav}>
+          <Link href="/" className={styles.logo}>
+            <Image
+              src="/images/logo.svg"
+              alt="Patas Perdidas"
+              width={180}
+              height={60}
+              priority
+              className={styles.logoImage}
+            />
+          </Link>
 
-        {/* ================= DESKTOP MENU ================= */}
-        <div className={styles.desktop}>
-          {navLinksFiltrados.map(({ id, label, href, subLinks }) => (
-            <div
-              key={id}
-              className={styles.dropdown}
-              onMouseEnter={() => subLinks && setDropdownOpen(id)}
-              onMouseLeave={() => setDropdownOpen(null)}
-            >
-              {subLinks ? (
-                <button
-                  className={styles.link}
-                  aria-expanded={dropdownOpen === id}
-                  aria-haspopup="true"
-                >
-                  {label}
-                  {dropdownOpen === id ? (
-                    <FaChevronUp size={12} />
-                  ) : (
-                    <FaChevronDown size={12} />
-                  )}
-                </button>
-              ) : (
-                <Link href={href} className={styles.link}>
-                  {label}
-                </Link>
-              )}
-
-              {subLinks && dropdownOpen === id && (
-                <div className={styles.dropdownMenu}>
-                  {subLinks
-                    .filter((s) => !(s.auth && !usuarioLogado))
-                    .map((subLink, index) => (
-                      <Link
-                        key={index}
-                        href={subLink.href}
-                        className={styles.dropdownItem}
-                      >
-                        {subLink.label}
-                      </Link>
-                    ))}
-                </div>
-              )}
+          <div className={styles.desktopMenu}>
+            <div className={styles.desktopLinks}>
+              {desktopLinks.map((item) => {
+                const active = pathname === item.href || pathname?.startsWith(`${item.href}/`);
+                return (
+                  <Link key={item.id} href={item.href} className={`${styles.desktopLink} ${active ? styles.desktopLinkActive : ""}`}>
+                    {item.label}
+                  </Link>
+                );
+              })}
             </div>
-          ))}
-        </div>
 
-        {/* ================= AVATAR DESKTOP ================= */}
-        {usuarioLogado && (
-          <div
-            className={styles.profileWrap}
-            onMouseEnter={() => setDropdownOpen('profileAvatar')}
-            onMouseLeave={() => setDropdownOpen(null)}
-          >
-            <button
-              className={styles.avatarLink}
-              aria-expanded={dropdownOpen === 'profileAvatar'}
-              aria-haspopup="true"
-            >
-              <span className={styles.avatarIcon}>
-                <img
-                  src={
-                    usuarioLogado.imagem
-                      ? usuarioLogado.imagem.startsWith("blob:")
-                        ? usuarioLogado.imagem
-                        : usuarioLogado.imagem.startsWith("http")
-                          ? usuarioLogado.imagem
-                          : `${API_URL}${usuarioLogado.imagem}`
-                      : "/images/icone-perfil.jpg"
-                  }
-                  alt="Perfil"
-                  className={styles.avatarImage}
-                />
-              </span>
-            </button>
+            {usuarioLogado && (
+              <div className={styles.profileWrap} ref={accountWrapRef}>
+                <button
+                  type="button"
+                  className={styles.avatarButton}
+                  onClick={() => setAccountOpen((prev) => !prev)}
+                  aria-label="Abrir opções da conta"
+                  aria-expanded={accountOpen}
+                  aria-haspopup="menu"
+                >
+                  <img
+                    src={avatarSrc}
+                    alt="Foto do usuário"
+                    className={styles.avatarImage}
+                    onError={(event) => {
+                      event.currentTarget.src = "/images/icone-perfil.jpg";
+                    }}
+                  />
+                </button>
 
-            {dropdownOpen === 'profileAvatar' && (
-              <div className={styles.dropdownMenu} style={{ left: 'auto', right: 0 }}>
-                {userProfileSubLinks.map((s, i) => (
-                    <Link key={i} href={s.href} className={styles.dropdownItem}>
-                      {s.label}
-                    </Link>
-                  ))}
+                {accountOpen && (
+                  <div className={styles.accountDropdown} role="menu" aria-label="Opções da conta">
+                    {accountLinks.map((option) => {
+                      const isActive = pathname === option.href || pathname?.startsWith(`${option.href}/`);
+                      return (
+                        <Link
+                          key={option.href}
+                          href={option.href}
+                          className={`${styles.accountItem} ${isActive ? styles.accountItemActive : ""}`}
+                          onClick={() => setAccountOpen(false)}
+                        >
+                          {option.label}
+                        </Link>
+                      );
+                    })}
+                  </div>
+                )}
               </div>
             )}
           </div>
-        )}
-
-        {/* ================= BOTÃO MOBILE ================= */}
-        <button
-          className={styles.toggle}
-          onClick={() => setMenuOpen(!menuOpen)}
-          aria-label="Abrir menu"
-        >
-          {menuOpen ? <X size={24} /> : <Menu size={24} />}
-        </button>
-
-        {/* ================= MOBILE MENU ================= */}
-        {menuOpen && (
-          <div className={styles.mobile}>
-            <div
-              className={styles.overlay}
-              onClick={() => setMenuOpen(false)}
-            />
-
-            <div className={styles.sheet}>
-              <div className={styles.sheetHeader}>
-                <Image
-                  src="/images/logo.svg"
-                  alt="Patas Perdidas"
-                  width={200}
-                  height={100}
-                />
-                <button
-                  onClick={() => setMenuOpen(false)}
-                  aria-label="Fechar menu"
-                >
-                  <X size={24} />
-                </button>
-              </div>
-
-              <nav className={styles.sheetLinks}>
-                {navLinksFiltrados.map(({ id, label, href, subLinks }) => (
-                  <div key={id}>
-                    <Link
-                      href={href}
-                      onClick={() => setMenuOpen(false)}
-                      className={styles.mobileLink}
-                    >
-                      {label}
-                      {subLinks && <FaChevronDown size={12} />}
-                    </Link>
-
-                    {subLinks && (
-                      <div className={styles.mobileSubLinks}>
-                        {subLinks
-                          .filter((s) => !(s.auth && !usuarioLogado))
-                          .map((subLink, index) => (
-                            <Link
-                              key={index}
-                              href={subLink.href}
-                              onClick={() => setMenuOpen(false)}
-                              className={styles.mobileSubLink}
-                            >
-                              {subLink.label}
-                            </Link>
-                          ))}
-                      </div>
-                    )}
-                  </div>
-                ))}
-
-                  {/* Perfil do usuário logado no menu mobile */}
-                  {usuarioLogado && (
-                    <div style={{ marginTop: 12 }}>
-                      <div className={styles.mobileLink} aria-hidden>
-                        Perfil
-                      </div>
-                      <div className={styles.mobileSubLinks}>
-                        {userProfileSubLinks.map((s, i) => (
-                          <Link
-                            key={i}
-                            href={s.href}
-                            onClick={() => setMenuOpen(false)}
-                            className={styles.mobileSubLink}
-                          >
-                            {s.label}
-                          </Link>
-                        ))}
-                      </div>
-                    </div>
-                  )}
-              </nav>
-            </div>
-          </div>
-        )}
-      </nav>
-    </header>
+        </nav>
+      </header>
+      <BottomNav />
+    </>
   );
 }

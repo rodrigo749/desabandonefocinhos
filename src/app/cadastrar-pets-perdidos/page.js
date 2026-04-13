@@ -229,8 +229,8 @@ const salvarPet = async (e) => {
             />
             <textarea
               placeholder="Descreva o pet aqui..."
-              value={formData.descdescriptionricao}
-              onChange={(e) => handleChange("descricao", e.target.value)}
+              value={formData.description}
+              onChange={(e) => handleChange("description", e.target.value)}
               onFocus={handleFocus}
               onBlur={handleBlur}
               className={styles.descricaoTextarea}
@@ -296,40 +296,40 @@ const salvarPet = async (e) => {
             {fieldErrors.genero && <span className={styles.errorText}>{fieldErrors.genero}</span>}
 
           <div className={`${styles.campo} ${styles.campoIdade}`}>
-              <img src="/images/patinha.png" className={styles.iconeInput} />
-              <input
-                type="number"
-                placeholder="Idade(anos)"
-                value={formData.idade}
-                onChange={(e) => handleChange("idade", e.target.value)}
-                onFocus={handleFocus}
-                onBlur={handleBlur}
-                min="0"
-                className={styles.inputIdade}
-              />
-              <div className={styles.botoesIdade}>
-                <button 
-                  type="button" 
-                  className={styles.btnIdade}
-                  onClick={() => {
-                    const current = parseInt(formData.idade) || 0;
-                    handleChange("idade", String(current + 1));
-                  }}
-                >
-                  ▲
-                </button>
-                <button 
-                  type="button" 
-                  className={styles.btnIdade}
-                  onClick={() => {
-                    const current = parseInt(formData.idade) || 0;
-                    if (current > 0) handleChange("idade", String(current - 1));
-                  }}
-                >
-                  ▼
-                </button>
-              </div>
+            <img src="/images/patinha.png" className={styles.iconeInput} />
+            <input
+              type="number"
+              placeholder="Idade(anos)"
+              value={formData.age}
+              onChange={(e) => handleChange("age", e.target.value)}
+              onFocus={handleFocus}
+              onBlur={handleBlur}
+              min="0"
+              className={styles.inputIdade}
+            />
+            <div className={styles.botoesIdade}>
+              <button
+                type="button"
+                className={styles.btnIdade}
+                onClick={() => {
+                  const current = parseInt(formData.age) || 0;
+                  handleChange("age", String(current + 1));
+                }}
+              >
+                ▲
+              </button>
+              <button
+                type="button"
+                className={styles.btnIdade}
+                onClick={() => {
+                  const current = parseInt(formData.age) || 0;
+                  if (current > 0) handleChange("age", String(current - 1));
+                }}
+              >
+                ▼
+              </button>
             </div>
+          </div>
 
             <div className={styles.campo}>
               <img src="/images/patinha.png" className={styles.iconeInput} />

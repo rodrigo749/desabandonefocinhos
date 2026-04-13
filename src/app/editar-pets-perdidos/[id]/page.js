@@ -1,22 +1,20 @@
 "use client";
-
+ 
 import { useState, useEffect } from "react";
-import useSafeToast from "@/components/Toast/useSafeToast";
 import { useRouter, useParams } from "next/navigation";
 import styles from "../editarpetperdidos.module.css";
-import ConfirmModal from "@/components/ConfirmModal/ConfirmModal";
-
+ 
 const getBaseUrl = () =>
   (process.env.NEXT_PUBLIC_PETZ_API_URL || "http://localhost:3000")
     .trim()
     .replace(/\/$/, "");
-
+ 
 export default function EditarPetPerdidosId() {
   const router = useRouter();
   const { id } = useParams();
-
+ 
   // Nota: acesso público permitido — não exige login para editar (controle de permissão removido)
-
+ 
   const [formData, setFormData] = useState({
     nome: "",
     raca: "",
@@ -27,14 +25,13 @@ export default function EditarPetPerdidosId() {
     recompensa: 0,
     imagem: "",
   });
-
+ 
   const [imagemFile, setImagemFile] = useState(null);
-  const [previewUrl, setPreviewUrl] = useState(null);
+  const [preview, setPreview] = useState(null);
   const [carregando, setCarregando] = useState(true);
   const [loading, setLoading] = useState(false);
   const [statusMessage, setStatusMessage] = useState("");
-  const { showToast } = useSafeToast();
-
+ 
   useEffect(() => {
     async function carregarPet() {
       if (!id) return;
@@ -49,7 +46,7 @@ export default function EditarPetPerdidosId() {
         }
         const pet = await res.json();
   // Permitir edição por qualquer visitante; não há bloqueio client-side de dono
-
+ 
         setFormData({
           nome: pet.nome || pet.name || "",
           raca: pet.raca || pet.breed || "",
@@ -60,188 +57,175 @@ export default function EditarPetPerdidosId() {
           recompensa: pet.recompensa || pet.reward || 0,
           imagem: pet.imagem || pet.image || "",
         });
-        setPreviewUrl(pet.imagem || pet.image || null);
+        setPreview(pet.imagem || pet.image || null);
       } catch (err) {
         console.error("Erro ao carregar pet:", err);
       } finally {
         setCarregando(false);
       }
     }
-
+ 
     carregarPet();
   }, [id]);
-
+ 
   const handleFocus = (e) => {
     e.target.dataset.placeholder = e.target.placeholder;
     e.target.placeholder = "";
   };
-
+ 
   const handleBlur = (e) => {
     e.target.placeholder = e.target.dataset.placeholder;
   };
-
+ 
   const handleChange = (e) => {
     const { name, value } = e.target;
     setFormData((prev) => ({ ...prev, [name]: value }));
   };
-
+ 
   const handleImagem = (e) => {
     const arquivo = e.target.files?.[0] || null;
-    if (!arquivo) {
-      setImagemFile(null);
-      setPreviewUrl(null);
-      return;
-    }
-
-    // revoga preview anterior se blob
-    if (previewUrl && previewUrl.startsWith("blob:")) {
-      try { URL.revokeObjectURL(previewUrl); } catch {}
-    }
-
     setImagemFile(arquivo);
-    setPreviewUrl(URL.createObjectURL(arquivo));
+    if (arquivo) {
+      const reader = new FileReader();
+      reader.onload = () => setPreview(reader.result);
+      reader.readAsDataURL(arquivo);
+    } else {
+      setPreview(null);
+    }
   };
-
+ 
   const salvarEdicao = async (e) => {
     e?.preventDefault?.();
     if (!id) {
       setStatusMessage("ID não disponível");
       return;
     }
-
+ 
     try {
       setLoading(true);
-
-      // Usar FormData para enviar imagem + dados juntos
-      const fd = new FormData();
-      fd.append("name", formData.nome || "");
-      fd.append("breed", formData.raca || "");
-      fd.append("gender", formData.genero || "");
-      fd.append("location", formData.local || "");
-      fd.append("dateLost", formData.data || "");
-      fd.append("description", formData.descricao || "");
-      fd.append("reward", formData.recompensa || "0");
-
+ 
+      let imagemURL = formData.imagem;
       if (imagemFile) {
-        fd.append("image", imagemFile);
+        const imgData = new FormData();
+        imgData.append("file", imagemFile);
+ 
+        const uploadRes = await fetch("/api/upload", {
+          method: "POST",
+          body: imgData,
+        });
+        const uploadData = await uploadRes.json();
+        imagemURL = uploadData.url;
       }
+ 
+      const payload = {
+        name: formData.nome,
+        breed: formData.raca,
+        gender: formData.genero,
+        location: formData.local,
+        dateLost: formData.data,
+        description: formData.descricao,
+        reward: Number(formData.recompensa) || 0,
+        image: imagemURL || "",
+      };
+ 
+      const logged = JSON.parse(localStorage.getItem('usuarioLogado') || 'null');
+      const headers = { "Content-Type": "application/json" };
+      if (logged && logged.id) headers['x-usuario-id'] = String(logged.id);
       const token = localStorage.getItem("token") || "";
-      const headers = {};
-      if (token) headers.Authorization = `Bearer ${token}`;
-
+      if (token) headers['Authorization'] = `Bearer ${token}`;
+ 
       const res = await fetch(`${getBaseUrl()}/api/pets/${id}`, {
         method: "PUT",
         headers,
-        body: fd,
+        body: JSON.stringify(payload),
       });
-
+ 
       if (!res.ok) throw new Error("Falha ao salvar");
-      showToast("Pet atualizado com sucesso!", "success");
+ 
+      setStatusMessage("Pet atualizado com sucesso!");
+      setTimeout(() => setStatusMessage(""), 1800);
+      // redireciona para a listagem pública de perdidos
       router.push("/perdidos");
     } catch (err) {
       console.error(err);
-  showToast(err.message || "Erro ao salvar", "error");
+      setStatusMessage(err.message || "Erro ao salvar");
+      setTimeout(() => setStatusMessage(""), 2200);
     } finally {
       setLoading(false);
     }
   };
-
+ 
   const excluirPet = async () => {
     if (!id) return setStatusMessage("ID não disponível");
-    setShowConfirm(true);
-  };
-
-  const [showConfirm, setShowConfirm] = useState(false);
-
-  const handleConfirmDelete = async () => {
-    setShowConfirm(false);
+    if (!confirm("Tem certeza que deseja excluir este pet?")) return;
+ 
     try {
       setLoading(true);
-      const logged = JSON.parse(localStorage.getItem('usuarioLogado') || 'null');
-      const delHeaders = {};
-      if (logged && logged.id) delHeaders['x-usuario-id'] = String(logged.id);
-      const token = localStorage.getItem("token") || "";
-      if (token) delHeaders['Authorization'] = `Bearer ${token}`;
-
-      const res = await fetch(`${getBaseUrl()}/api/pets/${id}`, { method: "DELETE", headers: delHeaders });
+  const logged = JSON.parse(localStorage.getItem('usuarioLogado') || 'null');
+  const delHeaders = {};
+  if (logged && logged.id) delHeaders['x-usuario-id'] = String(logged.id);
+  const token = localStorage.getItem("token") || "";
+  if (token) delHeaders['Authorization'] = `Bearer ${token}`;
+ 
+  const res = await fetch(`${getBaseUrl()}/api/pets/${id}`, { method: "DELETE", headers: delHeaders });
       if (!res.ok) throw new Error("Falha ao remover");
-      showToast("Pet excluído com sucesso!", "success");
-      setTimeout(() => router.push("/perdidos"), 800);
+      setStatusMessage("Pet excluído com sucesso!");
+      setTimeout(() => router.push("/perdidos"), 1000);
     } catch (err) {
       console.error(err);
-      showToast(err.message || "Erro ao excluir", "error");
+      setStatusMessage(err.message || "Erro ao excluir");
+      setTimeout(() => setStatusMessage(""), 2000);
     } finally {
       setLoading(false);
     }
   };
-
+ 
   if (carregando) return <p style={{ color: '#fff', textAlign: 'center' }}>Carregando pet...</p>;
-
+ 
   return (
-    <>
     <main className={styles.cadastroPetContainer}>
-      <div className={styles.adocaoContainer}>
-
-        <section className={styles.leftSide}>
+      <div className={styles.cadastroWrapper}>
+ 
+        <section className={styles.colEsquerda}>
           <div className={styles.uploadImagem}>
             <label htmlFor="pet-imagem">
               <div className={styles.uploadBox}>
-                {imagemFile ? (
-                  <img
-                    src={URL.createObjectURL(imagemFile)}
-                    alt="Pré-visualização"
-                    className={styles.previewImagem}
-                  />
-                ) : previewUrl ? (
-                  <img
-                    src={previewUrl}
-                    alt="Imagem atual"
-                    className={styles.previewImagem}
-                  />
-                ) : formData.imagem ? (
-                  <img
-                    src={formData.imagem}
-                    alt="Imagem atual"
-                    className={styles.previewImagem}
-                  />
+                {preview ? (
+                  <img src={preview} alt="preview" className={styles.uploadPreview} />
                 ) : (
                   <>
-                    <img
-                      src="/images/iconephoto.png"
-                      alt="Adicionar imagem"
-                      className={styles.iconeAddImg}
-                    />
-                    <span>Adicionar imagem</span>
+                    <img src="/images/iconephoto.png" className={styles.iconeAddImg} />
+                    <span className={styles.uploadText}>Adicionar imagem</span>
                   </>
                 )}
               </div>
             </label>
-
             <input type="file" id="pet-imagem" hidden accept="image/*" onChange={handleImagem} />
           </div>
-
-          <div className={styles.campoDescricao}>
-            <img
-              src="/images/patinha.png"
-              alt="patinha"
-              className={styles.iconeDescricao}
-            />
-
+ 
+          <div className={styles.descricaoBox}>
+            <label className={styles.descLabel}>
+              <img src="/images/patinha.png" className={styles.descIcon} />
+              Descrição:
+            </label>
             <textarea
               name="descricao"
               className={styles.descricaoTextarea}
               placeholder="Descreva o pet aqui..."
+              rows="8"
               value={formData.descricao}
-              onChange={handleChange}
               onFocus={handleFocus}
               onBlur={handleBlur}
+              onChange={handleChange}
             ></textarea>
           </div>
         </section>
-
-        <section className={styles.rightSide}>
-          <h2 className={styles.tituloCadastro}>Editar Pet Perdido</h2>
-
+ 
+        <section className={styles.colDireita}>
+          <div className={styles.tituloArea}>
+            <h2 className={styles.tituloCadastro}>Editar Pet Perdido</h2>
+          </div>
+ 
           <form className={styles.formCadastro} onSubmit={salvarEdicao}>
             <div className={styles.campo}>
               <img src="/images/patinha.png" className={styles.iconeInput} />
@@ -255,7 +239,7 @@ export default function EditarPetPerdidosId() {
                 onChange={handleChange}
               />
             </div>
-
+ 
             <div className={styles.campo}>
               <img src="/images/patinha.png" className={styles.iconeInput} />
               <input
@@ -268,21 +252,20 @@ export default function EditarPetPerdidosId() {
                 onChange={handleChange}
               />
             </div>
-
-            <div className={styles.campo} style={/* style kept for error highlighting */ {}}>
+ 
+            <div className={styles.campo}>
               <img src="/images/patinha.png" className={styles.iconeInput} />
-              <select
+              <input
+                type="text"
                 name="genero"
+                placeholder="Gênero"
                 value={formData.genero}
+                onFocus={handleFocus}
+                onBlur={handleBlur}
                 onChange={handleChange}
-                className={!formData.genero ? styles.selectPlaceholder : ""}
-              >
-                <option value="" disabled>Selecione o gênero</option>
-                <option value="Macho">Macho</option>
-                <option value="Fêmea">Fêmea</option>
-              </select>
+              />
             </div>
-
+ 
             <div className={styles.campo}>
               <img src="/images/patinha.png" className={styles.iconeInput} />
               <input
@@ -295,7 +278,7 @@ export default function EditarPetPerdidosId() {
                 onChange={handleChange}
               />
             </div>
-
+ 
             <div className={styles.campo}>
               <img src="/images/patinha.png" className={styles.iconeInput} />
               <input
@@ -308,14 +291,14 @@ export default function EditarPetPerdidosId() {
                 onChange={handleChange}
               />
             </div>
-
+ 
             <div className={styles.recompensaBox}>
               <div className={styles.recompensaWrapper}>
                 <div className={styles.recompensaLabelWrapper}>
                   <label className={styles.recompensaLabel}>Recompensa</label>
                 </div>
                 <div className={styles.recompensaRow}>
-                 
+                  <img src="/images/patinha.png" className={styles.iconeRecompensa} />
                   <input
                     type="range"
                     min="0"
@@ -329,11 +312,11 @@ export default function EditarPetPerdidosId() {
                 </div>
               </div>
             </div>
-
+ 
             {statusMessage && (
               <div style={{ textAlign: 'center', color: '#285a78', fontWeight: 700, marginTop: 8 }}>{statusMessage}</div>
             )}
-
+ 
             <div className={styles.actionsRow}>
               <button type="submit" className={styles.btnEditar} disabled={loading}>{loading ? 'Salvando...' : 'Salvar'}</button>
               <button type="button" className={styles.btnExcluir} onClick={excluirPet} disabled={loading}>{loading ? '...' : 'Excluir'}</button>
@@ -342,15 +325,7 @@ export default function EditarPetPerdidosId() {
         </section>
       </div>
     </main>
-    <ConfirmModal
-      open={showConfirm}
-      title="Excluir pet"
-      message="Tem certeza que deseja excluir este pet? Esta ação é irreversível."
-      onCancel={() => setShowConfirm(false)}
-      onConfirm={handleConfirmDelete}
-      confirmLabel="Excluir"
-      cancelLabel="Cancelar"
-    />
-    </>
   );
 }
+ 
+ 

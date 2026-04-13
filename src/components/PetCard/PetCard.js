@@ -32,15 +32,17 @@ export default function PetCard({ pet, tipoPagina }) {
   // aceita tanto português quanto inglês
   const id = pet.id;
   const nome = pet.nome || pet.name || "Sem nome";
-  const imagem = getImageUrl(pet);
+  const imagem = pet.imagem || pet.image || "/images/semfoto.jpg";
   const raca = pet.raca || pet.breed || "Não informada";
   const genero = pet.genero || pet.gender || "Não informado";
   const idade = pet.idade || pet.age || "Não informada";
   const descricao = pet.descricao || pet.description || "Sem descrição";
+  const descricaoCurta = descricao.length > 60 ? `${descricao.slice(0, 60)}...` : descricao;
   const userId = pet.usuarioId || pet.userId || null;
   const status = pet.status || pet.estado || pet.state || null;
 
   const ehDoUsuario = usuarioLogado && userId === usuarioLogado.id;
+  
 
 async function marcarComoAdotado() {
   try {
@@ -98,7 +100,7 @@ async function marcarComoEncontrado() {
             <p>Raça: {raca}</p>
             <p>Gênero: {genero}</p>
             <p>Idade: {idade}</p>
-            <p>Descrição: {descricao}</p>
+            <p>Descrição: {descricaoCurta}</p>
           </div>
 
           {tipoPagina === "publica" && (

@@ -17,7 +17,7 @@
   padding: 36px 32px 28px;
   width: min(420px, 90vw);
   box-shadow: 0 0 30px rgba(0, 0, 0, 0.3);
-  border: 4px solid var(--accent-orange);
+  border: 4px solid var(--border);
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -26,7 +26,7 @@
 }
 
 .closeBtn {
-  background: var(--accent-orange);
+  background: var(--heading);
   border: none;
   width: 30px;
   height: 30px;
@@ -35,16 +35,12 @@
   align-items: center;
   justify-content: center;
   font-size: 22px;
-  color: var(--heading);
+  color:white;
   cursor: pointer;
   position: absolute;
   top: 14px;
   right: 14px;
-  transition: background 0.12s;
-}
-
-.closeBtn:hover {
-  background: var(--accent-orange);
+ 
 }
 
 .iconWrapper {

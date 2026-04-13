@@ -15,17 +15,21 @@
 }
 
 .modal {
-  background: #ffffff;
+  position: relative;
+  background: #0a6f74;
   border-radius: 22px;
   padding: 28px;
-  width: min(1100px, 100%);
+  width: min(1100px, calc(100vw - 32px));
   max-width: 1100px;
+  max-height: 100vh;
   height: auto;
   box-shadow: 0 0 25px rgba(0,0,0,0.25);
   overflow: hidden;
-  border: 4px solid var(--accent-orange);
+  overflow-x: hidden;
+  border: 4px solid #59a3a9;
   display: flex;
   flex-direction: column;
+  box-sizing: border-box;
 }
 
 .modalContent {
@@ -34,13 +38,27 @@
   gap: 20px;
   width: 100%;
   align-items: stretch;
+  min-height: 0;
+  min-width: 0;
+  flex-wrap: wrap;
+}
+
+.imageBox {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  min-height: 0;
+  min-width: 0;
+  overflow: hidden;
+  
 }
 
 /* ===========================
     BOTÃƒO DE FECHAR
   ===========================*/
 .closeBtn {
-  background: var(--accent-orange);
+  background: white;
   border: none;
   width: 30px;
   height: 30px;
@@ -51,24 +69,23 @@
   font-size: 22px;
   color: var(--heading);
   cursor: pointer;
-  z-index: 1200; 
+  z-index: 1200;
   transition: background 0.12s, transform 0.12s;
-  order: 2;
+  position: absolute;
+  top: 6px;
+  right: 6px;
+  order: 0;
 }
 
 /* ===========================
    COLUNA DA IMAGEM
    =========================== */
-.imageBox {
-  flex: 1;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-}
-
 .imageBox img {
   width: 100%;
-  max-height: 420px;
+  max-width: 78%;
+  height: auto;
+  max-height: 350px;
+  aspect-ratio: 4/5;
   object-fit: cover;
   border-radius: 20px;
 }
@@ -76,13 +93,13 @@
 .petName {
   margin-top: 12px;
   padding: 10px 20px;
-  background-color: var(--nav);
-  color: var(--accent-orange);
+  background-color: #59a3a9;
+  color:white;
   font-size: clamp(20px, 3vw, 36px);
   font-weight: 700;
   text-align: center;
   border-radius: 14px;
-  border: 3px solid var(--heading);
+  border: 3px solid #0f6f78;
 }
 
 /* ===========================
@@ -90,81 +107,95 @@
    =========================== */
 .infoBox {
   flex: 1.2;
-  background: #7a8fa7;
+  display: flex;
+  flex-direction: column;
+  align-items: stretch;
+  background: white;
   padding: 24px;
   border-radius: 16px;
   border: 4px solid var(--heading);
   overflow-y: auto;
+  overflow-x: hidden;
   position: relative;
+  max-height: 532px;
+  min-height: 0;
+  min-width: 0;
+  max-width: 100%;
+  margin-bottom: 20px;
+  box-sizing: border-box;
 }
 
-/* COLUNAS LADO A LADO */
 .infoColumns {
   display: flex;
   justify-content: space-between;
-  gap: 40px;
   width: 100%;
   margin-bottom: 20px;
+  flex-wrap: wrap;
 }
 
 /* COLUNA 1 E 2 (TEXTO DE INFOS) */
 .infoColumns p {
   font-size: 20px;
-  color: #ffffff;
+  color: #222;
   line-height: 1.6;
   margin-bottom: 10px;
 }
 
 .infoColumns strong {
-  color: var(--accent-orange);
+  color:#59a3a9;
   font-weight: 700;
 }
 
 
-.infoGroup {
-  width: 45%;
-}
-
+.infoGroup,
 .respEndGroup {
-  width: 45%;
+  flex: 1 1 60%;
+  min-width: 180px;
 }
 
 /* ===========================
-   DESCRIÃ‡ÃƒO
+   DESCRICAO
    =========================== */
 .descriptionBox {
   margin-top: 20px;
   background: var(--card);
   border-radius: 14px;
   width: 100%;
+  max-width: 100%;
+  min-width: 0;
   padding: 18px;
-  max-height: 260px;
+  min-height: 120px;
+  max-height: 42vh;
   border: 3px solid var(--heading);
   overflow-y: auto;
+  overflow-x: hidden;
+  box-sizing: border-box;
 }
 
 .descLabel {
   font-size: 20px;
   font-weight: 700;
-  color: var(--accent-orange);
+  color: #59a3a9;
   margin-bottom: 10px;
-  margin-top: -10px;
+  margin-top: 0;
 }
 
 .descText {
   color: var(--heading);
   font-size: 16px;
   line-height: 1.4;
+  white-space: pre-wrap;
+  word-break: break-word;
+  overflow-wrap: anywhere;
 }
 
 /* ===========================
    BOTÃƒO
    =========================== */
 .contactBtn {
-  position: absolute;
-  bottom: 22px;
-  left: 50%;
-  transform: translateX(-50%);
+  position: relative;
+  margin-top: 12px;
+  align-self: center;
   background: var(--nav);
   color: white;
   padding: 12px 64px;
@@ -175,15 +206,6 @@
   cursor: pointer;
 }
 
-.pawIcon {
-  position: absolute;
-  top: 12px;
-  right: 12px;
-  width: 60px;
-  height: auto;
-  object-fit: contain;
-  z-index: 10;
-}
 
 
 
@@ -194,13 +216,16 @@
 
 @media (max-width: 1100px) {
   .imageBox img {
-    max-height: 360px;
+    max-height: 300px;
   }
 
   .contactBtn {
     padding: 12px 48px;
   }
-  
+
+  .infoBox {
+    max-height: 532px;
+  }
 }
 
 /* Responsividade para tablets */
@@ -209,7 +234,8 @@
   .modal {
     padding: 20px;
     border-radius: 18px;
-    width: min(1100px, 70%);
+    width: 100%;
+    max-width: 760px;
 
   }
 
@@ -224,7 +250,7 @@
   }
 
   .imageBox img {
-    max-height: 320px;
+    max-height: 280px;
     border-radius: 16px;
   }
 
@@ -255,6 +281,10 @@
   .infoGroup,
   .respEndGroup {
     width: 100%;
+  }
+
+  .infoBox {
+    max-height: calc(100vh - 260px);
   }
 
   .descriptionBox {
@@ -298,6 +328,10 @@
 /* responsividade  de celulares */
 
 @media (max-width: 490px) and (min-width: 390px) {
+  .imageBox img {
+    max-height: 250px;
+  }
+
   .modal {
     padding: 12px;
     max-height: 100vh;
@@ -307,6 +341,10 @@
   .modal {
     padding: 10px;
     width: 100%;
+  }
+
+  .infoBox {
+    max-height: calc(100vh - 200px);
   }
 
   /* scroll para card no celular */
