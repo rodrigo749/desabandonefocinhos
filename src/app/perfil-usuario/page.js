@@ -34,12 +34,44 @@ export default function PerfilUsuario() {
     router.push("/");
   };
 
-  const handleDelete = () => {
-    const usuarios = JSON.parse(localStorage.getItem("usuarios") || "[]");
-    const filtered = usuarios.filter((u) => u.cnpj !== usuario.cnpj);
-    localStorage.setItem("usuarios", JSON.stringify(filtered));
-    localStorage.removeItem("usuarioLogado");
-    router.push("/");
+  const handleDeleteAccount = async () => {
+    if (!confirm("Excluir conta?")) return;
+
+    setError("");
+    setIsLoading(true);
+
+    try {
+      const { logged, token } = getAuthData();
+
+      if (!logged?.id) {
+        showToast("Usuário não identificado", "warning");
+        router.push("/login");
+        return;
+      }
+
+      const res = await fetch(`${API_URL}/api/users/${logged.id}`, {
+        method: "DELETE",
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      });
+
+      if (!res.ok) {
+        const data = await res.json().catch(() => ({}));
+        throw new Error(data.message || "Erro ao excluir");
+      }
+
+      localStorage.removeItem("usuarioLogado");
+      localStorage.removeItem("token");
+      showToast("Conta excluída com sucesso", "success");
+      router.push("/home");
+    } catch (err) {
+      console.error(err);
+      setError(err.message || "Erro ao excluir");
+      showToast(err.message || "Erro ao excluir", "error");
+    } finally {
+      setIsLoading(false);
+    }
   };
 
   if (!usuario) return null;
@@ -85,8 +117,11 @@ export default function PerfilUsuario() {
           <button className={styles.button} onClick={handleLogout}>
             Sair
           </button>
-          <button className={styles.delete} onClick={handleDelete}>
+          <button className={styles.delete} onClick={handleDeleteAccount}>
             Excluir conta
+          </button >
+          <button className={styles.button} onClick={'/editar-perfil'}>
+            editar perfil
           </button>
         </div>
       </div>
