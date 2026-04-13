@@ -40,6 +40,7 @@ export default function PetCard({ pet, tipoPagina }) {
   const userId = pet.usuarioId || pet.userId || null;
 
   const ehDoUsuario = usuarioLogado && userId === usuarioLogado.id;
+  
 
 async function marcarComoAdotado() {
   try {
