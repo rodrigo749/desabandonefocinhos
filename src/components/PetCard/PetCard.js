@@ -17,6 +17,8 @@ const getImageUrl = (pet) => {
     return `${getBaseUrl()}/api/pets/${pet.id}/image`;
   }
   // Fallback para URL direta ou imagem padrão
+
+
   return pet.imagem || pet.image || "/images/default.png";
 };
 
@@ -40,6 +42,7 @@ export default function PetCard({ pet, tipoPagina }) {
   const userId = pet.usuarioId || pet.userId || null;
 
   const ehDoUsuario = usuarioLogado && userId === usuarioLogado.id;
+  
 
 async function marcarComoAdotado() {
   try {
