@@ -123,6 +123,17 @@ a {
   text-decoration: none;
 }
 
+.appMain {
+  flex-grow: 1;
+  padding-bottom: 116px;
+}
+
+@media (min-width: 1024px) {
+  .appMain {
+    padding-bottom: 0;
+  }
+}
+
 @media (prefers-color-scheme: dark) {
   html {
     color-scheme: dark;

@@ -21,7 +21,7 @@ export default function RootLayout({ children }) {
         <div className="site-bg" aria-hidden="true" />
         <ToastProvider>
           <Header />
-          <main style={{ flexGrow: 1 }}>
+          <main className="appMain">
             {children}
           </main>
           <Footer /> {/* ✅ Footer global */}
