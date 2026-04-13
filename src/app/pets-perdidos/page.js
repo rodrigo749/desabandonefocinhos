@@ -51,6 +51,9 @@ export default function PetsPerdidos() {
     }
   }
 
+  useEffect(() => {
+    carregarPets();
+  }, []);
   // ================= CARREGAR AO ABRIR PÁGINA =================
 
   return (
