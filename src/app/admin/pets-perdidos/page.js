@@ -69,21 +69,6 @@ export default function AdminPetsPerdidos() {
     }
   }
 
-  function getSpeciesLabel(pet) {
-    const species = (pet.especie || pet.species || "").toLowerCase();
-    if (species === "dog") return "Cachorro";
-    if (species === "cat") return "Gato";
-    if (species === "other") return "Outro";
-    return pet.especie || pet.species || "-";
-  }
-
-  function getGenderLabel(pet) {
-    const gender = (pet.genero || pet.gender || "").toLowerCase();
-    if (gender === "macho" || gender === "male") return "Macho";
-    if (gender === "fêmea" || gender === "femea" || gender === "female") return "Fêmea";
-    return pet.genero || pet.gender || "-";
-  }
-
   function getDateLostLabel(pet) {
     const raw = pet.dateLost || pet.data;
     if (!raw) return "-";
@@ -124,9 +109,6 @@ export default function AdminPetsPerdidos() {
                 <tr>
                   <th>Imagem</th>
                   <th>Nome</th>
-                  <th>Espécie</th>
-                  <th>Raça</th>
-                  <th>Gênero</th>
                   <th>Local</th>
                   <th>Data</th>
                   <th>Ações</th>
@@ -142,9 +124,6 @@ export default function AdminPetsPerdidos() {
                       />
                     </td>
                     <td data-label="Nome">{pet.nome || pet.name}</td>
-                    <td data-label="Espécie">{getSpeciesLabel(pet)}</td>
-                    <td data-label="Raça">{pet.raca || pet.breed || "-"}</td>
-                    <td data-label="Gênero">{getGenderLabel(pet)}</td>
                     <td data-label="Local">{pet.local || pet.location || "-"}</td>
                     <td data-label="Data">{getDateLostLabel(pet)}</td>
                     <td data-label="Ações">

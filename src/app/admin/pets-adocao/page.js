@@ -118,8 +118,6 @@ export default function AdminPetsAdocao() {
                 <tr>
                   <th>Imagem</th>
                   <th>Nome</th>
-                  <th>Espécie</th>
-                  <th>Raça</th>
                   <th>Status</th>
                   <th>Ações</th>
                 </tr>
@@ -134,8 +132,6 @@ export default function AdminPetsAdocao() {
                       />
                     </td>
                     <td data-label="Nome">{pet.nome || pet.name}</td>
-                    <td data-label="Espécie">{pet.especie === "dog" || pet.species === "dog" ? "Cachorro" : pet.especie === "cat" || pet.species === "cat" ? "Gato" : pet.especie || pet.species || "-"}</td>
-                    <td data-label="Raça">{pet.raca || pet.breed || "-"}</td>
                     <td data-label="Status">
                       <span className={`${styles.statusBadge} ${getStatusClass(pet.status)}`}>
                         {getStatusLabel(pet.status)}
