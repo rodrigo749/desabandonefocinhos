@@ -102,10 +102,6 @@
   transition: 0.2s;
 }
 
-.btn-adotar:hover {
-  background-color: var(--accent-orange);
-  border-color: var(--accent-orange);
-}
 
 .actions-wrapper .btn-adotar {
   position: relative;

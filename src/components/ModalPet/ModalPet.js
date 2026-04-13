@@ -97,12 +97,12 @@ export default function ModalPet({ pet, onClose }) {
 
             {/* DESCRIPTION */}
             <div className={styles.descriptionBox}>
-              <p className={styles.descLabel}>Description:</p>
+              <p className={styles.descLabel}>Descrição:</p>
               <p className={styles.descText}>{description}</p>
             </div>
 
         {/* BOTÃO */}
-        <button className={styles.contactBtn} onClick={handleContact}>Contatar dono</button>
+        <button className={styles.contactBtn} onClick={handleContact}>Adotar</button>
 
       </div>
     </div>
