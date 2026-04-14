@@ -10,11 +10,8 @@ const copyEmail = () => {
 
 return (
 <main className={styles["apoiar-page"]}> <link
-     href="https://fonts.googleapis.com/css2?family=Baloo+Thambi+2:wght@400;500;600;700&display=swap"
-     rel="stylesheet"
    />
 
-```
   <section className={styles.heroContent}>
     <div className={styles.leftColumn}>
       <div className={styles.textBlock}>
