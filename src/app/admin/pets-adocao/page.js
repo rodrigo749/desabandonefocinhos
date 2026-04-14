@@ -112,54 +112,52 @@ export default function AdminPetsAdocao() {
         {pets.length === 0 ? (
           <div className={styles.empty}>Nenhum pet para adoção encontrado.</div>
         ) : (
-          <table className={styles.table}>
-            <thead>
-              <tr>
-                <th>Imagem</th>
-                <th>Nome</th>
-                <th>Espécie</th>
-                <th>Raça</th>
-                <th>Status</th>
-                <th>Ações</th>
-              </tr>
-            </thead>
-            <tbody>
-              {pets.map((pet) => (
-                <tr key={pet.id}>
-                  <td>
-                    <img
-                      src={getImageUrl(pet)}
-                      alt={pet.nome || pet.name}
-                    />
-                  </td>
-                  <td>{pet.nome || pet.name}</td>
-                  <td>{pet.especie === "dog" || pet.species === "dog" ? "Cachorro" : pet.especie === "cat" || pet.species === "cat" ? "Gato" : pet.especie || pet.species || "-"}</td>
-                  <td>{pet.raca || pet.breed || "-"}</td>
-                  <td>
-                    <span className={`${styles.statusBadge} ${getStatusClass(pet.status)}`}>
-                      {getStatusLabel(pet.status)}
-                    </span>
-                  </td>
-                  <td>
-                    <div className={styles.actions}>
-                      <Link
-                        href={`/editar-cadastro-adocao/${pet.id}`}
-                        className={styles.btnEditar}
-                      >
-                        Editar
-                      </Link>
-                      <button
-                        className={styles.btnExcluir}
-                        onClick={() => handleExcluir(pet.id)}
-                      >
-                        Excluir
-                      </button>
-                    </div>
-                  </td>
+          <div className={styles.tableScroll}>
+            <table className={styles.table}>
+              <thead>
+                <tr>
+                  <th>Imagem</th>
+                  <th>Nome</th>
+                  <th>Status</th>
+                  <th>Ações</th>
                 </tr>
-              ))}
-            </tbody>
-          </table>
+              </thead>
+              <tbody>
+                {pets.map((pet) => (
+                  <tr key={pet.id}>
+                    <td data-label="Imagem">
+                      <img
+                        src={getImageUrl(pet)}
+                        alt={pet.nome || pet.name}
+                      />
+                    </td>
+                    <td data-label="Nome">{pet.nome || pet.name}</td>
+                    <td data-label="Status">
+                      <span className={`${styles.statusBadge} ${getStatusClass(pet.status)}`}>
+                        {getStatusLabel(pet.status)}
+                      </span>
+                    </td>
+                    <td data-label="Ações">
+                      <div className={styles.actions}>
+                        <Link
+                          href={`/editar-cadastro-adocao/${pet.id}`}
+                          className={styles.btnEditar}
+                        >
+                          Editar
+                        </Link>
+                        <button
+                          className={styles.btnExcluir}
+                          onClick={() => handleExcluir(pet.id)}
+                        >
+                          Excluir
+                        </button>
+                      </div>
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
         )}
       </div>
     </div>
