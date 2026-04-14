@@ -10,6 +10,15 @@ const getBaseUrl = () =>
     .trim()
     .replace(/\/$/, "");
 
+
+  const getImageUrl = (pet) => {
+  if (!pet) return "";
+
+  return `${getBaseUrl()}/api/pets/${pet.id}/image`;
+};
+
+
+    
 export default function EditarPetPerdidoPage() {
   const router = useRouter();
   const { id } = useParams();
@@ -95,6 +104,9 @@ export default function EditarPetPerdidoPage() {
         const data = await res.json();
         const pet = data.pet || data;
 
+        console.log("PET:", pet);
+        console.log("URL IMAGEM:", getImageUrl(pet));
+
         setFormData({
           name: pet.name || pet.nome || "",
           species: pet.species || pet.especie || "",
@@ -105,9 +117,7 @@ export default function EditarPetPerdidoPage() {
           dateLost: (pet.dateLost || pet.data || "").slice(0, 10),
           description: pet.description || pet.descricao || "",
           reward: pet.reward ?? pet.recompensa ?? 0,
-          imagemPreview: pet.hasImage
-            ? `${getBaseUrl()}/api/pets/${pet.id}/image`
-            : pet.image || pet.imagem || "",
+          imagemPreview: getImageUrl(pet),
         });
       } catch (error) {
         console.error("Erro ao carregar pet:", error);
