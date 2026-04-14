@@ -9,6 +9,11 @@ const getBaseUrl = () =>
     .trim()
     .replace(/\/$/, "");
 
+const getImageUrl = (pet) => {
+  if (!pet?.id) return "";
+  return `${getBaseUrl()}/api/pets/${pet.id}/image`;
+};
+
 export default function EditarCadastroAdocao() {
   const router = useRouter();
   const { id: petId } = useParams();
@@ -19,41 +24,39 @@ export default function EditarCadastroAdocao() {
     genero: "",
     idade: "",
     descricao: "",
-    imagem: "",
+    imagemPreview: "",
   });
 
   const [imagemFile, setImagemFile] = useState(null);
   const [carregando, setCarregando] = useState(true);
 
-  // ========= CARREGAR DADOS DO PET =========
   useEffect(() => {
     async function carregarPet() {
-      try {
-        if (!petId) return;
+      if (!petId) return;
 
+      try {
         const res = await fetch(`${getBaseUrl()}/api/pets/${petId}`, {
           cache: "no-store",
         });
 
         if (!res.ok) {
-          console.error("Erro ao buscar pet:", res.status);
-          return;
+          throw new Error(`Erro ao buscar pet: ${res.status}`);
         }
 
-        const pet = await res.json();
+        const data = await res.json();
+        const pet = data.pet || data;
 
         if (!pet || !pet.id) {
-          console.error("Pet não encontrado para o id:", petId);
-          return;
+          throw new Error("Pet não encontrado");
         }
 
         setFormData({
           nome: pet.nome || pet.name || "",
           raca: pet.raca || pet.breed || "",
           genero: pet.genero || pet.gender || "",
-          idade: pet.idade || pet.age || "",
+          idade: pet.idade ?? pet.age ?? "",
           descricao: pet.descricao || pet.description || "",
-          imagem: pet.imagem || pet.image || "",
+          imagemPreview: getImageUrl(pet),
         });
       } catch (error) {
         console.error("Erro ao carregar pet:", error);
@@ -65,15 +68,13 @@ export default function EditarCadastroAdocao() {
     carregarPet();
   }, [petId]);
 
-  // ========= HANDLERS =========
-
   const handleFocus = (e) => {
     e.target.dataset.placeholder = e.target.placeholder;
     e.target.placeholder = "";
   };
 
   const handleBlur = (e) => {
-    e.target.placeholder = e.target.dataset.placeholder;
+    e.target.placeholder = e.target.dataset.placeholder || "";
   };
 
   const handleChange = (e) => {
@@ -82,21 +83,29 @@ export default function EditarCadastroAdocao() {
   };
 
   const handleImagem = (e) => {
-    const arquivo = e.target.files[0];
-    if (arquivo) setImagemFile(arquivo);
+    const arquivo = e.target.files?.[0];
+    if (!arquivo) return;
+
+    setImagemFile(arquivo);
+
+    const previewUrl = URL.createObjectURL(arquivo);
+    setFormData((prev) => ({
+      ...prev,
+      imagemPreview: previewUrl,
+    }));
   };
 
   const salvarEdicao = async (e) => {
     e.preventDefault();
 
     try {
-      // Usar FormData para enviar imagem + dados juntos
       const fd = new FormData();
       fd.append("name", formData.nome || "");
       fd.append("breed", formData.raca || "");
       fd.append("gender", formData.genero || "");
       fd.append("age", formData.idade || "");
       fd.append("description", formData.descricao || "");
+      fd.append("status", "available");
 
       if (imagemFile) {
         fd.append("image", imagemFile);
@@ -112,7 +121,9 @@ export default function EditarCadastroAdocao() {
         body: fd,
       });
 
-      if (!res.ok) throw new Error("Erro ao atualizar pet");
+      if (!res.ok) {
+        throw new Error("Erro ao atualizar pet");
+      }
 
       alert("Pet atualizado com sucesso!");
       router.push("/seus-pets-para-adocao");
@@ -127,6 +138,7 @@ export default function EditarCadastroAdocao() {
 
     try {
       const token = localStorage.getItem("token") || "";
+
       const res = await fetch(`${getBaseUrl()}/api/pets/${petId}`, {
         method: "DELETE",
         headers: {
@@ -134,7 +146,9 @@ export default function EditarCadastroAdocao() {
         },
       });
 
-      if (!res.ok) throw new Error("Erro ao excluir pet");
+      if (!res.ok) {
+        throw new Error("Erro ao excluir pet");
+      }
 
       alert("Pet excluído com sucesso!");
       router.push("/seus-pets-para-adocao");
@@ -144,31 +158,25 @@ export default function EditarCadastroAdocao() {
     }
   };
 
-  // ========= RENDER =========
-
   if (carregando) {
-    return <p style={{ color: "#fff", textAlign: "center" }}>Carregando pet...</p>;
+    return (
+      <p style={{ color: "#fff", textAlign: "center" }}>
+        Carregando pet...
+      </p>
+    );
   }
 
   return (
     <main className={styles.cadastroPetContainer}>
       <div className={styles.adocaoContainer}>
-
-        {/* COLUNA ESQUERDA */}
         <section className={styles.leftSide}>
           <div className={styles.uploadImagem}>
             <label htmlFor="pet-imagem">
               <div className={styles.uploadBox}>
-                {imagemFile ? (
+                {formData.imagemPreview ? (
                   <img
-                    src={URL.createObjectURL(imagemFile)}
+                    src={formData.imagemPreview}
                     alt="Pré-visualização"
-                    className={styles.previewImagem}
-                  />
-                ) : formData.imagem ? (
-                  <img
-                    src={formData.imagem}
-                    alt="Imagem atual"
                     className={styles.previewImagem}
                   />
                 ) : (
@@ -208,11 +216,10 @@ export default function EditarCadastroAdocao() {
               onFocus={handleFocus}
               onBlur={handleBlur}
               onChange={handleChange}
-            ></textarea>
+            />
           </div>
         </section>
 
-        {/* COLUNA DIREITA */}
         <section className={styles.rightSide}>
           <h2 className={styles.tituloCadastro}>Editar Pet para Adoção</h2>
 
@@ -283,7 +290,6 @@ export default function EditarCadastroAdocao() {
             </div>
           </form>
         </section>
-
       </div>
     </main>
   );
