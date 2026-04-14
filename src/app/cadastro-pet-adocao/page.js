@@ -28,54 +28,6 @@ export default function CadastroAdocao() {
       .trim()
       .replace(/\/$/, "");
 
-  // upload robusto (mesmo padrão do cadastro de usuário)
-  const uploadImage = async (file) => {
-    if (!file) throw new Error("Nenhum arquivo fornecido");
-    if (!file.type || !file.type.startsWith("image/")) throw new Error("Arquivo não é imagem");
-    const maxMB = 5;
-    if (file.size > maxMB * 1024 * 1024) throw new Error(`Imagem maior que ${maxMB}MB`);
-
-    const baseUrl = getBaseUrl();
-    const configs = [
-      { url: `${baseUrl}/api/upload`, field: "file" },
-      { url: `${baseUrl}/api/upload`, field: "imagem" },
-      { url: `${baseUrl}/upload`, field: "file" },
-      { url: `${baseUrl}/upload`, field: "imagem" },
-    ];
-
-    let lastErr = null;
-    for (const cfg of configs) {
-      try {
-        const fd = new FormData();
-        fd.append(cfg.field, file);
-        const res = await fetch(cfg.url, { method: "POST", body: fd });
-        const text = await res.text().catch(() => "");
-        let data = {};
-        try { data = text ? JSON.parse(text) : {}; } catch { data = { raw: text }; }
-
-        if (!res.ok) {
-          lastErr = new Error(data?.message || data?.raw || `Upload falhou (${res.status})`);
-          continue;
-        }
-
-        const returned =
-          data?.url || data?.path || data?.fileUrl || data?.filename ||
-          data?.file || data?.file_path || data?.filepath || null;
-        if (returned && typeof returned === "string") {
-          return returned.startsWith("/") ? `${baseUrl}${returned}` : returned;
-        }
-        if (typeof data === "string" && data) {
-          return data.startsWith("/") ? `${baseUrl}${data}` : data;
-        }
-
-        lastErr = new Error("Upload OK mas resposta não contém URL");
-      } catch (err) {
-        lastErr = err;
-      }
-    }
-    throw lastErr || new Error("Falha no upload da imagem");
-  };
-
   // ── form handlers ──
   const handleFocus = (e) => {
     e.target.dataset.placeholder = e.target.placeholder;
@@ -155,37 +107,23 @@ export default function CadastroAdocao() {
     // }
 
     try {
-      // 1. upload da imagem (se houver)
-      let finalImageUrl = "";
+      const baseUrl = getBaseUrl();
+      const fd = new FormData();
+      fd.append("name", formData.nome.trim());
+      fd.append("species", formData.especie);
+      fd.append("breed", formData.raca.trim());
+      fd.append("age", formData.idade || "");
+      fd.append("description", formData.descricao.trim());
+      fd.append("status", "available");
+      fd.append("userId", usuario.id);
+
       if (imagemFile) {
-        try {
-          finalImageUrl = await uploadImage(imagemFile);
-        } catch (uploadErr) {
-          // console.error("Erro upload:", uploadErr);
-          showToast("Erro ao enviar imagem. Verifique o servidor.", "error");
-          setLoading(false);
-          return;
-        }
+        fd.append("image", imagemFile);
       }
 
-      // 2. montar payload conforme model Pet do backend
-      const baseUrl = getBaseUrl();
-      const payload = {
-        name: formData.nome.trim(),
-        species: formData.especie,               // 'dog' ou 'cat'
-        breed: formData.raca.trim() || null,
-        age: formData.idade ? Number(formData.idade) : null,
-        description: formData.descricao.trim() || null,
-        status: "available",                      // pet para adoção
-        userId: usuario.id,
-        imagem: finalImageUrl || "/images/semfoto.jpg",
-      };
-
-      // 3. enviar para o backend
       const res = await fetch(`${baseUrl}/api/pets`, {
         method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(payload),
+        body: fd,
       });
 
       const respData = await res.json().catch(() => ({}));
