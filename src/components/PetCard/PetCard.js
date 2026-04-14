@@ -82,6 +82,14 @@ async function marcarComoEncontrado() {
   }
 }
 
+
+const rotaEdicao =
+  tipoPagina === "meus-perdidos"
+    ? `/editar-pets-perdidos/${id}`
+    : `/editar-cadastro-adocao/${id}`;
+
+
+
   return (
     <>
       <div className={styles["card-pet"]}>
@@ -133,9 +141,10 @@ async function marcarComoEncontrado() {
                 {tipoPagina === "meus-perdidos" ? "Encontrado" : "Adotado"}
               </button>
 
-              <Link href={`/editar-pets-perdidos/${id}`}>
+              <Link href={rotaEdicao}>
                 <button className={styles["btn-editar"]}>Editar</button>
               </Link>
+
             </div>
           )}
         </div>
