@@ -37,13 +37,7 @@ export default function EditarCadastroAdocao() {
 
   useEffect(() => {
     async function carregarPet() {
-<<<<<<< HEAD
-      try {
-        if (!petId) return;
-        console.debug("[editar-cadastro-adocao] petId param:", petId);
-=======
       if (!petId) return;
->>>>>>> e0250874570bc71b932ddf650d534f32d19cf6e7
 
       try {
         const res = await fetch(`${getBaseUrl()}/api/pets/${petId}`, {
@@ -51,22 +45,6 @@ export default function EditarCadastroAdocao() {
         });
 
         if (!res.ok) {
-<<<<<<< HEAD
-          const text = await res.text().catch(() => "");
-          console.error("Erro ao buscar pet:", res.status, text);
-          return;
-        }
-
-        const payload = await res.json().catch(() => null);
-        console.debug("[editar-cadastro-adocao] raw payload:", payload);
-
-        // try to normalize: backend may return { pet: {...} } or { data: {...} } or the pet itself
-        const pet = (payload && (payload.pet || payload.data)) || payload || null;
-
-        if (!pet || (!pet.id && !pet.nome && !pet.name)) {
-          console.error("Pet não encontrado/no formato esperado para o id:", petId, pet);
-          return;
-=======
           throw new Error(`Erro ao buscar pet: ${res.status}`);
         }
 
@@ -75,7 +53,6 @@ export default function EditarCadastroAdocao() {
 
         if (!pet || !pet.id) {
           throw new Error("Pet não encontrado");
->>>>>>> e0250874570bc71b932ddf650d534f32d19cf6e7
         }
 
         const nomeVal = pet.nome || pet.name || "";
@@ -87,22 +64,12 @@ export default function EditarCadastroAdocao() {
         const imagemVal = pet.imagem || pet.image || null;
 
         setFormData({
-<<<<<<< HEAD
-          nome: nomeVal,
-          especie: especieVal,
-          raca: racaVal,
-          genero: generoVal,
-          idade: idadeVal,
-          descricao: descricaoVal,
-          imagem: imagemVal || "",
-=======
           nome: pet.nome || pet.name || "",
           raca: pet.raca || pet.breed || "",
           genero: pet.genero || pet.gender || "",
           idade: pet.idade ?? pet.age ?? "",
           descricao: pet.descricao || pet.description || "",
           imagemPreview: getImageUrl(pet),
->>>>>>> e0250874570bc71b932ddf650d534f32d19cf6e7
         });
         setPreviewUrl(imagemVal || null);
       } catch (error) {
@@ -179,13 +146,9 @@ export default function EditarCadastroAdocao() {
         body: fd,
       });
 
-<<<<<<< HEAD
-  if (!res.ok) throw new Error("Erro ao atualizar pet");
-=======
       if (!res.ok) {
         throw new Error("Erro ao atualizar pet");
       }
->>>>>>> e0250874570bc71b932ddf650d534f32d19cf6e7
 
   showToast("Pet atualizado com sucesso!", "success");
   router.push("/seus-pets-para-adocao");
@@ -248,21 +211,6 @@ export default function EditarCadastroAdocao() {
                     alt="Pré-visualização"
                     className={styles.previewImagem}
                   />
-<<<<<<< HEAD
-                ) : previewUrl ? (
-                  <img
-                    src={previewUrl}
-                    alt="Imagem atual"
-                    className={styles.previewImagem}
-                  />
-                ) : formData.imagem ? (
-                  <img
-                    src={formData.imagem}
-                    alt="Imagem atual"
-                    className={styles.previewImagem}
-                  />
-=======
->>>>>>> e0250874570bc71b932ddf650d534f32d19cf6e7
                 ) : (
                   <>
                     <img

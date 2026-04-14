@@ -8,10 +8,6 @@ const getBaseUrl = () =>
   (process.env.NEXT_PUBLIC_PETZ_API_URL || "http://localhost:3000")
     .trim()
     .replace(/\/$/, "");
-<<<<<<< HEAD
- 
-export default function EditarPetPerdidosId() {
-=======
 
 
   const getImageUrl = (pet) => {
@@ -23,7 +19,6 @@ export default function EditarPetPerdidosId() {
 
     
 export default function EditarPetPerdidoPage() {
->>>>>>> e0250874570bc71b932ddf650d534f32d19cf6e7
   const router = useRouter();
   const { id } = useParams();
  
@@ -58,20 +53,6 @@ export default function EditarPetPerdidoPage() {
           setCarregando(false);
           return;
         }
-<<<<<<< HEAD
-        const pet = await res.json();
-  // Permitir edição por qualquer visitante; não há bloqueio client-side de dono
- 
-        setFormData({
-          nome: pet.nome || pet.name || "",
-          raca: pet.raca || pet.breed || "",
-          genero: pet.genero || pet.gender || "",
-          local: pet.local || pet.location || "",
-          data: pet.data || pet.dateLost || "",
-          descricao: pet.descricao || pet.description || "",
-          recompensa: pet.recompensa || pet.reward || 0,
-          imagem: pet.imagem || pet.image || "",
-=======
 
         const data = await res.json();
         const pet = data.pet || data;
@@ -90,7 +71,6 @@ export default function EditarPetPerdidoPage() {
           description: pet.description || pet.descricao || "",
           reward: pet.reward ?? pet.recompensa ?? 0,
           imagemPreview: getImageUrl(pet),
->>>>>>> e0250874570bc71b932ddf650d534f32d19cf6e7
         });
         setPreview(pet.imagem || pet.image || null);
       } catch (err) {
