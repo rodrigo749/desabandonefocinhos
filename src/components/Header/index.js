@@ -6,6 +6,7 @@ import Image from "next/image";
 import { usePathname } from "next/navigation";
 import BottomNav from "@/components/BottomNav";
 import { NAV_LINKS } from "@/constants/navigation";
+import { getAccountLinks } from "@/components/BottomNav/AccountMenu";
 import styles from "./header.module.css";
 
 export default function Header() {

@@ -89,11 +89,13 @@ export default function BottomNav() {
     };
   }, [accountOpen]);
 
-  const isAdmin = usuarioLogado?.tipo === "admin";
   const isItemActive = (href) => pathname === href || pathname?.startsWith(`${href}/`);
   const isAccountRoute =
     pathname === "/perfil-usuario" ||
     pathname === "/meus-pets-perdidos" ||
+    pathname === "/seus-pets-para-adocao" ||
+    pathname === "/login-usuario" ||
+    pathname === "/cadastro-usuario" ||
     pathname === "/admin" ||
     pathname?.startsWith("/admin/pets-perdidos");
 
@@ -103,7 +105,7 @@ export default function BottomNav() {
         open={accountOpen}
         menuRef={accountMenuRef}
         onClose={() => setAccountOpen(false)}
-        isAdmin={isAdmin}
+        usuarioLogado={usuarioLogado}
       />
 
       <nav className={styles.bottomNav} aria-label="Navegação principal">
