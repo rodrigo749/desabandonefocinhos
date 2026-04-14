@@ -39,6 +39,7 @@ export default function PetCard({ pet, tipoPagina }) {
   const descricao = pet.descricao || pet.description || "Sem descrição";
   const descricaoCurta = descricao.length > 60 ? `${descricao.slice(0, 60)}...` : descricao;
   const userId = pet.usuarioId || pet.userId || null;
+  const status = pet.status || pet.estado || pet.state || null;
 
   const ehDoUsuario = usuarioLogado && userId === usuarioLogado.id;
   

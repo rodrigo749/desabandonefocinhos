@@ -51,10 +51,10 @@ export default function PetsPerdidos() {
     }
   }
 
-  // ================= CARREGAR AO ABRIR PÁGINA =================
   useEffect(() => {
     carregarPets();
   }, []);
+  // ================= CARREGAR AO ABRIR PÁGINA =================
 
   return (
     <main className={styles["pets-page"]}>
