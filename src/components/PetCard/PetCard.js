@@ -39,6 +39,7 @@ export default function PetCard({ pet, tipoPagina }) {
   const descricao = pet.descricao || pet.description || "Sem descrição";
   const descricaoCurta = descricao.length > 60 ? `${descricao.slice(0, 60)}...` : descricao;
   const userId = pet.usuarioId || pet.userId || null;
+  const status = pet.status || pet.estado || pet.state || null;
 
   const ehDoUsuario = usuarioLogado && userId === usuarioLogado.id;
   
@@ -81,6 +82,14 @@ async function marcarComoEncontrado() {
     console.error("Erro ao marcar como encontrado:", error);
   }
 }
+
+
+const rotaEdicao =
+  tipoPagina === "meus-perdidos"
+    ? `/editar-pets-perdidos/${id}`
+    : `/editar-cadastro-adocao/${id}`;
+
+
 
   return (
     <>
@@ -133,9 +142,10 @@ async function marcarComoEncontrado() {
                 {tipoPagina === "meus-perdidos" ? "Encontrado" : "Adotado"}
               </button>
 
-              <Link href={`/editar-pets-perdidos/${id}`}>
+              <Link href={rotaEdicao}>
                 <button className={styles["btn-editar"]}>Editar</button>
               </Link>
+
             </div>
           )}
         </div>

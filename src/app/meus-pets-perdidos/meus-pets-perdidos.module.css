@@ -40,11 +40,11 @@
   color: #FFFFFF;
   font-size: 20px;
   font-weight: 700;
-  padding: 7px 2rem;
   border-radius: 50px;
   text-align: center;
+  width: 1360px;
   margin: 0 auto 50px auto;
-  border: 5px solid var(--heading);
+  border: 4px solid var(--heading);
   box-shadow: 0 4px 10px rgba(0,0,0,0.08);
 }
 

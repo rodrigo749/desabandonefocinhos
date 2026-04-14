@@ -44,10 +44,9 @@ export default function PetsParaAdocao() {
     }
   }
 
-  useEffect(() => {
+useEffect(() => {
     carregarPets();
   }, []);
-
   return (
     <main className={styles["pets-page"]}>
       <div className={styles["cards-wrapper-container"]}>

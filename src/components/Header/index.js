@@ -55,7 +55,21 @@ export default function Header() {
     };
   }, []);
 
-  const accountLinks = getAccountLinks(usuarioLogado);
+  const isAdmin = usuarioLogado?.tipo === "admin";
+
+  const accountLinks = isAdmin
+    ? [
+        { label: "Painel de Admin", href: "/admin" },
+        { label: "Gerenciar Pets Perdidos", href: "/admin/pets-perdidos" },
+        { label: "Gerenciar Pets para Adoção", href: "/admin/pets-adocao" },
+        { label: "Sair", href: "/logout" },
+      ]
+    : [
+        { label: "Editar perfil", href: "/editar-usuario" },
+        { label: "Meus pets Perdidos", href: "/meus-pets-perdidos" },
+        { label: "Meus pets Adoção", href: "/seus-pets-para-adocao" },
+        { label: "Sair", href: "/logout" },
+      ];
 
   const avatarSrc = usuarioLogado?.imagem
     ? usuarioLogado.imagem.startsWith("blob:") || usuarioLogado.imagem.startsWith("http")

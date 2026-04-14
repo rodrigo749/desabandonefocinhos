@@ -112,7 +112,7 @@
 .sheetLinks {
   display: flex;
   flex-direction: column;
-  gap: 0.42rem;
+  gap: 0.30rem;
 }
 
 .sheetLink {
@@ -151,12 +151,15 @@
   }
 
   .navItem {
-    min-height: 56px;
+    height: 56px;
     padding: 0.45rem 0.2rem;
+    align-self: stretch;
   }
 
   .label {
-    font-size: 0.64rem;
+    font-size: 0.6rem;
+    line-height: 1.1;
+    white-space: nowrap;
   }
 
   .accountSheet {
@@ -164,6 +167,7 @@
     width: calc(100% - 20px);
   }
 }
+
 
 @media (min-width: 1024px) {
   .bottomNav,
