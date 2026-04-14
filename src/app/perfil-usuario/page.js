@@ -119,8 +119,8 @@ export default function PerfilUsuario() {
           </button>
           <button className={styles.delete} onClick={handleDeleteAccount}>
             Excluir conta
-          </button >
-          <button className={styles.button} onClick={'/editar-perfil'}>
+          </button>
+          <button className={styles.button} onClick={() => router.push('/editar-usuario')}>
             editar perfil
           </button>
         </div>
