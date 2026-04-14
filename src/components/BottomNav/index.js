@@ -120,15 +120,16 @@ export default function BottomNav() {
           />
         ))}
 
-        <NavItem
-          ref={accountButtonRef}
-          asButton
-          label="Minha Conta"
-          Icon={RiUser3Line}
-          ActiveIcon={RiUser3Fill}
-          isActive={accountOpen || isAccountRoute}
-          onClick={() => setAccountOpen((prev) => !prev)}
-        />
+        <div ref={accountButtonRef} className={styles.navItemSlot}>
+          <NavItem
+            asButton
+            label="Minha Conta"
+            Icon={RiUser3Line}
+            ActiveIcon={RiUser3Fill}
+            isActive={accountOpen || isAccountRoute}
+            onClick={() => setAccountOpen((prev) => !prev)}
+          />
+        </div>
       </nav>
     </>
   );

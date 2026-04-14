@@ -8,8 +8,22 @@ const getBaseUrl = () =>
   (process.env.NEXT_PUBLIC_PETZ_API_URL || "http://localhost:3000")
     .trim()
     .replace(/\/$/, "");
+<<<<<<< HEAD
  
 export default function EditarPetPerdidosId() {
+=======
+
+
+  const getImageUrl = (pet) => {
+  if (!pet) return "";
+
+  return `${getBaseUrl()}/api/pets/${pet.id}/image`;
+};
+
+
+    
+export default function EditarPetPerdidoPage() {
+>>>>>>> e0250874570bc71b932ddf650d534f32d19cf6e7
   const router = useRouter();
   const { id } = useParams();
  
@@ -44,6 +58,7 @@ export default function EditarPetPerdidosId() {
           setCarregando(false);
           return;
         }
+<<<<<<< HEAD
         const pet = await res.json();
   // Permitir edição por qualquer visitante; não há bloqueio client-side de dono
  
@@ -56,6 +71,26 @@ export default function EditarPetPerdidosId() {
           descricao: pet.descricao || pet.description || "",
           recompensa: pet.recompensa || pet.reward || 0,
           imagem: pet.imagem || pet.image || "",
+=======
+
+        const data = await res.json();
+        const pet = data.pet || data;
+
+        console.log("PET:", pet);
+        console.log("URL IMAGEM:", getImageUrl(pet));
+
+        setFormData({
+          name: pet.name || pet.nome || "",
+          species: pet.species || pet.especie || "",
+          breed: pet.breed || pet.raca || "",
+          genero: pet.gender || pet.genero || "",
+          age: pet.age ?? pet.idade ?? "",
+          location: pet.location || pet.local || "",
+          dateLost: (pet.dateLost || pet.data || "").slice(0, 10),
+          description: pet.description || pet.descricao || "",
+          reward: pet.reward ?? pet.recompensa ?? 0,
+          imagemPreview: getImageUrl(pet),
+>>>>>>> e0250874570bc71b932ddf650d534f32d19cf6e7
         });
         setPreview(pet.imagem || pet.image || null);
       } catch (err) {

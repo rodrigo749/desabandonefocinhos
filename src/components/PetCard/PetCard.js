@@ -83,6 +83,14 @@ async function marcarComoEncontrado() {
   }
 }
 
+
+const rotaEdicao =
+  tipoPagina === "meus-perdidos"
+    ? `/editar-pets-perdidos/${id}`
+    : `/editar-cadastro-adocao/${id}`;
+
+
+
   return (
     <>
       <div className={styles["card-pet"]}>
@@ -134,18 +142,10 @@ async function marcarComoEncontrado() {
                 {tipoPagina === "meus-perdidos" ? "Encontrado" : "Adotado"}
               </button>
 
-              {
-                // choose edit route based on pet status
-                (() => {
-                  const isLost = status === "lost" || status === "perdido";
-                  const editHref = isLost ? `/editar-pets-perdidos/${id}` : `/editar-cadastro-adocao/${id}`;
-                  return (
-                    <Link href={editHref}>
-                      <button className={styles["btn-editar"]}>Editar</button>
-                    </Link>
-                  );
-                })()
-              }
+              <Link href={rotaEdicao}>
+                <button className={styles["btn-editar"]}>Editar</button>
+              </Link>
+
             </div>
           )}
         </div>
