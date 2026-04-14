@@ -120,7 +120,7 @@ export default function BottomNav() {
           />
         ))}
 
-        <div ref={accountButtonRef}>
+        <div ref={accountButtonRef} className={styles.navItemSlot}>
           <NavItem
             asButton
             label="Minha Conta"
