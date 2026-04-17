@@ -18,7 +18,7 @@
   background-repeat: repeat;
   background-size: 600px;
   opacity: 0.50;
-  z-index: 0;
+  z-index: -1;
   filter: brightness(0) saturate(100%) invert(77%) sepia(97%) saturate(686%) hue-rotate(319deg) brightness(101%) contrast(101%);
 }
 
