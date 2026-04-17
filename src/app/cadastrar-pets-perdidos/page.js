@@ -1,8 +1,8 @@
 'use client'
 
-import { useState, useEffect } from "react";
-import useSafeToast from "@/components/Toast/useSafeToast";
+import { useState, useEffect, useCallback } from "react";
 import { useRouter } from "next/navigation";
+import useSafeToast from "@/components/Toast/useSafeToast";
 import styles from "./perdidos.module.css";
 
 const API_URL = process.env.NEXT_PUBLIC_API_URL || "http://localhost:3000";
@@ -11,6 +11,10 @@ export default function CadastrarPerdidos() {
   const router = useRouter();
   const { showToast } = useSafeToast();
 
+  // --- ESTADOS ---
+  const [isAuthorized, setIsAuthorized] = useState(false);
+  const [loading, setLoading] = useState(false);
+  const [imagemFile, setImagemFile] = useState(null);
   const [formData, setFormData] = useState({
     name: "",
     species: "",
@@ -24,387 +28,248 @@ export default function CadastrarPerdidos() {
     imagemPreview: "",
   });
 
-  const [imagemFile, setImagemFile] = useState(null);
-  const [loading, setLoading] = useState(false);
-  const [fieldErrors, setFieldErrors] = useState({});
+  // --- PROTEÇÃO DE ROTA (CLIENT-SIDE) ---
+  useEffect(() => {
+    const usuarioLogado = localStorage.getItem("usuarioLogado");
+    
+    if (!usuarioLogado) {
+      showToast("Acesso restrito. Redirecionando para login...", "warning");
+      router.push("/login-usuario");
+    } else {
+      setIsAuthorized(true);
+    }
+  }, [router, showToast]);
 
-  const getBaseUrl = () =>
-    (process.env.NEXT_PUBLIC_PETZ_API_URL ||
-      `http://localhost:${process.env.PORT || 3000}`)
+  // --- HELPERS ---
+  const getBaseUrl = useCallback(() => {
+    return (process.env.NEXT_PUBLIC_PETZ_API_URL || "http://localhost:3000")
       .trim()
       .replace(/\/$/, "");
+  }, []);
 
-  // ================= UPLOAD =================
-  const uploadImage = async (imagem) => {
-    const baseUrl = getBaseUrl();
-    const fd = new FormData();
-    fd.append("imagem", imagem);
-
-    const res = await fetch(`${baseUrl}/api/upload`, {
-      method: "POST",
-      body: fd,
-    });
-
-    if (!res.ok) throw new Error("Erro no upload");
-
-    const data = await res.json();
-    return data.url;
+  const handleChange = (field, value) => {
+    setFormData((prev) => ({ ...prev, [field]: value }));
   };
 
-  // ================= IMAGEM =================
-  const handleImagem = async (e) => {
+  // --- TRATAMENTO DE IMAGEM ---
+  const handleImagem = (e) => {
     const arquivo = e.target.files?.[0];
     if (!arquivo) return;
 
-    const maxMB = 5;
-    if (arquivo.size > maxMB * 1024 * 1024) {
-  showToast(`Imagem maior que ${maxMB}MB`, "warning");
-      return;
-    }
-
-    if (!arquivo.type.startsWith("image/")) {
-  showToast("Arquivo inválido", "warning");
-      return;
+    // Validação Sênior: Tamanho e Tipo
+    if (arquivo.size > 5 * 1024 * 1024) {
+      return showToast("A imagem deve ter no máximo 5MB", "warning");
     }
 
     setImagemFile(arquivo);
-
-    // preview local imediato
     const previewUrl = URL.createObjectURL(arquivo);
-
-    setFormData((prev) => ({
-      ...prev,
-      imagemPreview: previewUrl,
-    }));
+    setFormData((prev) => ({ ...prev, imagemPreview: previewUrl }));
   };
 
-  // ================= FOCUS/BLUR HANDLERS =================
-  const handleFocus = (e) => {
-    e.target.dataset.placeholder = e.target.placeholder;
-    if (e.target.type !== "range" && e.target.type !== "date") {
-      e.target.placeholder = "";
-    }
-  };
-
-  const handleBlur = (e) => {
-    e.target.placeholder = e.target.dataset.placeholder || "";
-  };
-
-  // ================= HANDLE CHANGE =================
-  const handleChange = (field, value) => {
-    setFormData((prev) => ({
-      ...prev,
-      [field]: value,
-    }));
-
-    if (fieldErrors[field]) {
-      setFieldErrors((prev) => ({ ...prev, [field]: null }));
-    }
-  };
-
-  // cleanup blob ao desmontar
+  // Limpeza de memória para o Blob da imagem
   useEffect(() => {
     return () => {
-      if (formData.imagemPreview && formData.imagemPreview.startsWith("blob:")) {
-        try { URL.revokeObjectURL(formData.imagemPreview); } catch {}
+      if (formData.imagemPreview?.startsWith("blob:")) {
+        URL.revokeObjectURL(formData.imagemPreview);
       }
     };
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
+  }, [formData.imagemPreview]);
 
-  // ================= SALVAR PET =================
-const salvarPet = async (e) => {
-  e.preventDefault();
-  setLoading(true);
+  // --- SUBMISSÃO ---
+  const salvarPet = async (e) => {
+    e.preventDefault();
+    
+    // Validação básica antes de enviar
+    if (!formData.name || !formData.species || !imagemFile) {
+      return showToast("Preencha os campos obrigatórios e adicione uma foto.", "warning");
+    }
 
-  try {
-    const usuarioLogado = JSON.parse(localStorage.getItem("usuarioLogado"));
+    setLoading(true);
 
-    if (!usuarioLogado || !usuarioLogado.id) {
-      showToast("Usuário não está logado.", "warning");
+    try {
+      const storageData = localStorage.getItem("usuarioLogado");
+      const usuarioLogado = storageData ? JSON.parse(storageData) : null;
+
+      if (!usuarioLogado?.id) {
+        throw new Error("Sessão inválida. Faça login novamente.");
+      }
+
+      // Preparação do FormData (Necessário para envio de arquivos/Multipart)
+      const fd = new FormData();
+      fd.append("name", formData.name.trim());
+      fd.append("species", formData.species);
+      fd.append("breed", formData.breed);
+      fd.append("gender", formData.genero);
+      fd.append("age", formData.age);
+      fd.append("dateLost", formData.dateLost);
+      fd.append("location", formData.location);
+      fd.append("reward", formData.reward.toString());
+      fd.append("description", formData.description);
+      fd.append("status", "lost");
+      fd.append("userId", usuarioLogado.id);
+      fd.append("image", imagemFile); // O Multer no backend lerá este campo
+
+      const res = await fetch(`${getBaseUrl()}/api/pets`, {
+        method: "POST",
+        body: fd,
+        // Se usar JWT, descomente a linha abaixo:
+        // headers: { "Authorization": `Bearer ${usuarioLogado.token}` }
+      });
+
+      if (!res.ok) {
+        const errorData = await res.json();
+        throw new Error(errorData.message || "Erro ao cadastrar pet");
+      }
+
+      showToast("Pet cadastrado com sucesso!", "success");
+      router.push("/meus-pets-perdidos");
+      
+    } catch (error) {
+      showToast(error.message, "error");
+    } finally {
       setLoading(false);
-      return;
     }
+  };
 
-    // Usar FormData para enviar imagem + dados juntos
-    const fd = new FormData();
-    fd.append("name", formData.name.trim());
-    fd.append("species", formData.species || "");
-    fd.append("breed", formData.breed || "");
-    fd.append("gender", formData.genero || "");
-    fd.append("age", formData.age || "");
-    fd.append("dateLost", formData.dateLost || "");
-    fd.append("location", formData.location || "");
-    fd.append("reward", formData.reward || "0");
-    fd.append("description", formData.description || "");
-    fd.append("status", "lost");
-    fd.append("userId", usuarioLogado.id);
-
-    if (imagemFile) {
-      fd.append("image", imagemFile);
-    }
-
-    const res = await fetch(`${getBaseUrl()}/api/pets`, {
-      method: "POST",
-      body: fd,
-    });
-
-    const respData = await res.json().catch(() => ({}));
-
-    if (!res.ok) {
-      console.error("Erro backend:", respData);
-      const msg = respData?.message || respData?.error || respData?.raw || "Erro ao cadastrar pet";
-      showToast(msg, "error");
-      setLoading(false);
-      return;
-    }
-
-    showToast("Pet cadastrado com sucesso!", "success");
-    setFormData({
-      name: "",
-      species: "",
-      breed: "",
-      genero: "",
-      age: "",
-      location: "",
-      dateLost: "",
-      description: "",
-      reward: 0,
-      imagemPreview: "",
-    });
-
-    setImagemFile(null);
-    router.push("/meus-pets-perdidos");
-  } catch (error) {
-    console.error(error);
-    showToast(error.message || "Erro ao cadastrar pet", "error");
-  } finally {
-    setLoading(false);
-  }
-};
+  // Se não estiver autorizado, não renderiza nada para evitar "flash" de conteúdo privado
+  if (!isAuthorized) return <div className={styles.loadingScreen}>Carregando...</div>;
 
   return (
     <main className={styles.cadastroPetContainer}>
       <div className={styles.adocaoContainer}>
-
-        {/* COLUNA ESQUERDA */}
+        
+        {/* COLUNA ESQUERDA: Upload e Descrição */}
         <section className={styles.leftSide}>
           <div className={styles.uploadImagem}>
-            <label htmlFor="pet-imagem">
+            <label htmlFor="pet-imagem" className={styles.uploadLabel}>
               <div className={styles.uploadBox}>
                 {formData.imagemPreview ? (
-                  <img
-                    src={formData.imagemPreview}
-                    alt="Preview"
-                    className={styles.previewImagem}
-                  />
+                  <img src={formData.imagemPreview} alt="Preview" className={styles.previewImagem} />
                 ) : (
                   <>
-                    <img
-                      src="/images/iconephoto.png"
-                      alt="Adicionar"
-                      className={styles.iconeAddImg}
-                    />
+                    <img src="/images/iconephoto.png" alt="Add" className={styles.iconeAddImg} />
                     <span>Adicionar imagem</span>
                   </>
                 )}
               </div>
             </label>
-
-            <input
-              type="file"
-              id="pet-imagem"
-              accept="image/*"
-              hidden
-              onChange={handleImagem}
-              disabled={loading}
+            <input 
+              type="file" 
+              id="pet-imagem" 
+              accept="image/*" 
+              hidden 
+              onChange={handleImagem} 
+              disabled={loading} 
             />
           </div>
 
           <div className={styles.campoDescricao}>
-            <img
-              src="/images/patinha.png"
-              alt="patinha"
-              className={styles.iconeDescricao}
-            />
+            <img src="/images/patinha.png" alt="patinha" className={styles.iconeDescricao} />
             <textarea
-              placeholder="Descreva o pet aqui..."
+              placeholder="Descreva as características do pet, onde foi visto por último..."
               value={formData.description}
               onChange={(e) => handleChange("description", e.target.value)}
-              onFocus={handleFocus}
-              onBlur={handleBlur}
               className={styles.descricaoTextarea}
+              disabled={loading}
             />
           </div>
         </section>
 
-        {/* COLUNA DIREITA */}
+        {/* COLUNA DIREITA: Formulário Detalhado */}
         <section className={styles.rightSide}>
           <h2 className={styles.tituloCadastro}>Cadastrar Pet Perdido</h2>
 
           <form className={styles.formCadastro} onSubmit={salvarPet}>
-
             <div className={styles.campo}>
-              <img src="/images/patinha.png" className={styles.iconeInput} />
+              <img src="/images/patinha.png" className={styles.iconeInput} alt="" />
               <input
                 type="text"
-                placeholder="Nome"
+                placeholder="Nome do Pet"
                 value={formData.name}
                 onChange={(e) => handleChange("name", e.target.value)}
-                onFocus={handleFocus}
-                onBlur={handleBlur}
+                required
               />
             </div>
 
-            <div className={styles.campo}>
-              <img src="/images/patinha.png" className={styles.iconeInput} />
-              <select
-                value={formData.species}
-                onChange={(e) => handleChange("species", e.target.value)}
-              >
-                <option value="" disabled>Selecione a espécie</option>
-                <option value="dog">Cachorro</option>
-                <option value="cat">Gato</option>
-                <option value="other">Outro</option>
-              </select>
+            <div className={styles.gridCampos}>
+              <div className={styles.campo}>
+                <select 
+                  value={formData.species} 
+                  onChange={(e) => handleChange("species", e.target.value)}
+                  required
+                >
+                  <option value="">Espécie</option>
+                  <option value="dog">Cachorro</option>
+                  <option value="cat">Gato</option>
+                  <option value="other">Outro</option>
+                </select>
+              </div>
+
+              <div className={styles.campo}>
+                <select 
+                  value={formData.genero} 
+                  onChange={(e) => handleChange("genero", e.target.value)}
+                >
+                  <option value="">Gênero</option>
+                  <option value="Macho">Macho</option>
+                  <option value="Fêmea">Fêmea</option>
+                </select>
+              </div>
             </div>
 
             <div className={styles.campo}>
-              <img src="/images/patinha.png" className={styles.iconeInput} />
               <input
                 type="text"
-                placeholder="Raça"
+                placeholder="Raça (Ex: Poodle, SRD...)"
                 value={formData.breed}
                 onChange={(e) => handleChange("breed", e.target.value)}
-                onFocus={handleFocus}
-                onBlur={handleBlur}
               />
             </div>
 
-            <div className={styles.campo} style={fieldErrors.genero ? { borderColor: "red" } : {}}>
-              <img src="/images/patinha.png" className={styles.iconeInput} />
-              <select
-                value={formData.genero}
-                onChange={(e) => handleChange("genero", e.target.value)}
-                className={!formData.genero ? styles.selectPlaceholder : ""}
-              >
-                <option value="" disabled>Selecione o gênero</option>
-                <option value="Macho">Macho</option>
-                <option value="Fêmea">Fêmea</option>
-              </select>
-            </div>
-            {fieldErrors.genero && <span className={styles.errorText}>{fieldErrors.genero}</span>}
-
-          <div className={`${styles.campo} ${styles.campoIdade}`}>
-            <img src="/images/patinha.png" className={styles.iconeInput} />
-            <input
-              type="number"
-              placeholder="Idade(anos)"
-              value={formData.age}
-              onChange={(e) => handleChange("age", e.target.value)}
-              onFocus={handleFocus}
-              onBlur={handleBlur}
-              min="0"
-              className={styles.inputIdade}
-            />
-            <div className={styles.botoesIdade}>
-              <button
-                type="button"
-                className={styles.btnIdade}
-                onClick={() => {
-                  const current = parseInt(formData.age) || 0;
-                  handleChange("age", String(current + 1));
-                }}
-              >
-                ▲
-              </button>
-              <button
-                type="button"
-                className={styles.btnIdade}
-                onClick={() => {
-                  const current = parseInt(formData.age) || 0;
-                  if (current > 0) handleChange("age", String(current - 1));
-                }}
-              >
-                ▼
-              </button>
-            </div>
-          </div>
-
             <div className={styles.campo}>
-              <img src="/images/patinha.png" className={styles.iconeInput} />
               <input
                 type="text"
-                placeholder="Localização"
+                placeholder="Localização (Bairro/Cidade)"
                 value={formData.location}
                 onChange={(e) => handleChange("location", e.target.value)}
-                onFocus={handleFocus}
-                onBlur={handleBlur}
+                required
               />
             </div>
 
             <div className={styles.campo}>
-              <img src="/images/patinha.png" className={styles.iconeInput} />
+              <label className={styles.labelData}>Data do desaparecimento:</label>
               <input
                 type="date"
                 value={formData.dateLost}
                 onChange={(e) => handleChange("dateLost", e.target.value)}
-                onFocus={handleFocus}
-                onBlur={handleBlur}
                 className={styles.dateInput}
               />
-              <svg 
-                className={styles.calendarIcon}
-                xmlns="http://www.w3.org/2000/svg" 
-                viewBox="0 0 24 24" 
-                fill="none" 
-                stroke="currentColor" 
-                strokeWidth="2" 
-                strokeLinecap="round" 
-                strokeLinejoin="round"
-              >
-                <rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect>
-                <line x1="16" y1="2" x2="16" y2="6"></line>
-                <line x1="8" y1="2" x2="8" y2="6"></line>
-                <line x1="3" y1="10" x2="21" y2="10"></line>
-              </svg>
             </div>
 
-            <div className={styles.campoRecompensa}>
-              <img src="/images/patinha.png" className={styles.iconeInput} />
-              <div className={styles.sliderContainer}>
-                <div className={styles.sliderHeader}>
-                  <span className={styles.sliderLabel}>Recompensa:</span>
-                  <span className={styles.valorRecompensa}>R$ {formData.reward}</span>
-                </div>
-                <input
-                  type="range"
-                  min="0"
-                  max="1000"
-                  value={formData.reward}
-                  onChange={(e) => handleChange("reward", e.target.value)}
-                  className={styles.slider}
-                />
-                <div className={styles.sliderMinMax}>
-                  <span>R$ 0</span>
-                  <span>R$ 1.000</span>
-                </div>
+            <div className={styles.recompensaBox}>
+              <div className={styles.sliderHeader}>
+                <span>Recompensa: <strong>R$ {formData.reward}</strong></span>
               </div>
+              <input
+                type="range"
+                min="0"
+                max="2000"
+                step="50"
+                value={formData.reward}
+                onChange={(e) => handleChange("reward", e.target.value)}
+                className={styles.slider}
+              />
             </div>
-            
 
             <button 
               type="submit" 
-              disabled={loading}
               className={styles.btnCadastrar}
-              style={{ opacity: loading ? 0.7 : 1, cursor: loading ? "not-allowed" : "pointer" }}
+              disabled={loading}
             >
-              {loading ? "Cadastrando..." : "Cadastrar"}
+              {loading ? "Processando..." : "PUBLICAR ANÚNCIO"}
             </button>
-
           </form>
         </section>
-
       </div>
     </main>
   );
