@@ -1,13 +1,25 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import styles from "./ModalPet.module.css";
 import ModalLogin from "@/components/ModalLogin/ModalLogin";
 
 export default function ModalPet({ pet, onClose }) {
   const [showLoginModal, setShowLoginModal] = useState(false);
 
+  useEffect(() => {
+    document.body.style.overflow = 'hidden';
+
+    return () => {
+      document.body.style.overflow = '';
+    };
+  }, []);
+
   const description = pet?.description ?? "Sem descrição disponível.";
+  const localizacao = pet?.localizacao || pet?.location || "Não informada";
+  const data = pet?.data || pet?.updated || pet?.updatedAt || "Sem data";
+  const contatoDono = pet?.responsavel || pet?.nomeUsuario || "Não informado";
+  const telefoneDono = pet?.telefone || pet?.phone || pet?.contato || pet?.whatsapp || "Não disponível";
 
   function handleBackgroundClick(e) {
     if (e.target === e.currentTarget) {
@@ -46,7 +58,7 @@ export default function ModalPet({ pet, onClose }) {
     <div className={styles.modalContent}>
           {/* LEFT SIDE - IMAGE */}
           <div className={styles.imageBox}>
-            <img src={pet.image || "/images/default.png"} alt={pet.name} />
+            <img src={pet.image || "/images/semfoto.jpg"} alt={pet.name} />
             <h2 className={styles.petName}>{pet.name}</h2>
           </div>
 
@@ -55,7 +67,7 @@ export default function ModalPet({ pet, onClose }) {
             {/* Top area with updated text and reward badge */}
             <div className={styles.topMeta}>
               <div className={styles.updatedText}>
-                {pet.updated || pet.updatedAt || "Updated 2 weeks ago"}
+                {pet.updated || pet.updatedAt || ""}
               </div>
 
               {pet.reward && Number(pet.reward) > 0 && (
@@ -72,8 +84,12 @@ export default function ModalPet({ pet, onClose }) {
 
           
 
+
             <div className={styles.infoColumns}>
               <div className={styles.infoGroup}>
+                <p>
+                  <strong>Espécie:</strong> {pet.species || pet.especie || "-"}
+                </p>
                 <p>
                   <strong>Raça:</strong> {pet.breed}
                 </p>
@@ -81,19 +97,21 @@ export default function ModalPet({ pet, onClose }) {
                   <strong>Genero:</strong> {pet.gender}
                 </p>
                 <p>
-                  <strong>Location:</strong> {pet.location}
-                </p>
-                <p>
-                  <strong>Data:</strong> {pet.date || "-"}
-                </p>
-              </div>
-
-              <div className={styles.respEndGroup}>
-                <p>
                   <strong>idade:</strong> {pet.age}
                 </p>
+                {(pet.status === "lost" || pet.status === "perdido") && (
+                  <>
+                    <p>
+                      <strong>Localização:</strong> {localizacao}
+                    </p>
+                    <p>
+                      <strong>Data:</strong> {data}
+                    </p>
+                  </>
+                )}
               </div>
             </div>
+
 
             {/* DESCRIPTION */}
             <div className={styles.descriptionBox}>
@@ -102,7 +120,8 @@ export default function ModalPet({ pet, onClose }) {
             </div>
 
         {/* BOTÃO */}
-        <button className={styles.contactBtn} onClick={handleContact}>Adotar</button>
+        <button className={styles.contactBtn} onClick={handleContact}>Contatar</button>
+
 
       </div>
     </div>

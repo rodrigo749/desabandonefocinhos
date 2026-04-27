@@ -13,6 +13,7 @@ export default function CadastroAdocao() {
     nome: "",
     especie: "",
     raca: "",
+    genero: "",
     idade: "",
     descricao: "",
     imagemPreview: "",
@@ -328,6 +329,18 @@ export default function CadastroAdocao() {
                 placeholder="Raça"
                 value={formData.raca}
                 onChange={(e) => handleChange("raca", e.target.value)}
+                onFocus={handleFocus}
+                onBlur={handleBlur}
+              />
+            </div>
+
+            <div className={styles.campo}>
+              <img src="/images/patinha.png" className={styles.iconeInput} />
+              <input
+                type="text"
+                placeholder="Gênero"
+                value={formData.genero}
+                onChange={(e) => handleChange("genero", e.target.value)}
                 onFocus={handleFocus}
                 onBlur={handleBlur}
               />

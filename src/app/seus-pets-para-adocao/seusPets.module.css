@@ -153,6 +153,41 @@
   border: 2px solid #ee9530;
 }
 
+@media (max-width: 375px) {
+  .titulo {
+    padding: 7px 20px; /* Ajuste para caber em telas menores */
+    font-size: 16px;
+    width: 90%;
+  }
+
+  .grid-pets {
+    grid-template-columns: 1fr; /* Apenas uma coluna em telas pequenas */
+    gap: 20px;
+  }
+
+  .card-pet {
+    flex-direction: column; /* Alinhar verticalmente os elementos do card */
+    min-height: auto; /* Ajustar altura mínima */
+  }
+
+  .card-image-wrapper {
+    width: 100%;
+    height: 200px; /* Ajustar altura da imagem */
+  }
+
+  .content-column {
+    align-items: flex-start; /* Alinhar conteúdo à esquerda */
+  }
+
+  .card-text-box {
+    height: auto; /* Ajustar altura do texto */
+  }
+
+  .footer {
+    position: relative;
+    margin-top: 20px; /* Adicionar espaço entre os cards e o footer */
+  }
+}
 
 
 

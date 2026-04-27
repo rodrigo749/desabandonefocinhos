@@ -111,7 +111,7 @@
   flex-direction: column;
   align-items: stretch;
   background: white;
-  padding: 24px;
+  padding: 24px 24px 20px 24px;
   border-radius: 16px;
   border: 4px solid var(--heading);
   overflow-y: auto;
@@ -124,6 +124,7 @@
   margin-bottom: 20px;
   box-sizing: border-box;
 }
+
 
 .infoColumns {
   display: flex;
@@ -138,8 +139,9 @@
   font-size: 20px;
   color: #222;
   line-height: 1.6;
-  margin-bottom: 10px;
+  margin-bottom: 12px;
 }
+
 
 .infoColumns strong {
   color:#59a3a9;
@@ -271,7 +273,7 @@
 
   .infoColumns {
     flex-direction: column;
-    gap: 16px;
+    
   }
 
   .infoColumns p {
@@ -288,7 +290,7 @@
   }
 
   .descriptionBox {
-    margin-top: 16px;
+    margin-top: auto;
     max-height: 280px;
     padding: 16px;
     border-radius: 12px;
@@ -320,82 +322,46 @@
     order:0;
   }
 
-  .pawIcon {
-    width: 50px;
-  }
 }
 
 /* responsividade  de celulares */
-
-@media (max-width: 490px) and (min-width: 390px) {
-  .imageBox img {
-    max-height: 250px;
-  }
-
+@media (max-width: 490px) and (min-width: 360px) {
   .modal {
-    padding: 12px;
-    max-height: 100vh;
+    /* 1. Fixa o modal na tela, mas abaixo do seu Header */
+    position: fixed;
+    top: 70px; /* Ajuste esse valor de acordo com a altura do seu Header */
+    left: 0;
+    width: 100%;
+    
+    /* 2. Calcula a altura: Tela total menos o espaço do Header */
+    height: calc(100vh - 70px); 
+    max-height: calc(100vh - 70px);
+
+    /* 3. Ativa o scroll interno e organização */
     overflow-y: auto;
     overflow-x: hidden;
-  }
-  .modal {
-    padding: 10px;
-    width: 100%;
-  }
-
-  .infoBox {
-    max-height: calc(100vh - 200px);
-  }
-
-  /* scroll para card no celular */
-  .modal::-webkit-scrollbar {
-    width: 8px;
-    height: 8px;
-  }
-
-  .modal::-webkit-scrollbar-track {
-    background: rgba(0, 0, 0, 0.1);
-    border-radius: 10px;
-  }
-
-  .modal::-webkit-scrollbar-thumb {
-    background: rgb(161, 161, 161);
-    border-radius: 10px;
-  }
-  /* remover bordar do modal para celulares */
-  .modal {
+    display: block;
+    
+    /* 4. Respiros para o conteúdo não colar nas bordas */
+    padding: 20px 12px 60px 12px;
+    box-sizing: border-box;
+    
+    /* 5. Estética e Camada */
     border: none;
-    border-radius: 0;
+    border-radius: 20px 20px 0 0; /* Arredonda só o topo para um visual limpo */
+    z-index: 999; /* Garante que fique acima de tudo, exceto o botão de fechar */
+    background-color: #06747d;
   }
-  /* botao de contatar ong */
-  .contactBtn {
-    display:flex;
-    justify-content: center;
-    width: 60%;
-    
-    
-  }
- 
+
+  /* 6. O botão de fechar precisa estar fixo e visível */
   .closeBtn {
-    width: 30px;
-    height: 30px;
-    font-size: 18px;
-    order:0;
-    /* top: 10px; */
-    /* right: 10px; */
+    position: absolute;
+    top: 15px; /* Deve ser maior que o 'top' do modal para aparecer dentro dele */
+    right: 20px;
+    z-index: 1000;
   }
 
-  .petName {
-    font-size: 18px;
+  .imageBox {
+    margin-top: 40px; /* Espaço extra para o botão de fechar não cobrir a foto */
   }
-
-  .pawIcon {
-    width: 60px;
-  }
-
-  
 }
-
-
-
-

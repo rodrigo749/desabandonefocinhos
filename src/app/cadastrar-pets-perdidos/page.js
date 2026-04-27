@@ -250,7 +250,7 @@ const salvarPet = async (e) => {
               <img src="/images/patinha.png" className={styles.iconeInput} />
               <input
                 type="text"
-                placeholder="Name"
+                placeholder="Nome"
                 value={formData.name}
                 onChange={(e) => handleChange("name", e.target.value)}
                 onFocus={handleFocus}
@@ -262,12 +262,12 @@ const salvarPet = async (e) => {
               <img src="/images/patinha.png" className={styles.iconeInput} />
               <select
                 value={formData.species}
-                onChange={(e) => handleChange("species", e.target.value)}
+                onChange={(e) => handleChange("especie", e.target.value)}
               >
-                <option value="" disabled>Select species</option>
-                <option value="dog">Dog</option>
-                <option value="cat">Cat</option>
-                <option value="other">Other</option>
+                <option value="" disabled>Selecione a espécie</option>
+                <option value="dog">Cachorro</option>
+                <option value="cat">Gato</option>
+                <option value="other">Outros</option>
               </select>
             </div>
 
@@ -275,9 +275,9 @@ const salvarPet = async (e) => {
               <img src="/images/patinha.png" className={styles.iconeInput} />
               <input
                 type="text"
-                placeholder="Breed"
+                placeholder="Raça"
                 value={formData.breed}
-                onChange={(e) => handleChange("breed", e.target.value)}
+                onChange={(e) => handleChange("raça", e.target.value)}
                 onFocus={handleFocus}
                 onBlur={handleBlur}
               />
@@ -287,7 +287,7 @@ const salvarPet = async (e) => {
               <img src="/images/patinha.png" className={styles.iconeInput} />
               <input
                 type="text"
-                placeholder="Gender"
+                placeholder="Gênero"
                 value={formData.genero}
                 onChange={(e) => handleChange("genero", e.target.value)}
                 onFocus={handleFocus}
@@ -299,7 +299,7 @@ const salvarPet = async (e) => {
               <img src="/images/patinha.png" className={styles.iconeInput} />
               <input
                 type="number"
-                placeholder="Age"
+                placeholder="Idade"
                 value={formData.idade}
                 onChange={(e) => handleChange("idade", e.target.value)}
                 onFocus={handleFocus}
@@ -335,7 +335,7 @@ const salvarPet = async (e) => {
               <img src="/images/patinha.png" className={styles.iconeInput} />
               <input
                 type="text"
-                placeholder="Location"
+                placeholder="Localização"
                 value={formData.location}
                 onChange={(e) => handleChange("location", e.target.value)}
                 onFocus={handleFocus}
@@ -374,7 +374,7 @@ const salvarPet = async (e) => {
               <img src="/images/patinha.png" className={styles.iconeInput} />
               <div className={styles.sliderContainer}>
                 <div className={styles.sliderHeader}>
-                  <span className={styles.sliderLabel}>Reward:</span>
+                  <span className={styles.sliderLabel}>Recompensa:</span>
                   <span className={styles.valorRecompensa}>R$ {formData.reward}</span>
                 </div>
                 <input

@@ -170,7 +170,7 @@ export default function Header() {
             <div className={styles.sheet}>
               <div className={styles.sheetHeader}>
                 <Image
-                  src="/images/novalogo.png"
+                  src="/images/logo.svg"
                   alt="Patas Perdidas"
                   width={200}
                   height={100}
