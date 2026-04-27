@@ -1,52 +1,37 @@
-import { FaTiktok, FaFacebook, FaInstagram } from "react-icons/fa";
+import { FaFacebook, FaInstagram } from "react-icons/fa";
+import styles from "./Footer.module.css";
 
 export default function Footer() {
-  const year = new Date().getFullYear();
-
   return (
-    <footer className="footer">
-      <div className="footer-container">
+    <footer className={styles.footer}>
+      <div className={styles.container}>
         
+        <p className={styles.subtitle}>
+          Siga nossas redes
+        </p>
 
-        {/*<div className="footer-links">
-          <a href="#">Sobre</a>
-          <a href="#">Contato</a>
-          <a href="#">Apoiar</a>
-        </div>*/}
-
-        {/* Ícones sociais */}
-        <div className="footer-icons">
+        <div className={styles.icons}>
           <a
-            href="https://www.tiktok.com"
+            href="https://www.facebook.com/DesabandoneFocinhoos/"
             target="_blank"
             rel="noopener noreferrer"
-            aria-label="TikTok"
-          >
-            <FaTiktok />
-          </a>
-
-          <a
-            href="https://www.facebook.com"
-            target="_blank"
-            rel="noopener noreferrer"
-            aria-label="Facebook"
           >
             <FaFacebook />
           </a>
 
           <a
-            href="https://www.instagram.com"
+            href="https://www.instagram.com/desabandonefocinhos/"
             target="_blank"
             rel="noopener noreferrer"
-            aria-label="Instagram"
           >
             <FaInstagram />
           </a>
         </div>
 
-        <div className="footer-copy">
-          <p>© {year} Patas Perdidas. Todos os direitos reservados.</p>
-        </div>
+        <p className={styles.text}>
+          © 2026 Patas Perdidas. Todos os direitos reservados.
+        </p>
+
       </div>
     </footer>
   );

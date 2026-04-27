@@ -1,363 +1,493 @@
 /* ===========================
-   OVERLAY E POP-UP
-   =========================== */
+   OVERLAY
+=========================== */
 .overlay {
   position: fixed;
-  top: 0;
-  left: 0;
-  width: 100vw;
-  height: 100vh;
-  background: rgba(0, 0, 0, 0.6);
+  inset: 0;
+  background: rgba(0, 0, 0, 0.58);
   display: flex;
-  justify-content: center;
   align-items: center;
+  justify-content: center;
+  padding: 24px;
   z-index: 9999;
+  backdrop-filter: blur(2px);
 }
 
+/* ===========================
+   MODAL PRINCIPAL
+=========================== */
 .modal {
-  background: #ffffff;
-  border-radius: 22px;
-  padding: 28px;
-  width: min(1100px, 100%);
-  max-width: 1100px;
-  height: auto;
-  box-shadow: 0 0 25px rgba(0,0,0,0.25);
-  overflow: hidden;
-  border: 4px solid var(--accent-orange);
-  display: flex;
-  flex-direction: column;
+  width: min(1180px, 100%);
+  max-height: 92vh;
+  overflow-y: auto;
+  background: #f7fbfb;
+  border: 2px solid var(--border);
+  border-radius: 28px;
+  box-shadow: 0 18px 50px rgba(0, 0, 0, 0.18);
+  position: relative;
 }
 
 .modalContent {
-  position: relative;
-  display: flex;
-  gap: 20px;
-  width: 100%;
-  align-items: stretch;
+  display: grid;
+  grid-template-columns: 0.85fr 1.15fr;
+  min-height: 720px;
 }
 
 /* ===========================
-    BOTÃƒO DE FECHAR
-  ===========================*/
+   BOTÃO FECHAR
+=========================== */
 .closeBtn {
-  background: var(--accent-orange);
-  border: none;
-  width: 30px;
-  height: 30px;
+  position: absolute;
+  top: 18px;
+  right: 18px;
+  width: 52px;
+  height: 52px;
+  border: 2px solid var(--heading);
+  background: #f7fbfb;
+  color: var(--heading);
   border-radius: 50%;
+  font-size: 28px;
+  line-height: 1;
   display: flex;
   align-items: center;
   justify-content: center;
-  font-size: 22px;
-  color: var(--heading);
   cursor: pointer;
-  z-index: 1200; 
-  transition: background 0.12s, transform 0.12s;
-  order: 2;
+  transition: 0.2s ease;
+  z-index: 20;
+}
+
+.closeBtn:hover {
+  background: var(--bg-soft);
+  transform: scale(1.04);
 }
 
 /* ===========================
-   COLUNA DA IMAGEM
-   =========================== */
+   COLUNA ESQUERDA
+=========================== */
 .imageBox {
-  flex: 1;
+  background: #eef6f6;
+  border-right: 1px solid rgba(15, 111, 120, 0.14);
+  padding: 42px 34px 34px;
   display: flex;
   flex-direction: column;
-  align-items: center;
-}
-
-.imageBox img {
-  width: 100%;
-  max-height: 420px;
-  object-fit: cover;
-  border-radius: 20px;
-}
-
-.petName {
-  margin-top: 12px;
-  padding: 10px 20px;
-  background-color: var(--nav);
-  color: var(--accent-orange);
-  font-size: clamp(20px, 3vw, 36px);
-  font-weight: 700;
-  text-align: center;
-  border-radius: 14px;
-  border: 3px solid var(--heading);
-}
-
-/* ===========================
-   COLUNA DA INFOBOX
-   =========================== */
-.infoBox {
-  flex: 1.2;
-  background: #7a8fa7;
-  padding: 24px;
-  border-radius: 16px;
-  border: 4px solid var(--heading);
-  overflow-y: auto;
+  justify-content: space-between;
   position: relative;
 }
 
-/* COLUNAS LADO A LADO */
-.infoColumns {
-  display: flex;
-  justify-content: space-between;
-  gap: 40px;
+.imageBox::before,
+.imageBox::after {
+  content: "";
+  position: absolute;
+  border: 2px dashed rgba(89, 163, 169, 0.18);
+  border-radius: 50%;
+  pointer-events: none;
+}
+
+.imageBox::before {
+  width: 280px;
+  height: 280px;
+  left: -140px;
+  bottom: -140px;
+}
+
+.imageBox::after {
+  width: 160px;
+  height: 160px;
+  top: -80px;
+  left: -80px;
+}
+
+.imageWrapper {
+  position: relative;
   width: 100%;
-  margin-bottom: 20px;
+  max-width: 400px;
+  margin: 0 auto;
 }
 
-/* COLUNA 1 E 2 (TEXTO DE INFOS) */
-.infoColumns p {
-  font-size: 20px;
-  color: #ffffff;
-  line-height: 1.6;
-  margin-bottom: 10px;
+.imageWrapper img,
+.petImage {
+  width: 100%;
+  aspect-ratio: 1 / 1.08;
+  object-fit: cover;
+  border-radius: 26px;
+  border: 2px solid var(--heading);
+  display: block;
+  background: #dfe9ea;
 }
 
-.infoColumns strong {
-  color: var(--accent-orange);
-  font-weight: 700;
+.floatingPaw {
+  position: absolute;
+  left: 50%;
+  bottom: -28px;
+  transform: translateX(-50%);
+  width: 64px;
+  height: 64px;
+  border-radius: 50%;
+  background: white;
+  border: 3px solid var(--border);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 8px 18px rgba(0, 0, 0, 0.12);
+  z-index: 3;
 }
 
-
-.infoGroup {
-  width: 45%;
-}
-
-.respEndGroup {
-  width: 45%;
+.floatingPaw img {
+  width: 28px;
+  height: 28px;
+  object-fit: contain;
 }
 
 /* ===========================
-   DESCRIÃ‡ÃƒO
-   =========================== */
-.descriptionBox {
-  margin-top: 20px;
-  background: var(--card);
-  border-radius: 14px;
+   NOME DO PET
+=========================== */
+.petName {
+  margin: 42px auto 0;
   width: 100%;
-  padding: 18px;
-  max-height: 260px;
-  border: 3px solid var(--heading);
-  overflow-y: auto;
+  max-width: 350px;
+  background: var(--nav);
+  color: white;
+  border-radius: 22px;
+  padding: 18px 24px;
+  font-size: clamp(1.8rem, 2.6vw, 3rem);
+  font-weight: 700;
+  text-align: center;
+  box-shadow: 0 10px 18px rgba(10, 111, 116, 0.18);
+}
+
+/* ===========================
+   MINI CARD EXTRA
+=========================== */
+.quoteCard {
+  margin-top: 28px;
+  background: white;
+  border-radius: 22px;
+  padding: 26px 24px;
+  box-shadow: 0 10px 24px rgba(0, 0, 0, 0.06);
+  display: flex;
+  align-items: flex-start;
+  gap: 16px;
+}
+
+.quoteIcon {
+  color: var(--heading);
+  font-size: 34px;
+  line-height: 1;
+  opacity: 0.9;
+}
+
+.quoteText {
+  color: var(--text);
+  font-size: 18px;
+  line-height: 1.45;
+  font-weight: 500;
+}
+
+/* ===========================
+   COLUNA DIREITA
+=========================== */
+.infoBox {
+  padding: 42px 38px 30px;
+  display: flex;
+  flex-direction: column;
+  gap: 22px;
+  background: #f7fbfb;
+}
+
+/* topo info */
+.metaRow {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  color: var(--muted);
+  font-size: 16px;
+  font-weight: 500;
+}
+
+.metaIconCircle {
+  width: 42px;
+  height: 42px;
+  border-radius: 50%;
+  background: var(--nav);
+  color: white;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 18px;
+}
+
+.sectionTitle {
+  font-size: 18px;
+  font-weight: 700;
+  color: var(--text);
+}
+
+.sectionHeader {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  margin-bottom: 6px;
+}
+
+.sectionLine {
+  flex: 1;
+  height: 2px;
+  background: rgba(89, 163, 169, 0.25);
+  border-radius: 999px;
+}
+
+/* ===========================
+   GRADE DE INFORMAÇÕES
+=========================== */
+.infoColumns {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 18px 28px;
+}
+
+.infoGroup,
+.respEndGroup {
+  display: contents;
+}
+
+.infoItem {
+  display: flex;
+  align-items: flex-start;
+  gap: 14px;
+  padding: 10px 0;
+}
+
+.infoIcon {
+  width: 56px;
+  height: 56px;
+  min-width: 56px;
+  border-radius: 18px;
+  background: white;
+  box-shadow: 0 8px 18px rgba(0, 0, 0, 0.06);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--heading);
+  font-size: 24px;
+}
+
+.infoText {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.infoLabel {
+  color: var(--heading);
+  font-weight: 700;
+  font-size: 18px;
+}
+
+.infoValue {
+  color: var(--text);
+  font-weight: 600;
+  font-size: 17px;
+  line-height: 1.35;
+}
+
+/* ===========================
+   DESCRIÇÃO
+=========================== */
+.descriptionSection {
+  margin-top: 8px;
+}
+
+.descriptionBox {
+  margin-top: 14px;
+  background: white;
+  border-radius: 20px;
+  padding: 24px 26px;
+  min-height: 120px;
+  box-shadow: 0 10px 22px rgba(0, 0, 0, 0.06);
 }
 
 .descLabel {
-  font-size: 20px;
+  color: var(--text);
+  font-size: 17px;
   font-weight: 700;
-  color: var(--accent-orange);
   margin-bottom: 10px;
-  margin-top: -10px;
 }
 
 .descText {
-  color: var(--heading);
-  font-size: 16px;
-  line-height: 1.4;
+  color: var(--text);
+  font-size: 18px;
+  line-height: 1.55;
 }
 
 /* ===========================
-   BOTÃƒO
-   =========================== */
+   BOTÃO PRINCIPAL
+=========================== */
 .contactBtn {
-  position: absolute;
-  bottom: 22px;
-  left: 50%;
-  transform: translateX(-50%);
+  width: 100%;
+  margin-top: 8px;
+  min-height: 84px;
+  border: none;
+  border-radius: 24px;
   background: var(--nav);
   color: white;
-  padding: 12px 64px;
-  border: 3px solid var(--border);
-  border-radius: 40px;
-  font-size: 16px;
-  font-weight: 600;
+  font-size: 20px;
+  font-weight: 700;
   cursor: pointer;
+  box-shadow: 0 12px 22px rgba(10, 111, 116, 0.18);
+  transition: 0.2s ease;
 }
 
+.contactBtn:hover {
+  background: var(--nav-hover);
+  transform: translateY(-2px);
+}
+
+/* ===========================
+   TEXTO DE SEGURANÇA
+=========================== */
+.privacyNote {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  color: var(--heading);
+  font-size: 15px;
+  font-weight: 500;
+  margin-top: 4px;
+  opacity: 0.9;
+}
+
+/* ===========================
+   ÍCONE DECORATIVO ANTIGO
+=========================== */
 .pawIcon {
-  position: absolute;
-  top: 12px;
-  right: 12px;
-  width: 60px;
-  height: auto;
-  object-fit: contain;
-  z-index: 10;
+  display: none;
 }
 
-
-
-
-/* ================================
-   RESPONSIVIDADE DO MODAL
-   ================================ */
-
-@media (max-width: 1100px) {
-  .imageBox img {
-    max-height: 360px;
-  }
-
-  .contactBtn {
-    padding: 12px 48px;
-  }
-  
-}
-
-/* Responsividade para tablets */
-
-@media (max-width: 890px) {
-  .modal {
-    padding: 20px;
-    border-radius: 18px;
-    width: min(1100px, 70%);
-
-  }
-
+/* ===========================
+   RESPONSIVIDADE
+=========================== */
+@media (max-width: 1024px) {
   .modalContent {
-    flex-direction: column;
-    gap: 16px;
+    grid-template-columns: 1fr;
   }
 
   .imageBox {
-    width: 100%;
-    order: 1;
+    border-right: none;
+    border-bottom: 1px solid rgba(15, 111, 120, 0.14);
   }
 
-  .imageBox img {
-    max-height: 320px;
-    border-radius: 16px;
+  .imageWrapper {
+    max-width: 360px;
+  }
+
+  .petName {
+    max-width: 360px;
   }
 
   .infoBox {
-    order: 2;
-    width: 100%;
-    padding: 20px;
-    border-radius: 14px;
-    max-height: 60vh;
+    padding-top: 32px;
   }
- 
-  .petName {
-    margin-top: 12px;
-    font-size: clamp(20px, 5vw, 28px);
-    padding: 10px 16px;
-    border-radius: 12px;
+}
+
+@media (max-width: 768px) {
+  .overlay {
+    padding: 12px;
+  }
+
+  .modal {
+    border-radius: 22px;
+    max-height: 95vh;
+  }
+
+  .imageBox,
+  .infoBox {
+    padding-left: 20px;
+    padding-right: 20px;
+  }
+
+  .imageBox {
+    padding-top: 28px;
+    padding-bottom: 24px;
+  }
+
+  .infoBox {
+    padding-top: 28px;
+    padding-bottom: 24px;
+    gap: 18px;
   }
 
   .infoColumns {
-    flex-direction: column;
+    grid-template-columns: 1fr;
     gap: 16px;
   }
 
-  .infoColumns p {
-    font-size: 18px;
-  }
-
-  .infoGroup,
-  .respEndGroup {
-    width: 100%;
-  }
-
-  .descriptionBox {
-    margin-top: 16px;
-    max-height: 280px;
-    padding: 16px;
-    border-radius: 12px;
-  }
-
-  .descLabel {
-    font-size: 18px;
-  }
-
-  .descText {
-    font-size: 15px;
-  }
-
-  /* Em telas pequenas o botÃ£o passa a fluir dentro do conteÃºdo para evitar overflow */
   .contactBtn {
-    position: static;
-    transform: none;
-    margin: 16px auto 0 auto;
-    display: flex;
-    padding: 12px 40px;
-    font-size: 16px;
-    border-radius: 35px;
-  }
-
-  .closeBtn {
-    width: 32px;
-    height: 32px;
-    font-size: 20px;
-    order:0;
-  }
-
-  .pawIcon {
-    width: 50px;
-  }
-}
-
-/* responsividade  de celulares */
-
-@media (max-width: 490px) and (min-width: 390px) {
-  .modal {
-    padding: 12px;
-    max-height: 100vh;
-    overflow-y: auto;
-    overflow-x: hidden;
-  }
-  .modal {
-    padding: 10px;
-    width: 100%;
-  }
-
-  /* scroll para card no celular */
-  .modal::-webkit-scrollbar {
-    width: 8px;
-    height: 8px;
-  }
-
-  .modal::-webkit-scrollbar-track {
-    background: rgba(0, 0, 0, 0.1);
-    border-radius: 10px;
-  }
-
-  .modal::-webkit-scrollbar-thumb {
-    background: rgb(161, 161, 161);
-    border-radius: 10px;
-  }
-  /* remover bordar do modal para celulares */
-  .modal {
-    border: none;
-    border-radius: 0;
-  }
-  /* botao de contatar ong */
-  .contactBtn {
-    display:flex;
-    justify-content: center;
-    width: 60%;
-    
-    
-  }
- 
-  .closeBtn {
-    width: 30px;
-    height: 30px;
+    min-height: 68px;
     font-size: 18px;
-    order:0;
-    /* top: 10px; */
-    /* right: 10px; */
+    border-radius: 20px;
   }
 
   .petName {
-    font-size: 18px;
+    font-size: 2rem;
+    padding: 16px 18px;
   }
 
-  .pawIcon {
-    width: 60px;
+  .descriptionBox {
+    padding: 18px;
   }
 
-  
+  .infoIcon {
+    width: 48px;
+    height: 48px;
+    min-width: 48px;
+    border-radius: 16px;
+    font-size: 20px;
+  }
+
+  .closeBtn {
+    width: 46px;
+    height: 46px;
+    font-size: 24px;
+  }
 }
 
+@media (max-width: 480px) {
+  .modal {
+    border-radius: 18px;
+  }
 
+  .imageWrapper {
+    max-width: 100%;
+  }
 
+  .petName {
+    max-width: 100%;
+    font-size: 1.8rem;
+  }
 
+  .quoteCard {
+    padding: 18px;
+  }
+
+  .quoteText,
+  .descText {
+    font-size: 16px;
+  }
+
+  .infoLabel {
+    font-size: 16px;
+  }
+
+  .infoValue {
+    font-size: 15px;
+  }
+
+  .metaRow {
+    font-size: 14px;
+  }
+
+  .sectionTitle {
+    font-size: 16px;
+  }
+}

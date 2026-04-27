@@ -1,0 +1,52 @@
+.footer {
+  width: 100%;
+  background-color: #0f5c5c;
+  color: #ffffff;
+  padding: 2rem 1rem;
+  text-align: center;
+  margin-top: auto;
+
+  /* 👇 deixa mais integrado com a página */
+  box-shadow: 0 -6px 20px rgba(0, 0, 0, 0.08);
+}
+
+.container {
+  max-width: 1200px;
+  margin: 0 auto;
+}
+
+.subtitle {
+  font-size: 0.85rem;
+  opacity: 0.8;
+  margin-bottom: 0.8rem;
+}
+
+.icons {
+  display: flex;
+  justify-content: center;
+  gap: 1.8rem;
+  margin-bottom: 1.2rem;
+}
+
+.icons a {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.icons svg {
+  font-size: 1.8rem;
+  color: #ffffff;
+  transition: 0.25s ease;
+  cursor: pointer;
+}
+
+.icons svg:hover {
+  color: #f0b907;
+  transform: translateY(-3px) scale(1.1);
+}
+
+.text {
+  font-size: 0.85rem;
+  opacity: 0.75;
+}
