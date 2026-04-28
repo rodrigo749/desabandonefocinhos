@@ -791,20 +791,6 @@
   border-radius: 18px;
   font-size: 18px;
   font-weight: 700;
-  color: white;
-  background: linear-gradient(135deg, var(--nav) 0%, var(--nav-hover) 100%);
-  border: 0;
-  cursor: pointer;
-  box-shadow: 0 6px 14px rgba(0,0,0,0.12);
-  
-}
-
-.btnExcluir {
-  flex: 1;
-  padding: 12px 18px;
-  border-radius: 18px;
-  font-size: 18px;
-  font-weight: 700;
   color: var(--nav);
   background: #ffffff;
   border: 3px solid var(--border);

@@ -3,7 +3,8 @@
 import { useState, useEffect } from "react";
 import { useRouter, useParams } from "next/navigation";
 import styles from "../editarpetperdidos.module.css";
- 
+import ConfirmModal from "../../../components/ConfirmModal/ConfirmModal"; // adicionado
+
 const getBaseUrl = () =>
   (process.env.NEXT_PUBLIC_PETZ_API_URL || "http://localhost:3000")
     .trim()
@@ -48,6 +49,7 @@ export default function EditarPetPerdidoPage() {
     const [imagemFile, setImagemFile] = useState(null);
     const [loading, setLoading] = useState(false);
     const [fieldErrors, setFieldErrors] = useState({});
+    const [showConfirm, setShowConfirm] = useState(false);
   
     // carregar pet existente e preencher formulário
     useEffect(() => {
@@ -262,29 +264,43 @@ export default function EditarPetPerdidoPage() {
     setShowConfirm(true);
     };
 
-    const [showConfirm, setShowConfirm] = useState(false);
-    
       const handleConfirmDelete = async () => {
         setShowConfirm(false);
+
+        if (!id) {
+          showToast("ID do pet não encontrado", "error");
+          return;
+        }
+
         try {
+          setLoading(true);
+
           const token = localStorage.getItem("token") || "";
-    
-          const res = await fetch(`${getBaseUrl()}/api/pets/${petId}`, {
-            method: "DELETE",
-            headers: {
-              ...(token ? { Authorization: `Bearer ${token}` } : {}),
-            },
-          });
-    
-          if (!res.ok) {
-            throw new Error("Erro ao excluir pet");
+          const usuarioLogado = JSON.parse(localStorage.getItem("usuarioLogado") || "null");
+          const headers = {
+            ...(token ? { Authorization: `Bearer ${token}` } : {}),
+          };
+          if (usuarioLogado && usuarioLogado.id) {
+            headers["x-usuario-id"] = String(usuarioLogado.id);
           }
-    
+
+          const res = await fetch(`${getBaseUrl()}/api/pets/${id}`, {
+            method: "DELETE",
+            headers,
+          });
+
+          if (!res.ok) {
+            const body = await res.json().catch(() => ({}));
+            throw new Error(body?.message || "Erro ao excluir pet");
+          }
+
           showToast("Pet excluído com sucesso!", "success");
           router.push("/seus-pets-para-adocao");
         } catch (error) {
           console.error("Erro ao excluir pet:", error);
-          showToast("Erro ao excluir pet.", "error");
+          showToast(error.message || "Erro ao excluir pet.", "error");
+        } finally {
+          setLoading(false);
         }
       };
 
@@ -518,7 +534,17 @@ export default function EditarPetPerdidoPage() {
           </section>
   
         </div>
-      </main>
 
+        {/* Confirm modal de exclusão */}
+        <ConfirmModal
+          open={showConfirm}
+          title="Excluir pet"
+          message="Tem certeza que deseja excluir este pet? Esta ação é irreversível."
+          onCancel={() => setShowConfirm(false)}
+          onConfirm={handleConfirmDelete}
+          confirmLabel="Excluir"
+          cancelLabel="Cancelar"
+        />
+      </main>
     );
   }
