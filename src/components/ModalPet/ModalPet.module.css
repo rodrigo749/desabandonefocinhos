@@ -755,6 +755,10 @@
     padding: 16px 18px;
   }
 
+  .infoBox {
+    max-height: calc(100vh - 260px);
+  }
+
   .descriptionBox {
     padding: 18px;
   }
