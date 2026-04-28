@@ -3,11 +3,9 @@
 import { useState } from "react";
 import styles from "./ModalPet.module.css";
 import ModalLogin from "@/components/ModalLogin/ModalLogin";
+import { getApiUrl } from "@/lib/apiUrl";
 
-const getBaseUrl = () =>
-  (process.env.NEXT_PUBLIC_PETZ_API_URL || "http://localhost:3000")
-    .trim()
-    .replace(/\/$/, "");
+const getBaseUrl = () => getApiUrl();
 
 // Função para obter URL da imagem (BLOB ou URL direta)
 const getImageUrl = (pet) => {
