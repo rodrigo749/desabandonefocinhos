@@ -1,3 +1,441 @@
+/* CONTAINER GERAL DA PÁGINA */
+.cadastroPetContainer {
+  width: 100%;
+  background-color: var(--bg-soft);
+  display: flex;
+  justify-content: center;
+  padding: 50px 0;
+  position: relative;
+  min-height: 100vh;
+  overflow: hidden;
+}
+
+/* Background de patinhas */
+.cadastroPetContainer::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background-image: none;
+  background-repeat: repeat;
+  background-size: 600px;
+  opacity: 0.50;
+  z-index: 0;
+  filter: brightness(0) saturate(100%) invert(77%) sepia(97%) saturate(686%) hue-rotate(319deg) brightness(101%) contrast(101%);
+}
+
+
+/* BLOCO CENTRAL DIVIDIDO EM DUAS PARTES */
+.adocaoContainer {
+  width: 90%;
+  max-width: 1300px;
+  background: var(--bg-soft);
+  padding: 40px;
+  display: flex;
+  justify-content: space-between;
+  gap: 40px;
+  border-radius: 28px;
+  border: 6px solid var(--bg-soft);
+}
+
+/* ===========================
+   COLUNA ESQUERDA
+=========================== */
+
+.leftSide {
+  width: 48%;
+  height: 80%;
+  background: var(--card);
+  padding: 30px;
+  border-radius: 25px;
+  border: 5px solid var(--card);
+  box-shadow: inset 0 0 12px rgba(0, 0, 0, 0.08);
+  z-index: 1;
+}
+
+/* UPLOAD DE IMAGEM */
+.uploadBox {
+  width: 240px;
+  height: 240px;
+  background-color: #E0E0E0;
+  margin: 0 auto;
+  border-radius: 22px;
+  border: 4px solid var(--border);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: 0.2s ease;
+}
+
+.uploadBox:hover {
+  background-color: var(--card);
+}
+
+.iconeAddImg {
+  width: 90px;
+  height: 90px;
+  opacity: 0.9;
+}
+
+.uploadBox span {
+  margin-top: 10px;
+  font-size: 18px;
+  font-weight: 600;
+  color: #ffffff;
+}
+
+/* DESCRIÇÃO */
+.campoDescricao {
+  position: relative;
+  width: 100%;
+  margin-top: 20px;
+  height: 220px;  
+}
+
+.iconeDescricao {
+  position: absolute;
+  left: 18px;
+  top: 21px;
+  width: 28px;
+  height: 28px;
+  opacity: 0.9;
+}
+
+.descricaoTextarea {
+  width: 100%;
+  min-height: 250px;
+  padding: 20px 20px 20px 60px; /* deixa espaço para a patinha */
+  border-radius: 25px;
+  border: 4px solid var(--heading);
+  font-size: 16px;
+  outline: none;
+  resize: none;
+  background-color: white;
+  font-family: inherit;
+  color: #333333;
+}
+
+.descricaoTextarea:focus {
+  border-color: var(--heading);
+}
+
+/* ===========================
+   COLUNA DIREITA
+=========================== */
+
+.rightSide {
+  width: 48%;
+  height: 80%;
+  background: var(--card);
+  padding: 30px;
+  border-radius: 25px;
+  border: 5px solid var(--card);
+  box-shadow: inset 0 0 12px rgba(0, 0, 0, 0.08);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  z-index: 1;
+}
+
+/* TÍTULO */
+.tituloCadastro {
+  font-size: 32px;
+  font-weight: 700;
+  color: var(--heading);
+  margin-bottom: 20px;
+}
+
+/* FORM */
+.formCadastro {
+  width: 80%;
+  display: flex;
+  flex-direction: column;
+  gap: 18px;
+  margin-top: 25px;
+}
+
+/* CAMPOS COM PATINHA */
+.campo {
+  position: relative;
+  width: 100%;
+}
+
+.campo input,
+.campo select {
+  width: 100%;
+  padding: 12px 20px 12px 55px;
+  border-radius: 40px;
+  border: 4px solid var(--heading);
+  font-size: 16px;
+  outline: none;
+  background-color: #ffffff;
+  font-family: inherit;
+  color: #333;
+  box-sizing: border-box;
+  height: 50px;
+}
+
+.campo input:focus,
+.campo select:focus {
+  border-color: var(--heading);
+}
+
+
+.campo input[type="number"]::-webkit-outer-spin-button,
+.campo input[type="number"]::-webkit-inner-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}
+
+
+/* Custom Age Input with Buttons */
+.campoIdade {
+  position: relative;
+}
+
+.inputIdade {
+  width: 100%;
+  padding: 12px 70px 12px 55px !important;
+  border-radius: 40px !important;
+  border: 4px solid var(--heading) !important;
+  font-size: 16px;
+  outline: none;
+  background-color: #ffffff;
+  font-family: inherit;
+  color: #333;
+  box-sizing: border-box;
+  height: 50px;
+}
+
+.inputIdade::-webkit-outer-spin-button,
+.inputIdade::-webkit-inner-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}
+
+.inputIdade:focus {
+  border-color: var(--heading);
+}
+
+.botoesIdade {
+  position: absolute;
+  right: 14px;
+  top: 50%;
+  transform: translateY(-50%);
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.btnIdade {
+  width: 20px;
+  height: 17px;
+  background-color: var(--heading);
+  border: none;
+  border-radius: 8px;
+  color: white;
+  font-size: 12px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: background-color 0.2s ease;
+}
+
+.btnIdade:hover {
+  background-color: var(--heading);
+}
+
+.btnIdade:active {
+  background-color: var(--heading);
+}
+
+.campo select {
+  appearance: none;
+  -webkit-appearance: none;
+  -moz-appearance: none;
+  cursor: pointer;
+}
+
+.campo select.selectPlaceholder {
+  color: #757575;
+}
+
+.campo select option {
+  color: #333;
+}
+
+/* ÍCONE PATINHA NOS INPUTS */
+.iconeInput {
+  position: absolute;
+  left: 15px;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 28px;
+  height: 28px;
+  opacity: 0.9;
+}
+
+/* BOTÃO */
+.btnCadastrar {
+  margin-top: 15px;
+  width: 80%;
+  padding: 12px;
+  border-radius: 18px;
+  font-size: 22px;
+  font-weight: 700;
+  color: white;
+  background-color: var(--nav);
+  border: 4px solid var(--border);
+  cursor: pointer;
+  
+  margin-left: 30px;
+}
+
+
+/* BOTÕES DE EDIÇÃO - SALVAR / EXCLUIR */
+.botoesEdicao {
+  width: 80%;
+  margin-left: 30px;
+  display: flex;
+  gap: 12px;
+  justify-content: space-between;
+  margin-top: 18px;
+}
+
+.btnSalvar {
+  flex: 1;
+  padding: 12px 18px;
+  border-radius: 18px;
+  font-size: 18px;
+  font-weight: 700;
+  color: white;
+  background: linear-gradient(135deg, var(--nav) 0%, var(--nav-hover) 100%);
+  border: 0;
+  cursor: pointer;
+  box-shadow: 0 6px 14px rgba(0,0,0,0.12);
+  
+}
+
+.btnExcluir {
+  flex: 1;
+  padding: 12px 18px;
+  border-radius: 18px;
+  font-size: 18px;
+  font-weight: 700;
+  color: var(--nav);
+  background: #ffffff;
+  border: 3px solid var(--border);
+  cursor: pointer;
+  box-shadow: 0 4px 10px rgba(0,0,0,0.06);
+}
+
+
+
+.previewImagem {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  border-radius: 18px;
+}
+
+/* TEXTO DE ERRO */
+.errorText {
+  color: red;
+  font-size: 13px;
+  margin-top: -10px;
+  margin-bottom: 4px;
+  padding-left: 15px;
+  display: block;
+}
+
+
+
+/* ===========================
+   MEDIA QUERIES - RESPONSIVO
+=========================== */
+
+/* TABLETS (até 1024px) */
+@media (max-width: 1024px) {
+  .adocaoContainer {
+    width: 95%;
+    padding: 30px;
+    gap: 30px;
+    flex-direction: column;
+  }
+
+  .leftSide,
+  .rightSide {
+    width: 100%;
+  }
+
+  .tituloCadastro {
+    font-size: 28px;
+    margin-bottom: 15px;
+  }
+
+  .formCadastro {
+    width: 90%;
+  }
+
+  .uploadBox {
+    width: 200px;
+    height: 200px;
+  }
+
+  .iconeAddImg {
+    width: 75px;
+    height: 75px;
+  }
+
+  .uploadBox span {
+    font-size: 16px;
+  }
+}
+
+/* TABLETS PEQUENOS (até 768px) */
+@media (max-width: 768px) {
+  .cadastroPetContainer {
+    padding: 30px 0;
+  }
+
+  .adocaoContainer {
+    padding: 20px;
+    gap: 18px;
+    border-radius: 18px;
+  }
+
+  .leftSide {
+    padding: 20px;
+  }
+
+  .rightSide {
+    padding: 20px;
+  }
+
+  .uploadBox {
+    width: 180px;
+    height: 180px;
+  }
+
+  .descricaoTextarea {
+    min-height: 180px;
+  }
+}
+
+/* MOBILE (até 480px) */
+@media (max-width: 480px) {
+  .formCadastro {
+    width: 100%;
+    gap: 12px;
+  }
+
+  .btnCadastrar {
+    width: 100%;
+    margin-left: 0;
+  }
+}
 /* CONTAINER GERAL DA PÃGINA */
 .cadastroPetContainer {
   width: 100%;
@@ -271,20 +709,19 @@
 
 /* BOTÃƒO */
 .btnCadastrar {
-  display: block;
-  margin: 15px auto 0 auto; /* centered horizontally */
-  width: 100%;
-  max-width: 320px; /* keeps the button from stretching too wide */
-  padding: 12px 18px;
+  margin-top: 15px;
+  width: 80%;
+  padding: 12px;
   border-radius: 18px;
-  font-size: 20px;
+  font-size: 22px;
   font-weight: 700;
   color: white;
   background-color: var(--nav);
   border: 4px solid var(--border);
   cursor: pointer;
-  transition: transform 0.25s ease-in-out, background-color 0.25s ease-in-out;
+  transition: 0.25s ease-in-out;
   box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.25);
+  margin-left: 38px;
 }
 
 .btnCadastrar:hover {
@@ -567,13 +1004,11 @@
   }
 
   .btnCadastrar {
-    display: block;
-    margin: 15px auto 0 auto;
-    width: 100%;
-    max-width: 320px;
-    padding: 10px 14px;
+    width: 90%;
+    padding: 10px;
     font-size: 18px;
     border-radius: 15px;
+    margin-left: 0;
   }
 }
 
@@ -672,14 +1107,12 @@
   }
 
   .btnCadastrar {
-    display: block;
-    margin: 10px auto 0 auto;
-    width: 100%;
-    max-width: 320px;
-    padding: 8px 12px;
+    width: 95%;
+    padding: 8px;
     font-size: 16px;
     border-radius: 12px;
     border: 3px solid var(--border);
+    margin-left: 0;
     margin-top: 10px;
   }
 
@@ -743,8 +1176,6 @@
   }
 
   .btnCadastrar {
-    display: block;
-    margin: 10px auto 0 auto;
     width: 100%;
     padding: 6px;
     font-size: 14px;
@@ -752,48 +1183,3 @@
 }
 
 
-.botoesEdicao {
-  display: flex;
-  justify-content: space-between;
-  gap: 20px;
-  margin-top: 20px;
-  width: 100%;
-}
-
-.btnSalvar {
-  flex: 1;
-  padding: 12px;
-  border-radius: 18px;
-  font-size: 22px;
-  font-weight: 700;
-  color: white;
-  background-color: var(--nav);
-  border: 4px solid var(--border);
-  cursor: pointer;
-  
-  margin-left: 30px;
-}
-
-
-/* BOTÕES DE EDIÇÃO - SALVAR / EXCLUIR */
-.botoesEdicao {
-  width: 80%;
-  margin-left: 30px;
-  display: flex;
-  gap: 12px;
-  justify-content: space-between;
-  margin-top: 18px;
-}
-
-.btnExcluir {
-  flex: 1;
-  padding: 12px 18px;
-  border-radius: 18px;
-  font-size: 18px;
-  font-weight: 700;
-  color: var(--nav);
-  background: #ffffff;
-  border: 3px solid var(--border);
-  cursor: pointer;
-  box-shadow: 0 4px 10px rgba(0,0,0,0.06);
-}

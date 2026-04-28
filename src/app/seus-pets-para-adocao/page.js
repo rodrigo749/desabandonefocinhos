@@ -81,7 +81,7 @@ export default function SeusPetsParaAdocao() {
               <PetCard
                 key={pet.id}
                 pet={pet}
-                tipoPagina="usuario"
+                tipoPagina="meus-perdidos"
               />
             ))}
           </section>
