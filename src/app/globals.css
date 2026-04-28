@@ -5,8 +5,17 @@
 }
 
 :root {
+  /* =========================
+     CORES PRINCIPAIS
+  ========================= */
   --nav: #0a6f74;
   --nav-hover: #0c8086;
+
+  /* 🔥 NOVO FOOTER (AGORA VISUALMENTE DIFERENTE) */
+  --footer: #0f5c5c;
+  --footer-text: #ffffff;
+  --footer-hover: #f0b907;
+
   --bg: #cdd8da;
   --bg-soft: #dbe3e4;
   --card: #eef3f3;
@@ -17,7 +26,53 @@
   --accent-orange: #f47d2f;
   --accent-yellow: #f0b907;
   --danger: #c93a3a;
+  --danger-hover: #af2f2f;
   --background: #ffffff;
+
+  /* =========================
+     TIPOGRAFIA
+  ========================= */
+  --font-family-base: -apple-system, BlinkMacSystemFont, "Segoe UI", "Roboto",
+    "Oxygen", "Ubuntu", "Cantarell", "Fira Sans", "Droid Sans",
+    "Helvetica Neue", sans-serif;
+
+  --fs-title-xl: 2rem;
+  --fs-title-lg: 1.75rem;
+  --fs-title-md: 1.5rem;
+  --fs-body-lg: 1.125rem;
+  --fs-body: 1rem;
+  --fs-small: 0.875rem;
+
+  --fw-bold: 700;
+  --fw-semibold: 600;
+  --fw-regular: 400;
+
+  /* =========================
+     ESPAÇAMENTOS
+  ========================= */
+  --space-xs: 0.5rem;
+  --space-sm: 0.75rem;
+  --space-md: 1rem;
+  --space-lg: 1.5rem;
+  --space-xl: 2rem;
+  --space-2xl: 2.5rem;
+
+  /* =========================
+     BORDAS E SOMBRAS
+  ========================= */
+  --radius-sm: 12px;
+  --radius-md: 18px;
+  --radius-lg: 24px;
+  --radius-pill: 40px;
+
+  --shadow-sm: 0px 4px 6px rgba(0, 0, 0, 0.12);
+  --shadow-md: 0px 6px 14px rgba(0, 0, 0, 0.12);
+
+  /* =========================
+     LAYOUT
+  ========================= */
+  --container-max: 1300px;
+  --transition-fast: 0.2s ease;
 }
 
 html,
@@ -27,129 +82,76 @@ body {
   height: 100%;
   display: flex;
   flex-direction: column;
-  margin: 0;
-  padding: 0;
 }
 
-/* Global body settings */
 body {
   flex-grow: 1;
-  position: relative;
   min-height: 100vh;
-  overflow: auto;
   color: var(--text);
   background: var(--bg);
-  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "Roboto", "Oxygen",
-    "Ubuntu", "Cantarell", "Fira Sans", "Droid Sans", "Helvetica Neue",
-    sans-serif;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
-  scrollbar-width: none; /* Firefox */
-  -ms-overflow-style: none; /* IE and Edge */
+  font-family: var(--font-family-base);
+  font-size: var(--fs-body);
+  line-height: 1.5;
 }
 
-
-/* If body has this class, hide the global background (used by home page) */
-body.no-site-bg .site-bg,
-body.no-site-bg {
-  background-image: none !important;
+/* =========================
+   TIPOGRAFIA GLOBAL
+========================= */
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
+  color: var(--heading);
+  font-weight: var(--fw-bold);
+  line-height: 1.2;
 }
 
-body::-webkit-scrollbar {
-  width: 0px;
+h1 { font-size: var(--fs-title-xl); }
+h2 { font-size: var(--fs-title-lg); }
+h3 { font-size: var(--fs-title-md); }
+
+/* =========================
+   UTILITÁRIOS
+========================= */
+.container-default {
+  max-width: var(--container-max);
+  margin: 0 auto;
+  padding: 0 var(--space-md);
 }
 
-body.scrolling::-webkit-scrollbar {
-  width: 8px;
+.card-default {
+  background: var(--card);
+  border-radius: var(--radius-lg);
+  box-shadow: var(--shadow-sm);
 }
 
-body.scrolling {
-  scrollbar-width: thin;
-}
-
-/* remove previous solid overlay pseudo-element and keep layering safe */
-/* If an overlay color is desired, you can uncomment and adjust the block below. */
-/*
-body::after {
-  content: "";
-  position: absolute;
-  inset: 0;
-  background-color: rgba(39, 75, 101, 0.18);
-  z-index: -1;
-  pointer-events: none;
-}
-*/
-
-/* Paw parallax elements */
-.paw {
-  position: fixed;
-  z-index: 0; /* garantindo que, se existirem, fiquem acima do background */
-  opacity: 0.3;
-  pointer-events: none;
-}
-
-.paw img {
-  width: 50px;
-  height: 50px;
-}
-
-.paw1 {
-  top: 10%;
-  left: 10%;
-}
-
-.paw2 {
-  top: 20%;
-  right: 15%;
-}
-
-.paw3 {
-  top: 40%;
-  left: 20%;
-}
-
-.paw4 {
-  top: 60%;
-  right: 10%;
-}
-
-.paw5 {
-  top: 80%;
-  left: 15%;
-}
-
-a {
-  color: inherit;
-  text-decoration: none;
-}
-
-.appMain {
-  flex-grow: 1;
-  padding-bottom: 116px;
-}
-
-@media (min-width: 1024px) {
-  .appMain {
-    padding-bottom: 0;
-  }
-}
-
-@media (prefers-color-scheme: dark) {
-  html {
-    color-scheme: dark;
-  }
-}
-
-/* footer styles */
-
-.footer {
+/* =========================
+   BOTÕES
+========================= */
+.btn-primary {
   background-color: var(--nav);
   color: #fff;
+}
+
+.btn-primary:hover {
+  background-color: var(--nav-hover);
+}
+
+/* =========================
+   FOOTER 
+========================= */
+.footer {
+  width: 100%;
+  background-color: var(--footer);
+  color: var(--footer-text);
   padding: 2rem 1rem;
   text-align: center;
-  
-  position: relative;
-  z-index: 10;
+  margin-top: auto;
+
+  /* 👇 separa do conteúdo */
+  border-top: 2px solid var(--border);
 }
 
 .footer-container {
@@ -158,14 +160,13 @@ a {
 }
 
 .footer-logo h2 {
+  font-size: var(--fs-title-md);
   margin-bottom: 0.5rem;
-  font-size: 1.5rem;
-  font-weight: bold;
 }
 
 .footer-logo p {
-  color: #deecee;
-  font-size: 0.9rem;
+  font-size: var(--fs-small);
+  color: var(--muted);
   margin-bottom: 1.5rem;
 }
 
@@ -178,29 +179,15 @@ a {
 }
 
 .footer-links a {
-  color: #fff;
-  text-decoration: none;
-  transition: color 0.2s;
+  color: var(--footer-text);
+  font-weight: var(--fw-semibold);
+  transition: var(--transition-fast);
 }
 
 .footer-links a:hover {
-  color: #ffd08f;
+  color: var(--footer-hover);
 }
 
-.footer-copy {
-  font-size: 0.85rem;
-  color: #deecee;
-}
-
-/* Responsivo */
-@media (max-width: 600px) {
-  .footer-links {
-    flex-direction: column;
-    gap: 0.75rem;
-  }
-}
-
-/* Icones das redes sociais */
 .footer-icons {
   display: flex;
   justify-content: center;
@@ -209,17 +196,27 @@ a {
 }
 
 .footer-icons a {
-  color: #fff;
+  color: var(--footer-text);
   font-size: 1.6rem;
-  transition: color 0.3s, transform 0.3s;
+  transition: var(--transition-fast);
 }
 
 .footer-icons a:hover {
-  color: #ffd08f;
-  transform: scale(1.15);
+  color: var(--footer-hover);
+  transform: translateY(-2px) scale(1.05);
 }
 
+.footer-copy {
+  font-size: var(--fs-small);
+  color: var(--muted);
+}
 
-
-
-
+/* =========================
+   RESPONSIVO
+========================= */
+@media (max-width: 600px) {
+  .footer-links {
+    flex-direction: column;
+    gap: 0.75rem;
+  }
+}
