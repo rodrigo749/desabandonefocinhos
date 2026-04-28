@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useCallback } from "react";
 import { useRouter } from "next/navigation";
 import styles from "./adocao.module.css";
 import useSafeToast from "@/components/Toast/useSafeToast";
@@ -8,6 +8,12 @@ import useSafeToast from "@/components/Toast/useSafeToast";
 export default function CadastroAdocao() {
   const { showToast } = useSafeToast();
   const router = useRouter();
+
+  // --- ESTADOS DE CONTROLE ---
+  const [isAuthorized, setIsAuthorized] = useState(false);
+  const [loading, setLoading] = useState(false);
+  const [imagemFile, setImagemFile] = useState(null);
+  const [fieldErrors, setFieldErrors] = useState({});
 
   const [formData, setFormData] = useState({
     nome: "",
@@ -18,185 +24,151 @@ export default function CadastroAdocao() {
     imagemPreview: "",
   });
 
-  const [imagemFile, setImagemFile] = useState(null);
-  const [loading, setLoading] = useState(false);
-  const [fieldErrors, setFieldErrors] = useState({});
+  // --- PROTEÇÃO DE ROTA ---
+  useEffect(() => {
+    const usuarioLogado = localStorage.getItem("usuarioLogado");
 
-  // ── helpers ──
-  const getBaseUrl = () =>
-    (process.env.NEXT_PUBLIC_PETZ_API_URL || `http://localhost:${process.env.PORT || 3000}`)
+    if (!usuarioLogado) {
+      showToast("Acesso restrito. Redirecionando para login...", "warning");
+      router.push("/login-usuario");
+    } else {
+      setIsAuthorized(true);
+    }
+  }, [router, showToast]);
+
+  // --- HELPERS ---
+  const getBaseUrl = useCallback(() => {
+    return (process.env.NEXT_PUBLIC_PETZ_API_URL || "http://localhost:3000")
       .trim()
       .replace(/\/$/, "");
-
-  // ── form handlers ──
-  const handleFocus = (e) => {
-    e.target.dataset.placeholder = e.target.placeholder;
-    e.target.placeholder = "";
-  };
-
-  const handleBlur = (e) => {
-    e.target.placeholder = e.target.dataset.placeholder || "";
-  };
+  }, []);
 
   const handleChange = (field, value) => {
     setFormData((prev) => ({ ...prev, [field]: value }));
     if (fieldErrors[field]) setFieldErrors((prev) => ({ ...prev, [field]: null }));
   };
 
+  // --- TRATAMENTO DE IMAGEM ---
   const handleImagem = (e) => {
     const arquivo = e.target.files?.[0];
     if (!arquivo) return;
 
-    const maxMB = 5;
-    if (arquivo.size > maxMB * 1024 * 1024) {
-      showToast(`Imagem maior que ${maxMB}MB. Escolha outra.`, "warning");
-      return;
-    }
-    if (!arquivo.type || !arquivo.type.startsWith("image/")) {
-      showToast("Formato inválido. Escolha uma imagem.", "warning");
+    // Validação de Tamanho (5MB)
+    if (arquivo.size > 5 * 1024 * 1024) {
+      showToast("Imagem muito grande. O limite é 5MB.", "warning");
       return;
     }
 
-    // revoga preview anterior se blob
-    if (formData.imagemPreview && formData.imagemPreview.startsWith("blob:")) {
-      try { URL.revokeObjectURL(formData.imagemPreview); } catch {}
+    // Validação de Tipo
+    if (!arquivo.type.startsWith("image/")) {
+      showToast("Por favor, selecione um arquivo de imagem válido.", "warning");
+      return;
     }
 
     setImagemFile(arquivo);
-    setFormData((prev) => ({ ...prev, imagemPreview: URL.createObjectURL(arquivo) }));
+    const previewUrl = URL.createObjectURL(arquivo);
+    setFormData((prev) => ({ ...prev, imagemPreview: previewUrl }));
   };
 
-  // cleanup blob ao desmontar
+  // Cleanup do Blob para evitar vazamento de memória
   useEffect(() => {
     return () => {
-      if (formData.imagemPreview && formData.imagemPreview.startsWith("blob:")) {
-        try { URL.revokeObjectURL(formData.imagemPreview); } catch {}
+      if (formData.imagemPreview?.startsWith("blob:")) {
+        URL.revokeObjectURL(formData.imagemPreview);
       }
     };
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
+  }, [formData.imagemPreview]);
 
-  // ── submit ──
+  // --- SUBMISSÃO ---
   const salvarPet = async (e) => {
     e.preventDefault();
     setLoading(true);
     setFieldErrors({});
 
-    // validações
+    // Validação Front-end rápida
     if (!formData.nome.trim()) {
-      setFieldErrors((prev) => ({ ...prev, nome: "Nome é obrigatório." }));
+      setFieldErrors((prev) => ({ ...prev, nome: "O nome do pet é obrigatório." }));
       setLoading(false);
       return;
     }
-    if (!formData.especie) {
-      setFieldErrors((prev) => ({ ...prev, especie: "Selecione a espécie." }));
-      setLoading(false);
-      return;
-    }
-
-    // verifica usuário logado (desabilitado para testes)
-    let usuario = { id: 1 };
-    // try {
-    //   usuario = JSON.parse(localStorage.getItem("usuarioLogado") || "null");
-    // } catch {}
-
-    // if (!usuario || !usuario.id) {
-    //   showToast("Você precisa estar logado para cadastrar um pet.", "warning");
-    //   setLoading(false);
-    //   return;
-    // }
 
     try {
-      const baseUrl = getBaseUrl();
+      const storageData = localStorage.getItem("usuarioLogado");
+      const usuario = storageData ? JSON.parse(storageData) : null;
+
+      if (!usuario?.id) {
+        throw new Error("Sessão expirada. Faça login novamente.");
+      }
+
       const fd = new FormData();
       fd.append("name", formData.nome.trim());
       fd.append("species", formData.especie);
       fd.append("breed", formData.raca.trim());
-      fd.append("age", formData.idade || "");
+      fd.append("age", formData.idade);
       fd.append("description", formData.descricao.trim());
-      fd.append("status", "available");
+      fd.append("status", "available"); // Status fixo para adoção
       fd.append("userId", usuario.id);
 
       if (imagemFile) {
         fd.append("image", imagemFile);
       }
 
-      const res = await fetch(`${baseUrl}/api/pets`, {
+      const res = await fetch(`${getBaseUrl()}/api/pets`, {
         method: "POST",
         body: fd,
+        // Se usar Token JWT, adicione aqui:
+        // headers: { "Authorization": `Bearer ${usuario.token}` }
       });
 
       const respData = await res.json().catch(() => ({}));
 
       if (!res.ok) {
-        const msg =
-          respData?.message || respData?.error || respData?.raw ||
-          `Erro ao cadastrar pet (status ${res.status})`;
-
-        if (msg.toLowerCase().includes("name")) {
-          setFieldErrors((prev) => ({ ...prev, nome: msg }));
-        } else if (msg.toLowerCase().includes("species") || msg.toLowerCase().includes("espécie")) {
-          setFieldErrors((prev) => ({ ...prev, especie: msg }));
-        } else {
-          showToast(msg, "error");
-        }
+        const msg = respData?.message || "Erro ao cadastrar pet.";
+        showToast(msg, "error");
         setLoading(false);
         return;
       }
 
-      // 4. sucesso
-      console.log("[CadastroPetAdocao] resposta backend:", respData);
-      showToast("Pet cadastrado com sucesso!", "success");
+      showToast("Pet cadastrado para adoção!", "success");
+      
+      // Pequeno delay para o usuário ler o toast antes do redirect
+      setTimeout(() => router.push("/seus-pets-para-adocao"), 1000);
 
-      // limpar formulário
-      setFormData({
-        nome: "",
-        especie: "",
-        raca: "",
-        idade: "",
-        descricao: "",
-        imagemPreview: "",
-      });
-      setImagemFile(null);
-
-      // redirecionar para listagem de pets para adoção após breve delay
-      setTimeout(() => router.push("/seus-pets-para-adocao"), 900);
     } catch (err) {
-      // console.error("Erro geral:", err);
-      showToast("Erro de conexão com o servidor. O backend está ligado?", "error");
+      showToast(err.message || "Erro de conexão.", "error");
     } finally {
       setLoading(false);
     }
   };
 
+  // Bloqueio de renderização para não-autorizados
+  if (!isAuthorized) {
+    return (
+      <div className={styles.loadingScreen}>
+        <p>Verificando autenticação...</p>
+      </div>
+    );
+  }
+
   return (
     <main className={styles.cadastroPetContainer}>
       <div className={styles.adocaoContainer}>
-
-        {/* COLUNA ESQUERDA */}
+        
+        {/* COLUNA ESQUERDA: Imagem e Descrição */}
         <section className={styles.leftSide}>
           <div className={styles.uploadImagem}>
-            <label htmlFor="pet-imagem">
+            <label htmlFor="pet-imagem" className={styles.uploadLabel}>
               <div className={styles.uploadBox}>
                 {formData.imagemPreview ? (
-                  <img
-                    src={formData.imagemPreview}
-                    alt="Pré-visualização"
-                    className={styles.previewImagem}
-                  />
+                  <img src={formData.imagemPreview} alt="Preview" className={styles.previewImagem} />
                 ) : (
                   <>
-                    <img
-                      src="/images/iconephoto.png"
-                      alt="Adicionar"
-                      className={styles.iconeAddImg}
-                    />
+                    <img src="/images/iconephoto.png" alt="Add" className={styles.iconeAddImg} />
                     <span>Adicionar imagem</span>
                   </>
                 )}
               </div>
             </label>
-
             <input
               type="file"
               id="pet-imagem"
@@ -208,48 +180,42 @@ export default function CadastroAdocao() {
           </div>
 
           <div className={styles.campoDescricao}>
-            <img
-              src="/images/patinha.png"
-              alt="patinha"
-              className={styles.iconeDescricao}
-            />
-
+            <img src="/images/patinha.png" alt="" className={styles.iconeDescricao} />
             <textarea
               className={styles.descricaoTextarea}
-              placeholder="Descreva o pet aqui..."
+              placeholder="Conte um pouco sobre a personalidade do pet, temperamento e por que ele está para adoção..."
               value={formData.descricao}
               onChange={(e) => handleChange("descricao", e.target.value)}
-              onFocus={handleFocus}
-              onBlur={handleBlur}
-            ></textarea>
+              disabled={loading}
+            />
           </div>
         </section>
 
-        {/* COLUNA DIREITA */}
+        {/* COLUNA DIREITA: Formulário */}
         <section className={styles.rightSide}>
           <h2 className={styles.tituloCadastro}>Cadastro Pet Adoção</h2>
 
           <form className={styles.formCadastro} onSubmit={salvarPet}>
-
+            
             <div className={styles.campo} style={fieldErrors.nome ? { borderColor: "red" } : {}}>
-              <img src="/images/patinha.png" className={styles.iconeInput} />
+              <img src="/images/patinha.png" className={styles.iconeInput} alt="" />
               <input
                 type="text"
-                placeholder="Nome"
+                placeholder="Nome do Pet"
                 value={formData.nome}
                 onChange={(e) => handleChange("nome", e.target.value)}
-                onFocus={handleFocus}
-                onBlur={handleBlur}
+                disabled={loading}
               />
             </div>
             {fieldErrors.nome && <span className={styles.errorText}>{fieldErrors.nome}</span>}
 
-            <div className={styles.campo} style={fieldErrors.especie ? { borderColor: "red" } : {}}>
-              <img src="/images/patinha.png" className={styles.iconeInput} />
+            <div className={styles.campo}>
+              <img src="/images/patinha.png" className={styles.iconeInput} alt="" />
               <select
                 value={formData.especie}
                 onChange={(e) => handleChange("especie", e.target.value)}
                 className={!formData.especie ? styles.selectPlaceholder : ""}
+                disabled={loading}
               >
                 <option value="" disabled>Selecione a espécie</option>
                 <option value="dog">Cachorro</option>
@@ -257,53 +223,45 @@ export default function CadastroAdocao() {
                 <option value="other">Outro</option>
               </select>
             </div>
-            {fieldErrors.especie && <span className={styles.errorText}>{fieldErrors.especie}</span>}
 
             <div className={styles.campo}>
-              <img src="/images/patinha.png" className={styles.iconeInput} />
+              <img src="/images/patinha.png" className={styles.iconeInput} alt="" />
               <input
                 type="text"
                 placeholder="Raça"
                 value={formData.raca}
                 onChange={(e) => handleChange("raca", e.target.value)}
-                onFocus={handleFocus}
-                onBlur={handleBlur}
+                disabled={loading}
               />
             </div>
 
             <div className={`${styles.campo} ${styles.campoIdade}`}>
-              <img src="/images/patinha.png" className={styles.iconeInput} />
+              <img src="/images/patinha.png" className={styles.iconeInput} alt="" />
               <input
                 type="number"
                 placeholder="Idade (anos)"
                 value={formData.idade}
                 onChange={(e) => handleChange("idade", e.target.value)}
-                onFocus={handleFocus}
-                onBlur={handleBlur}
                 min="0"
                 className={styles.inputIdade}
+                disabled={loading}
               />
               <div className={styles.botoesIdade}>
-                <button 
-                  type="button" 
+                <button
+                  type="button"
+                  className={styles.btnIdade}
+                  onClick={() => handleChange("idade", String((parseInt(formData.idade) || 0) + 1))}
+                  disabled={loading}
+                >▲</button>
+                <button
+                  type="button"
                   className={styles.btnIdade}
                   onClick={() => {
-                    const current = parseInt(formData.idade) || 0;
-                    handleChange("idade", String(current + 1));
+                    const val = (parseInt(formData.idade) || 0);
+                    if (val > 0) handleChange("idade", String(val - 1));
                   }}
-                >
-                  ▲
-                </button>
-                <button 
-                  type="button" 
-                  className={styles.btnIdade}
-                  onClick={() => {
-                    const current = parseInt(formData.idade) || 0;
-                    if (current > 0) handleChange("idade", String(current - 1));
-                  }}
-                >
-                  ▼
-                </button>
+                  disabled={loading}
+                >▼</button>
               </div>
             </div>
 
@@ -311,13 +269,12 @@ export default function CadastroAdocao() {
               type="submit"
               className={styles.btnCadastrar}
               disabled={loading}
-              style={{ opacity: loading ? 0.7 : 1, cursor: loading ? "not-allowed" : "pointer" }}
+              style={{ opacity: loading ? 0.7 : 1 }}
             >
-              {loading ? "Cadastrando..." : "Cadastrar"}
+              {loading ? "Processando..." : "CADASTRAR PET"}
             </button>
           </form>
         </section>
-
       </div>
     </main>
   );
