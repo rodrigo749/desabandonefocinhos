@@ -4,8 +4,7 @@ import { useState, useEffect, useCallback } from "react";
 import { useRouter } from "next/navigation";
 import useSafeToast from "@/components/Toast/useSafeToast";
 import styles from "./perdidos.module.css";
-
-const API_URL = process.env.NEXT_PUBLIC_API_URL || "http://localhost:3000";
+import { getApiUrl } from '@/lib/apiUrl';
 
 export default function CadastrarPerdidos() {
   const router = useRouter();
@@ -41,11 +40,7 @@ export default function CadastrarPerdidos() {
   }, [router, showToast]);
 
   // --- HELPERS ---
-  const getBaseUrl = useCallback(() => {
-    return (process.env.NEXT_PUBLIC_PETZ_API_URL || "http://localhost:3000")
-      .trim()
-      .replace(/\/$/, "");
-  }, []);
+  const getBaseUrl = useCallback(() => getApiUrl(), []);
 
   const handleChange = (field, value) => {
     setFormData((prev) => ({ ...prev, [field]: value }));

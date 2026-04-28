@@ -5,11 +5,9 @@ import useSafeToast from "@/components/Toast/useSafeToast";
 import { useRouter, useParams } from "next/navigation";
 import styles from "../editaradocao.module.css";
 import ConfirmModal from "@/components/ConfirmModal/ConfirmModal";
+import { getApiUrl } from '@/lib/apiUrl'
 
-const getBaseUrl = () =>
-  (process.env.NEXT_PUBLIC_PETZ_API_URL || "http://localhost:3000")
-    .trim()
-    .replace(/\/$/, "");
+const getBaseUrl = () => getApiUrl();
 
 const getImageUrl = (pet) => {
   if (!pet?.id) return "";

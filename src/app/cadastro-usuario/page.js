@@ -6,6 +6,7 @@ import { FaPaw, FaEye, FaEyeSlash } from "react-icons/fa";
 import { cpf as cpfValidator } from "cpf-cnpj-validator";
 import styles from "./cadastro.module.css";
 import useSafeToast from "@/components/Toast/useSafeToast";
+import { getApiUrl } from '@/lib/apiUrl'
 
 export default function CadastroPage() {
   const { showToast } = useSafeToast();
@@ -28,8 +29,7 @@ export default function CadastroPage() {
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
 
   // util
-  const getBaseUrl = () =>
-    (process.env.NEXT_PUBLIC_PETZ_API_URL || `http://localhost:${process.env.PORT || 3000}`).trim().replace(/\/$/, "");
+  const getBaseUrl = () => getApiUrl();
 
   // form handlers
   const handleChange = (field, value) => {

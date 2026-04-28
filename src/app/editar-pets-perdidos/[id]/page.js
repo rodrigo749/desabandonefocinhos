@@ -3,11 +3,9 @@
 import { useState, useEffect } from "react";
 import { useRouter, useParams } from "next/navigation";
 import styles from "../editarpetperdidos.module.css";
- 
-const getBaseUrl = () =>
-  (process.env.NEXT_PUBLIC_PETZ_API_URL || "http://localhost:3000")
-    .trim()
-    .replace(/\/$/, "");
+import { getApiUrl } from '@/lib/apiUrl'
+
+const getBaseUrl = () => getApiUrl();
 
 
   const getImageUrl = (pet) => {

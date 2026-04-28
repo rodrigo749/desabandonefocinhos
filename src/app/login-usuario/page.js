@@ -5,8 +5,9 @@ import { useRouter } from "next/navigation";
 import { FaPaw, FaEye, FaEyeSlash } from "react-icons/fa";
 import styles from "./login.module.css";
 import useSafeToast from "@/components/Toast/useSafeToast";
+import { getApiUrl } from '@/lib/apiUrl'
 
-const API_URL = process.env.NEXT_PUBLIC_API_URL || "http://localhost:3000";
+const getApiBaseUrl = () => getApiUrl();
 
 export default function LoginPage() {
   const router = useRouter();
@@ -40,8 +41,9 @@ export default function LoginPage() {
     setLoading(true);
 
     try {
+      const API_URL = getApiBaseUrl();
       const cpfLimpo = cpf.replace(/\D/g, "");
-    
+      
       const resp = await fetch(`${API_URL}/api/auth/login`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
