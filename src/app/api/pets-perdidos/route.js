@@ -1,7 +1,7 @@
 import { NextResponse } from "next/server";
 import { getApiUrl } from "@/lib/apiUrl";
 
-const API_URL = getApiUrl({ client: false });
+const API_URL = getApiUrl();
 
 // GET - lista pets perdidos (proxy para o banco de dados)
 export async function GET() {
