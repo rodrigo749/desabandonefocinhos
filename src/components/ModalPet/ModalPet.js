@@ -3,22 +3,22 @@
 import { useState } from "react";
 import styles from "./ModalPet.module.css";
 import ModalLogin from "@/components/ModalLogin/ModalLogin";
+import { getApiUrl } from "@/lib/apiUrl";
 
-const getBaseUrl = () =>
-  (process.env.NEXT_PUBLIC_PETZ_API_URL || "http://localhost:3000")
-    .trim()
-    .replace(/\/$/, "");
+const getBaseUrl = () => getApiUrl();
 
 // Função para obter URL da imagem (BLOB ou URL direta)
 const getImageUrl = (pet) => {
   if (pet.hasImage) {
     return `${getBaseUrl()}/api/pets/${pet.id}/image`;
   }
-  return pet.imagem || pet.image || "/images/default.png";
+  return pet.imagem || pet.image || "/images/semfoto.jpg";
 };
 
 export default function ModalPet({ pet, onClose }) {
   const [showLoginModal, setShowLoginModal] = useState(false);
+
+  const description = pet?.description ?? "Sem descrição disponível.";
 
   function handleBackgroundClick(e) {
     if (e.target === e.currentTarget) {
@@ -41,7 +41,7 @@ export default function ModalPet({ pet, onClose }) {
       return;
     }
 
-    const text = `Hello ${ownerName || "owner"}, I'm contacting you through the app about the pet ${pet.name || ""}.`;
+    const text = `Hello ${name || "owner"}, I'm contacting you through the app about the pet ${pet.name || ""}.`;
     const url = `https://wa.me/${phoneDigits}?text=${encodeURIComponent(text)}`;
     window.open(url, "_blank");
   }
@@ -52,14 +52,11 @@ export default function ModalPet({ pet, onClose }) {
     <>
 <div className={styles.overlay} onClick={handleBackgroundClick}>
   <div className={styles.modal}>
-    
+    <button className={styles.closeBtn} onClick={onClose}>
+      &times;
+    </button>
 
     <div className={styles.modalContent}>
-      {/* BOTÃO DE FECHAR */}
-        <button className={styles.closeBtn} onClick={onClose}>
-          &times;
-        </button>
-
           {/* LEFT SIDE - IMAGE */}
           <div className={styles.imageBox}>
             <img src={imagemUrl} alt={pet.name} />
@@ -86,44 +83,39 @@ export default function ModalPet({ pet, onClose }) {
               )}
             </div>
 
-            {/* Paw icon */}
-            <img
-              src="/images/paw.png"
-              alt="paw"
-              className={styles.pawIcon}
-            />
+          
 
             <div className={styles.infoColumns}>
               <div className={styles.infoGroup}>
                 <p>
-                  <strong>Breed:</strong> {pet.breed}
+                  <strong>Raça:</strong> {pet.breed}
                 </p>
                 <p>
-                  <strong>Gender:</strong> {pet.gender}
+                  <strong>Genero:</strong> {pet.gender}
                 </p>
                 <p>
                   <strong>Location:</strong> {pet.location}
                 </p>
                 <p>
-                  <strong>Date:</strong> {pet.date || "-"}
+                  <strong>Data:</strong> {pet.date || "-"}
                 </p>
               </div>
 
               <div className={styles.respEndGroup}>
                 <p>
-                  <strong>Reward:</strong> {pet.reward}
+                  <strong>idade:</strong> {pet.age}
                 </p>
               </div>
             </div>
 
             {/* DESCRIPTION */}
             <div className={styles.descriptionBox}>
-              <p className={styles.descLabel}>Description:</p>
-              <p className={styles.descText}>{pet.description}</p>
+              <p className={styles.descLabel}>Descrição:</p>
+              <p className={styles.descText}>{description}</p>
             </div>
 
         {/* BOTÃO */}
-        <button className={styles.contactBtn} onClick={handleContact}>Contatar dono</button>
+        <button className={styles.contactBtn} onClick={handleContact}>Adotar</button>
 
       </div>
     </div>

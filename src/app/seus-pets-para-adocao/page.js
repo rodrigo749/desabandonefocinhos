@@ -2,12 +2,11 @@
 
 import { useEffect, useState } from "react";
 import PetCard from "@/components/PetCard/PetCard";
+import Link from "next/link";
 import styles from "./seusPets.module.css";
+import { getApiUrl } from '@/lib/apiUrl'
 
-const getBaseUrl = () =>
-  (process.env.NEXT_PUBLIC_PETZ_API_URL || "http://localhost:3000")
-    .trim()
-    .replace(/\/$/, "");
+const getBaseUrl = () => getApiUrl();
 
 export default function SeusPetsParaAdocao() {
   const [pets, setPets] = useState([]);
@@ -58,8 +57,8 @@ export default function SeusPetsParaAdocao() {
   }
 
   useEffect(() => {
-    carregarPets();
-  }, []);
+      carregarPets();
+    }, []);
 
   return (
     <main className={styles["pets-page"]}>
@@ -69,14 +68,29 @@ export default function SeusPetsParaAdocao() {
         {loading && <p>Carregando pets...</p>}
         {erro && <p>{erro}</p>}
 
-        {!loading && !erro && (
+        {/* BOTÃO CENTRALIZADO (cadastrar pet para adoção) */}
+        <div className={styles.areaBotao}>
+          <Link href="/cadastro-pet-adocao" className={styles.botaoCadastrar}>
+            + Cadastrar pet
+          </Link>
+        </div>
+
+        {!loading && !erro && pets.length > 0 && (
           <section className={styles["grid-pets"]}>
-            {pets.length > 0 ? (
-              pets.map((pet) => <PetCard key={pet.id} pet={pet} tipoPagina="usuario" />)
-            ) : (
-              <p>Você ainda não cadastrou nenhum pet para adoção.</p>
-            )}
+            {pets.map((pet) => (
+              <PetCard
+                key={pet.id}
+                pet={pet}
+                tipoPagina="usuario"
+              />
+            ))}
           </section>
+        )}
+
+        {!loading && !erro && pets.length === 0 && (
+          <p className={styles.mensagemCentral}>
+            Você não tem pets para adoção registrados.
+          </p>
         )}
       </div>
     </main>

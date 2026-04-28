@@ -4,6 +4,17 @@ import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import { FaPaw } from "react-icons/fa";
 import styles from "./perfilUsuario.module.css";
+import { getApiUrl } from '@/lib/apiUrl'
+
+const API_URL = getApiUrl();
+
+// Helper para obter URL completa da imagem
+const getImageUrl = (imagem) => {
+  if (!imagem) return "/images/icone-perfil.jpg";
+  if (imagem.startsWith("blob:")) return imagem;
+  if (imagem.startsWith("http")) return imagem;
+  return `${API_URL}${imagem}`;
+};
 
 export default function PerfilUsuario() {
   const router = useRouter();
@@ -24,12 +35,44 @@ export default function PerfilUsuario() {
     router.push("/");
   };
 
-  const handleDelete = () => {
-    const usuarios = JSON.parse(localStorage.getItem("usuarios") || "[]");
-    const filtered = usuarios.filter((u) => u.cnpj !== usuario.cnpj);
-    localStorage.setItem("usuarios", JSON.stringify(filtered));
-    localStorage.removeItem("usuarioLogado");
-    router.push("/");
+  const handleDeleteAccount = async () => {
+    if (!confirm("Excluir conta?")) return;
+
+    setError("");
+    setIsLoading(true);
+
+    try {
+      const { logged, token } = getAuthData();
+
+      if (!logged?.id) {
+        showToast("Usuário não identificado", "warning");
+        router.push("/login");
+        return;
+      }
+
+      const res = await fetch(`${API_URL}/api/users/${logged.id}`, {
+        method: "DELETE",
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      });
+
+      if (!res.ok) {
+        const data = await res.json().catch(() => ({}));
+        throw new Error(data.message || "Erro ao excluir");
+      }
+
+      localStorage.removeItem("usuarioLogado");
+      localStorage.removeItem("token");
+      showToast("Conta excluída com sucesso", "success");
+      router.push("/home");
+    } catch (err) {
+      console.error(err);
+      setError(err.message || "Erro ao excluir");
+      showToast(err.message || "Erro ao excluir", "error");
+    } finally {
+      setIsLoading(false);
+    }
   };
 
   if (!usuario) return null;
@@ -42,6 +85,14 @@ export default function PerfilUsuario() {
             <FaPaw />
           </span>
           <h1 className={styles.title}>Meu Perfil</h1>
+        </div>
+
+        <div className={styles.avatarSection}>
+          <img
+            src={getImageUrl(usuario.imagem)}
+            alt="Foto de perfil"
+            className={styles.avatarImage}
+          />
         </div>
 
         <div className={styles.info}>
@@ -67,8 +118,11 @@ export default function PerfilUsuario() {
           <button className={styles.button} onClick={handleLogout}>
             Sair
           </button>
-          <button className={styles.delete} onClick={handleDelete}>
+          <button className={styles.delete} onClick={handleDeleteAccount}>
             Excluir conta
+          </button>
+          <button className={styles.button} onClick={() => router.push('/editar-usuario')}>
+            editar perfil
           </button>
         </div>
       </div>

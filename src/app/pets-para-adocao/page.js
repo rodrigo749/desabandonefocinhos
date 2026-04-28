@@ -3,11 +3,9 @@
 import { useEffect, useState } from "react";
 import PetCard from "@/components/PetCard/PetCard";
 import styles from "./petsparaadocao.module.css";
+import { getApiUrl } from '@/lib/apiUrl'
 
-const getBaseUrl = () =>
-  (process.env.NEXT_PUBLIC_PETZ_API_URL || "http://localhost:3000")
-    .trim()
-    .replace(/\/$/, "");
+const getBaseUrl = () => getApiUrl();
 
 export default function PetsParaAdocao() {
   const [pets, setPets] = useState([]);
@@ -44,10 +42,9 @@ export default function PetsParaAdocao() {
     }
   }
 
-  useEffect(() => {
+useEffect(() => {
     carregarPets();
   }, []);
-
   return (
     <main className={styles["pets-page"]}>
       <div className={styles["cards-wrapper-container"]}>

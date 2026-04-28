@@ -9,6 +9,7 @@
   width: 100%;
   max-width: 500px;
   min-height: 250px;
+  min-width: 0;
   box-sizing: border-box;
   position: relative;
 }
@@ -41,11 +42,14 @@
   justify-content: space-between;
   flex: 1;
   align-items: center;
+  min-width: 0;
 }
 
 /* Ãrea de texto */
 .card-text-box {
   width: 100%;
+  max-width: 100%;
+  min-width: 0;
   background: white;
   /* larger inner box radius to match adoption styling */
   border-radius: 22px;
@@ -57,6 +61,8 @@
   flex-direction: column;
   justify-content: flex-start;
   overflow: hidden;
+  overflow-wrap: anywhere;
+  word-break: break-word;
 }
 
 .card-text-box h3 {
@@ -69,6 +75,8 @@
   font-size: 13px;
   margin-bottom: 4px;
   line-height: 1.25;
+  overflow-wrap: anywhere;
+  word-break: break-word;
 }
 
 
@@ -88,18 +96,12 @@
   font-weight: 600;
   cursor: pointer;
 
-  position: absolute;
-  bottom: 5px;
-  left: 50%;
-  transform: translateX(-50%);
+  position: relative;
+  margin: 16px auto 0 auto;
 
   transition: 0.2s;
 }
 
-.btn-adotar:hover {
-  background-color: var(--accent-orange);
-  border-color: var(--accent-orange);
-}
 
 .actions-wrapper .btn-adotar {
   position: relative;
