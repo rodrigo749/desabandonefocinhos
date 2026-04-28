@@ -1,6 +1,7 @@
 import { NextResponse } from "next/server";
+import { getApiUrl } from "@/lib/apiUrl";
 
-const API_URL = process.env.PETZ_API_URL || "http://localhost:3000";
+const API_URL = getApiUrl({ client: false });
 
 // GET - lista pets para adoção (proxy para o banco de dados)
 export async function GET() {

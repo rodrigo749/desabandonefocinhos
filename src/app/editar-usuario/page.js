@@ -5,9 +5,9 @@ import { useRouter } from "next/navigation";
 import { FaPaw } from "react-icons/fa";
 import styles from "./editar-usuario.module.css";
 import useSafeToast from "@/components/Toast/useSafeToast";
+import { getApiUrl } from '@/lib/apiUrl'
 
-const API_URL = process.env.NEXT_PUBLIC_API_URL || "http://localhost:3000";
-
+const API_URL = getApiUrl();
 export default function EditarUsuarioPage() {
   const { showToast } = useSafeToast();
   const router = useRouter();
@@ -28,40 +28,45 @@ export default function EditarUsuarioPage() {
   const [error, setError] = useState("");
 
   const getAuthData = () => {
+  // Verifique se os nomes coincidem com o que você salvou no Login
+  const logged = JSON.parse(localStorage.getItem("usuarioLogado") || "null");
+  const token = localStorage.getItem("token"); // Certifique-se que o nome é 'token'
+  
+  return { logged, token };
+};
+
+useEffect(() => {
+  const fetchUserData = async () => {
+    setIsLoading(true);
+    
+    // Pegando direto aqui para evitar problemas de escopo
+    const token = localStorage.getItem("token");
     const logged = JSON.parse(localStorage.getItem("usuarioLogado") || "null");
-    const token = localStorage.getItem("token") || "";
-    return { logged, token };
-  };
 
-  useEffect(() => {
-    const fetchUserData = async () => {
-      setIsLoading(true);
 
-      try {
-        const { logged, token } = getAuthData();
+    if (!token || !logged?.id) {
+      console.error("Acesso negado: Falta token ou ID");
+      setIsLoading(false);
+      return; 
+    }
 
-        if (!logged?.id) {
-          showToast("Usuário não identificado", "warning");
-          router.push("/login");
-          return;
-        }
+    try {
+      const res = await fetch(`${API_URL}/api/users/${logged.id}`, {
+        method: "GET",
+        headers: {
+          "Authorization": `Bearer ${token}`, // Garante o envio do token
+          "Content-Type": "application/json"
+        },
+      });
 
-        const res = await fetch(`${API_URL}/api/users/${logged.id}`, {
-          method: "GET",
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
-        });
+      const result = await res.json();
+      
+      // Se a API retornar { success: true, data: { ... } }
+      const userData = result.data || result;
 
-        if (!res.ok) {
-          const data = await res.json().catch(() => ({}));
-          throw new Error(data.message || "Erro ao buscar dados do usuário");
-        }
-
-        const userData = await res.json();
-
+      if (res.ok && userData) {
         setFormData({
-          nome: userData.nome || userData.razaoSocial || "",
+          nome: userData.nome || "",
           cpf: userData.cpf || "",
           email: userData.email || "",
           telefone: userData.telefone || "",
@@ -69,17 +74,18 @@ export default function EditarUsuarioPage() {
           imagem: userData.imagem || "",
           tipo: userData.tipo || "usuario",
         });
-      } catch (err) {
-        console.error(err);
-        setError(err.message || "Erro ao carregar dados do usuário");
-        showToast(err.message || "Erro ao carregar dados do usuário", "error");
-      } finally {
-        setIsLoading(false);
+      } else {
+        console.error("Erro na resposta da API:", result);
       }
-    };
+    } catch (err) {
+      console.error("Erro ao buscar dados:", err);
+    } finally {
+      setIsLoading(false);
+    }
+  };
 
-    fetchUserData();
-  }, [router, showToast]);
+  fetchUserData();
+}, [router,showToast]); 
 
   useEffect(() => {
     return () => {
@@ -90,6 +96,14 @@ export default function EditarUsuarioPage() {
   }, [imagePreview]);
 
   const handleChange = (field, value) => {
+    if (field === "telefone") {
+      const digits = value.replace(/\D/g, "").slice(0, 11); // Remove caracteres não numéricos e limita a 11 dígitos
+      if (digits.length <= 2) value = `(${digits}`;
+      else if (digits.length <= 6) value = `(${digits.slice(0, 2)}) ${digits.slice(2)}`;
+      else if (digits.length <= 10) value = `(${digits.slice(0, 2)}) ${digits.slice(2, 6)}-${digits.slice(6)}`;
+      else value = `(${digits.slice(0, 2)}) ${digits.slice(2, 7)}-${digits.slice(7, 11)}`;
+    }
+
     setFormData((prev) => ({ ...prev, [field]: value }));
   };
 
@@ -120,6 +134,7 @@ export default function EditarUsuarioPage() {
         return;
       }
 
+     
       const formDataToSend = new FormData();
       formDataToSend.append("nome", formData.nome);
       formDataToSend.append("cpf", formData.cpf);
@@ -196,7 +211,7 @@ export default function EditarUsuarioPage() {
       localStorage.removeItem("usuarioLogado");
       localStorage.removeItem("token");
       showToast("Conta excluída com sucesso", "success");
-      router.push("/");
+      router.push("/home");
     } catch (err) {
       console.error(err);
       setError(err.message || "Erro ao excluir");

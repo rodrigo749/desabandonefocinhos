@@ -4,11 +4,9 @@ import { useState, useEffect } from "react";
 import Link from "next/link";
 import ModalPet from "@/components/ModalPet/ModalPet";
 import styles from "./PetCard.module.css";
+import { getApiUrl } from "@/lib/apiUrl";
 
-const getBaseUrl = () =>
-  (process.env.NEXT_PUBLIC_PETZ_API_URL || "http://localhost:3000")
-    .trim()
-    .replace(/\/$/, "");
+const getBaseUrl = () => getApiUrl();
 
 // Função para obter URL da imagem (BLOB ou URL direta)
 const getImageUrl = (pet) => {
@@ -17,9 +15,7 @@ const getImageUrl = (pet) => {
     return `${getBaseUrl()}/api/pets/${pet.id}/image`;
   }
   // Fallback para URL direta ou imagem padrão
-
-
-  return pet.imagem || pet.image || "/images/default.png";
+  return pet.imagem || pet.image || "/images/semfoto.jpg";
 };
 
 export default function PetCard({ pet, tipoPagina }) {
@@ -39,7 +35,9 @@ export default function PetCard({ pet, tipoPagina }) {
   const genero = pet.genero || pet.gender || "Não informado";
   const idade = pet.idade || pet.age || "Não informada";
   const descricao = pet.descricao || pet.description || "Sem descrição";
+  const descricaoCurta = descricao.length > 60 ? `${descricao.slice(0, 60)}...` : descricao;
   const userId = pet.usuarioId || pet.userId || null;
+  const status = pet.status || pet.estado || pet.state || null;
 
   const ehDoUsuario = usuarioLogado && userId === usuarioLogado.id;
   
@@ -108,7 +106,7 @@ const rotaEdicao =
             <p>Raça: {raca}</p>
             <p>Gênero: {genero}</p>
             <p>Idade: {idade}</p>
-            <p>Descrição: {descricao}</p>
+            <p>Descrição: {descricaoCurta}</p>
           </div>
 
           {tipoPagina === "publica" && (

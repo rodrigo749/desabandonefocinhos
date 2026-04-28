@@ -4,11 +4,9 @@ import { useEffect, useState } from "react";
 import PetCard from "@/components/PetCard/PetCard";
 import styles from "./meus-pets-perdidos.module.css";
 import Link from "next/link";
+import { getApiUrl } from '@/lib/apiUrl'
 
-const getBaseUrl = () =>
-  (process.env.NEXT_PUBLIC_PETZ_API_URL || "http://localhost:3000")
-    .trim()
-    .replace(/\/$/, "");
+const getBaseUrl = () => getApiUrl();
 
 export default function MeusPetsPerdidos() {
   const [pets, setPets] = useState([]);

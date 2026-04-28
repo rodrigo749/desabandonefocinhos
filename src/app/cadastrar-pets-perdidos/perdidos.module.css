@@ -271,19 +271,20 @@
 
 /* BOTÃƒO */
 .btnCadastrar {
-  margin-top: 15px;
-  width: 80%;
-  padding: 12px;
+  display: block;
+  margin: 15px auto 0 auto; /* centered horizontally */
+  width: 100%;
+  max-width: 320px; /* keeps the button from stretching too wide */
+  padding: 12px 18px;
   border-radius: 18px;
-  font-size: 22px;
+  font-size: 20px;
   font-weight: 700;
   color: white;
   background-color: var(--nav);
   border: 4px solid var(--border);
   cursor: pointer;
-  transition: 0.25s ease-in-out;
+  transition: transform 0.25s ease-in-out, background-color 0.25s ease-in-out;
   box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.25);
-  margin-left: 38px;
 }
 
 .btnCadastrar:hover {
@@ -566,11 +567,13 @@
   }
 
   .btnCadastrar {
-    width: 90%;
-    padding: 10px;
+    display: block;
+    margin: 15px auto 0 auto;
+    width: 100%;
+    max-width: 320px;
+    padding: 10px 14px;
     font-size: 18px;
     border-radius: 15px;
-    margin-left: 0;
   }
 }
 
@@ -669,12 +672,14 @@
   }
 
   .btnCadastrar {
-    width: 95%;
-    padding: 8px;
+    display: block;
+    margin: 10px auto 0 auto;
+    width: 100%;
+    max-width: 320px;
+    padding: 8px 12px;
     font-size: 16px;
     border-radius: 12px;
     border: 3px solid var(--border);
-    margin-left: 0;
     margin-top: 10px;
   }
 
@@ -738,6 +743,8 @@
   }
 
   .btnCadastrar {
+    display: block;
+    margin: 10px auto 0 auto;
     width: 100%;
     padding: 6px;
     font-size: 14px;

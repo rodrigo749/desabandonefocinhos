@@ -5,8 +5,9 @@ import { useRouter } from "next/navigation";
 import { FaPaw, FaEye, FaEyeSlash } from "react-icons/fa";
 import styles from "./login.module.css";
 import useSafeToast from "@/components/Toast/useSafeToast";
+import { getApiUrl } from '@/lib/apiUrl'
 
-const API_URL = process.env.NEXT_PUBLIC_API_URL || "http://localhost:3000";
+const getApiBaseUrl = () => getApiUrl();
 
 export default function LoginPage() {
   const router = useRouter();
@@ -40,45 +41,44 @@ export default function LoginPage() {
     setLoading(true);
 
     try {
+      const API_URL = getApiBaseUrl();
       const cpfLimpo = cpf.replace(/\D/g, "");
-
+      
       const resp = await fetch(`${API_URL}/api/auth/login`, {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({
-        cpf: cpfLimpo,
-        password: password,
-      }),
-    });
-
-
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          cpf: cpfLimpo,
+          password: password,
+        }),
+      });
+    
       const data = await resp.json().catch(() => ({}));
-
+    
       if (!resp.ok) {
-        const msg =
-          data?.message ||
-          "CPF ou senha incorretos. Caso não tenha cadastro, clique em cadastrar.";
+        const msg = data?.message || "CPF ou senha incorretos.";
         setError(msg);
         showToast(msg, "error");
         return;
       }
-
-      // Esperado: { token, user }
+    
       if (!data?.token) {
-        throw new Error("Token não retornado pelo backend.");
+        throw new Error("Falha na autenticação.");
       }
-
-      // Salva token e usuário
+    
+      const userObj = data.user || {};
+      if (userObj.hasImage && userObj.id) {
+        userObj.imagem = `${API_URL}/api/users/${userObj.id}/image`;
+      }
+    
       localStorage.setItem("token", data.token);
-      localStorage.setItem("usuarioLogado", JSON.stringify(data.user || {}));
-
-      // Dispara evento para o Header atualizar imediatamente
+      localStorage.setItem("usuarioLogado", JSON.stringify(userObj));
+    
       window.dispatchEvent(new Event("auth-changed"));
-
       showToast("Login realizado com sucesso!", "success");
       router.push("/home");
+    
     } catch (err) {
-      console.error(err);
       const msg = "Erro ao processar o login. Tente novamente.";
       setError(msg);
       showToast(msg, "error");
@@ -158,4 +158,4 @@ export default function LoginPage() {
       </form>
     </div>
   );
-}
+} 

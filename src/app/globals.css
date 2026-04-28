@@ -213,10 +213,3 @@ h3 { font-size: var(--fs-title-md); }
 
 /* =========================
    RESPONSIVO
-========================= */
-@media (max-width: 600px) {
-  .footer-links {
-    flex-direction: column;
-    gap: 0.75rem;
-  }
-}

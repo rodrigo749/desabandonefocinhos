@@ -1,12 +1,12 @@
-/* CONTAINER GERAL */
+/* CONTAINER GERAL DA PÃGINA */
 .cadastroPetContainer {
   width: 100%;
+  background-color: var(--bg-soft);
   display: flex;
   justify-content: center;
-  background: var(--bg-soft);
-  padding: 50px 20px;
-  min-height: 100vh;
+  padding: 50px 0;
   position: relative;
+  min-height: 100vh;
   overflow: hidden;
 }
 
@@ -23,291 +23,777 @@
   filter: brightness(0) saturate(100%) invert(77%) sepia(97%) saturate(686%) hue-rotate(319deg) brightness(101%) contrast(101%);
 }
 
-/* CARD CENTRAL COM 2 CONTAINERS */
-.cadastroWrapper {
-  width: 100%;
-  max-width: 1750px;
-  background:var(--heading);
-  border-radius: 10px;
-  padding: 40px 20px;
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 50px;
-}
 
-/* Visual grouping: left (upload+descriÃ§Ã£o) and right (form) cards */
-.colEsquerda,
-.colDireita {
-  background: #ffffff;
+/* BLOCO CENTRAL DIVIDIDO EM DUAS PARTES */
+.adocaoContainer {
+  width: 90%;
+  max-width: 1300px;
+  background: var(--bg-soft);
   padding: 40px;
-  border-radius: 12px;
-  box-shadow: 0 6px 18px rgba(8, 35, 63, 0.06);
-}
-
-.colEsquerda {
   display: flex;
-  flex-direction: column;
-  gap: 18px;
+  justify-content: space-between;
+  gap: 40px;
+  border-radius: 28px;
+  border: 6px solid var(--bg-soft);
 }
 
-.colDireita {
-  display: flex;
-  flex-direction: column;
-  gap: 18px;
+/* ===========================
+   COLUNA ESQUERDA
+=========================== */
+
+.leftSide {
+  width: 48%;
+  background: var(--card);
+  padding: 30px;
+  border-radius: 25px;
+  border: 5px solid var(--card);
+  box-shadow: inset 0 0 12px rgba(0, 0, 0, 0.08);
+  z-index: 1;
 }
 
-/* COLUNA ESQUERDA */
-.colEsquerda {
-  display: flex;
-  flex-direction: column;
-  gap: 30px;
-}
-
-/* UPLOAD */
-.uploadImagem {
-  display: flex;
-  justify-content: center;
-  margin: 20px 0;
-}
-
+/* UPLOAD DE IMAGEM */
 .uploadBox {
-  width: 180px;
-  height: 180px;
-  background-color: var(--card);
-  border-radius: 24px;
-  border: 3px solid var(--border);
+  width: 240px;
+  height: 240px;
+  background-color: #E0E0E0;
+  margin: 0 auto;
+  border-radius: 22px;
+  border: 4px solid var(--border);
   display: flex;
   flex-direction: column;
   align-items: center;
   justify-content: center;
   cursor: pointer;
-  transition: 0.3s;
-  text-align: center;
+  transition: 0.2s ease;
 }
 
 .uploadBox:hover {
   background-color: var(--card);
 }
 
-.uploadIcon {
-  font-size: 40px;
-  color: #ffffff;
-  line-height: 1;
-}
-
-.uploadText {
-  margin-top: 8px;
-  font-size: 15px;
-  font-weight: 500;
-  color: #ffffff;
-}
-
-.uploadPreview {
-  width: 100%;
-  height: 100%;
-  object-fit: cover;
-  border-radius: 20px;
-}
-
 .iconeAddImg {
-  width: 60%;
-  margin-bottom: 0px;
+  width: 90px;
+  height: 90px;
+  opacity: 0.9;
 }
 
-/* DESCRIÃ‡ÃƒO BOX */
-.descricaoBox {
-  border-radius: 20px;
-  border: 6px solid var(--heading);
-  padding: 15px;
-}
-.descLabel {
-  display: flex;
-  align-items: center;
-  gap: 6px;
+.uploadBox span {
+  margin-top: 10px;
+  font-size: 18px;
   font-weight: 600;
+  color: #ffffff;
 }
-.descIcon {
-  width: 24px;
-  opacity: 0.8;
+
+/* UPLOAD IMAGEM WRAPPER */
+.uploadImagem {
+  display: flex;
+  justify-content: center;
+  align-items: center;
 }
+
+/* DESCRIÃ‡ÃƒO */
+.campoDescricao {
+  position: relative;
+  width: 100%;
+  margin-top: 90px;
+  height: 220px;  
+}
+
+.iconeDescricao {
+  position: absolute;
+  left: 18px;
+  top: 21px;
+  width: 28px;
+  height: 28px;
+  opacity: 0.9;
+}
+
 .descricaoTextarea {
   width: 100%;
-  border: none;
+  min-height: 250px;
+  padding: 20px 20px 20px 60px; /* deixa espaÃ§o para a patinha */
+  border-radius: 25px;
+  border: 4px solid var(--heading);
+  font-size: 16px;
   outline: none;
   resize: none;
-  min-height: 130px;
-  font-size: 15px;
-  padding-top: 10px;
+  background-color: white;
+  font-family: inherit;
+  color: #333333;
 }
 
-/* COLUNA DIREITA */
-.colDireita {
+.descricaoTextarea:focus {
+  border-color: var(--heading);
+}
+
+
+/* ===========================
+   COLUNA DIREITA
+=========================== */
+
+.rightSide {
+  width: 48%;
+  background: var(--card);
+  padding: 30px;
+  border-radius: 25px;
+  border: 5px solid var(--card);
+  box-shadow: inset 0 0 12px rgba(0, 0, 0, 0.08);
   display: flex;
   flex-direction: column;
-  gap: 20px;
-}
-.tituloArea {
-  display: flex;
-  justify-content: center;
   align-items: center;
-  gap: 8px;
+  z-index: 1;
 }
+
+/* TÃTULO */
 .tituloCadastro {
-  font-size: 33px;
-  color: var(--heading);
-}
-.iconHome {
-  width: 40px;
-}
-
-/* FORM CAMPOS */
-.campo {
-  position: relative;
-  margin-bottom: 8px; /* fallback spacing between fields */
-}
-.iconeInput {
-  width: 24px;
-  position: absolute;
-  left: 14px;
-  top: 50%;
-  transform: translateY(-50%);
-}
-.campo input {
-  width: 100%;
-  height: 48px;
-  padding-left: 50px;
-  border-radius: 30px;
-  border: 2px solid var(--heading);
-  outline: none;
-  font-size: 16px;
-  gap: 20px;
-}
-
-/* RECOMPENSA */
-.recompensaBox {
-  display: flex;
-  align-items: center;
-  gap: 14px;
-}
-.recompensaField {
-  display: flex;
-  flex-direction: column;
-  gap: 8px;
-  align-items: center;
-}
-.recompensaLabel {
+  font-size: 32px;
   font-weight: 700;
   color: var(--heading);
-  font-size: 14px;
-  text-align: center;
-  width: 100%;
+  margin-bottom: 20px;
 }
-.recompensaControl, .recompensaRow {
-  display: flex;
-  align-items: center;
-  gap: 12px;
-  width: 100%;
-  justify-content: center;
-}
-.iconeRecompensa {
-  width: 30px;
-}
-.slider {
-  width: 100%;
-  accent-color: red;
-}
-.recompensaWrapper {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  width: 100%;
-}
-.recompensaLabelWrapper {
-  display: flex;
-  justify-content: center;
-  width: 100%;
-}
+
+/* FORM */
 .formCadastro {
+  width: 80%;
   display: flex;
   flex-direction: column;
   gap: 18px;
 }
-.valorRecompensa {
-  font-weight: bold;
-  color: red;
+
+.botoesIdade {
+  position: absolute;
+  right: 14px;
+  top: 50%;
+  transform: translateY(-50%);
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.btnIdade {
+  width: 20px;
+  height: 17px;
+  background-color: var(--heading);
+  border: none;
+  border-radius: 8px;
+  color: white;
+  font-size: 12px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: background-color 0.2s ease;
+}
+
+/* CAMPOS COM PATINHA */
+.campo {
+  position: relative;
+  width: 100%;
+}
+
+.campo input,
+.campo select {
+  width: 100%;
+  padding: 12px 20px 12px 55px;
+  border-radius: 40px;
+  border: 4px solid var(--heading);
+  font-size: 16px;
+  outline: none;
+  background-color: #ffffff;
+  font-family: inherit;
+  color: #333;
+  box-sizing: border-box;
+  height: 50px;
+}
+
+.campo input:focus,
+.campo select:focus {
+  border-color: var(--heading);
+}
+
+.campo select {
+  appearance: none;
+  -webkit-appearance: none;
+  -moz-appearance: none;
+  cursor: pointer;
+}
+
+.campo select.selectPlaceholder {
+  color: #757575;
+}
+
+.campo select option {
+  color: #333;
+}
+
+/* ÃCONE PATINHA NOS INPUTS */
+.iconeInput {
+  position: absolute;
+  left: 15px;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 28px;
+  height: 28px;
+  opacity: 0.9;
+}
+
+/* DATA INPUT COM CALENDÃRIO */
+.dateInput {
+  width: 100%;
+  padding: 12px 20px 12px 55px;
+  border-radius: 40px;
+  border: 4px solid var(--heading);
+  font-size: 16px;
+  outline: none;
+  background-color: #ffffff;
+  font-family: inherit;
+  color: #333;
+  box-sizing: border-box;
+  height: 50px;
+}
+
+.dateInput:focus {
+  border-color: var(--heading);
+}
+
+/* ÃCONE CALENDÃRIO */
+.calendarIcon {
+  position: absolute;
+  right: 18px;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 22px;
+  height: 22px;
+  opacity: 0.7;
+  color: var(--heading);
+  pointer-events: none;
 }
 
 /* BOTÃƒO */
 .btnCadastrar {
-  margin-top: 10px;
-  height: 48px;
+  display: block;
+  margin: 15px auto 0 auto; /* centered horizontally */
   width: 100%;
-  border-radius: 30px;
-  border: none;
-  cursor: pointer;
-  background: var(--nav);
+  max-width: 320px; /* keeps the button from stretching too wide */
+  padding: 12px 18px;
+  border-radius: 18px;
+  font-size: 20px;
+  font-weight: 700;
   color: white;
-  font-size: 18px;
-  font-weight: bold;
+  background-color: var(--nav);
+  border: 4px solid var(--border);
+  cursor: pointer;
+  transition: transform 0.25s ease-in-out, background-color 0.25s ease-in-out;
+  box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.25);
 }
 
-.formCadastro .btnCadastrar {
+.btnCadastrar:hover {
+  background-color: var(--nav-hover);
+  transform: translateY(-2px);
+}
+
+.inputIdade::-webkit-outer-spin-button,
+.inputIdade::-webkit-inner-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}
+
+.inputIdade:focus {
+  border-color: var(--heading);
+}
+
+
+.previewImagem {
   width: 100%;
-  margin: 16px auto 0 auto;
+  height: 100%;
+  object-fit: cover;
+  border-radius: 18px;
+}
+
+/* TEXTO DE ERRO */
+.errorText {
+  color: red;
+  font-size: 13px;
+  margin-top: -10px;
+  margin-bottom: 4px;
+  padding-left: 15px;
   display: block;
 }
 
-/* ACTIONS ROW */
-.actionsRow {
+/* ===========================
+   RECOMPENSA - SLIDER WITH VISUAL INDICATOR
+=========================== */
+
+.campoRecompensa {
+  position: relative;
+  width: 100%;
+}
+
+.campoRecompensa .iconeInput {
+  position: absolute;
+  left: 15px;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 28px;
+  height: 28px;
+  opacity: 0.9;
+  z-index: 2;
+}
+
+.sliderContainer {
+  width: 100%;
+  padding: 15px 20px 15px 55px;
+  border-radius: 40px;
+  border: 4px solid var(--heading);
+  background-color: #ffffff;
+  box-sizing: border-box;
   display: flex;
+  flex-direction: column;
   gap: 12px;
-  justify-content: space-between;
-  margin-top: 12px;
-}
-.btnEditar, .btnExcluir {
-  flex: 1 1 48%;
-  height: 46px;
-  border-radius: 999px;
-  border: none;
-  cursor: pointer;
-  font-weight: 700;
-  font-size: 16px;
-}
-.btnEditar {
-  background: #28a745; /* green */
-  color: #fff;
-}
-.btnExcluir {
-  background: #dc3545; /* red */
-  color: #fff;
 }
 
-/* GENDER BUTTONS */
-.genderRow {
+.sliderContainer:hover {
+  border-color: var(--heading);
+}
+
+.sliderHeader {
   display: flex;
-  gap: 8px;
-}
-.genderBtn {
-  flex: 1;
-  height: 44px;
-  border-radius: 22px;
-  border: 2px solid var(--heading);
-  background: white;
-  color: var(--heading);
-  font-weight: 700;
-  cursor: pointer;
-}
-.genderBtnActive {
-  background: var(--heading);
-  color: white;
+  justify-content: space-between;
+  align-items: center;
 }
 
-/* RESPONSIVO */
-@media (max-width: 900px) {
-  .cadastroWrapper {
-    grid-template-columns: 1fr;
+.sliderLabel {
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--heading);
+}
+
+.valorRecompensa {
+  font-size: 22px;
+  font-weight: 800;
+  color: var(--nav);
+  background: linear-gradient(135deg, var(--nav) 0%, var(--heading) 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  text-shadow: 0px 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.slider {
+  width: 100%;
+  height: 12px;
+  border-radius: 6px;
+  background: linear-gradient(to right, var(--nav) 0%, var(--border) 50%, var(--nav) 100%);
+  outline: none;
+  cursor: pointer;
+  -webkit-appearance: none;
+  appearance: none;
+}
+
+.slider::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  appearance: none;
+  width: 26px;
+  height: 26px;
+  border-radius: 50%;
+  background: #ffffff;
+  border: 4px solid var(--nav);
+  cursor: pointer;
+  box-shadow: 0px 3px 8px rgba(0, 0, 0, 0.25);
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.slider::-webkit-slider-thumb:hover {
+  transform: scale(1.1);
+  box-shadow: 0px 4px 12px rgba(0, 0, 0, 0.35);
+}
+
+.slider::-moz-range-thumb {
+  width: 26px;
+  height: 26px;
+  border-radius: 50%;
+  background: #ffffff;
+  border: 4px solid var(--nav);
+  cursor: pointer;
+  box-shadow: 0px 3px 8px rgba(0, 0, 0, 0.25);
+}
+
+.sliderMinMax {
+  display: flex;
+  justify-content: space-between;
+  font-size: 12px;
+  color: #757575;
+  margin-top: -5px;
+}
+
+/* Free reward option */
+.sliderOptions {
+  display: flex;
+  gap: 10px;
+  margin-top: 5px;
+}
+
+.sliderOption {
+  padding: 6px 14px;
+  border-radius: 20px;
+  border: 2px solid var(--heading);
+  background-color: transparent;
+  color: var(--heading);
+  font-size: 13px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.sliderOption:hover {
+  background-color: #f0f0f0;
+}
+
+.sliderOption.active {
+  background-color: var(--nav);
+  color: #ffffff;
+  border-color: var(--nav);
+}
+
+/* ===========================
+   MEDIA QUERIES - RESPONSIVO
+=========================== */
+
+/* TABLETS (atÃ© 1024px) */
+@media (max-width: 1024px) {
+  .adocaoContainer {
+    width: 95%;
+    padding: 30px;
+    gap: 30px;
+    flex-direction: column;
+  }
+
+  .leftSide,
+  .rightSide {
+    width: 100%;
+  }
+
+  .tituloCadastro {
+    font-size: 28px;
+    margin-bottom: 15px;
+  }
+
+  .formCadastro {
+    width: 90%;
+  }
+
+  .uploadBox {
+    width: 200px;
+    height: 200px;
+  }
+
+  .iconeAddImg {
+    width: 75px;
+    height: 75px;
+  }
+
+  .uploadBox span {
+    font-size: 16px;
+  }
+}
+
+/* TABLETS PEQUENOS (atÃ© 768px) */
+@media (max-width: 768px) {
+  .cadastroPetContainer {
+    padding: 30px 0;
+    min-height: auto;
+  }
+
+  .adocaoContainer {
+    width: 90%;
+    padding: 25px;
+    gap: 25px;
+    border-radius: 20px;
+  }
+
+  .leftSide,
+  .rightSide {
+    padding: 20px;
+    border-radius: 20px;
+    border: 4px solid var(--card);
+  }
+
+  .tituloCadastro {
+    font-size: 24px;
+    margin-bottom: 15px;
+  }
+
+  .formCadastro {
+    width: 100%;
+    gap: 15px;
+  }
+
+  .campo input,
+  .campo select {
+    padding: 10px 15px 10px 45px;
+    font-size: 14px;
+    border-radius: 30px;
+  }
+
+  .iconeInput {
+    width: 24px;
+    height: 24px;
+    left: 12px;
+  }
+
+  .uploadBox {
+    width: 180px;
+    height: 180px;
+    border-radius: 18px;
+    border: 3px solid var(--border);
+  }
+
+  .iconeAddImg {
+    width: 65px;
+    height: 65px;
+  }
+
+  .uploadBox span {
+    font-size: 14px;
+    margin-top: 8px;
+  }
+
+  .descricaoTextarea {
+    min-height: 120px;
+    padding: 15px 15px 15px 50px;
+    font-size: 14px;
+    border-radius: 20px;
+    border: 3px solid var(--heading);
+  }
+
+  .btnCadastrar {
+    display: block;
+    margin: 15px auto 0 auto;
+    width: 100%;
+    max-width: 320px;
+    padding: 10px 14px;
+    font-size: 18px;
+    border-radius: 15px;
+  }
+}
+
+/* MOBILE (atÃ© 480px) */
+@media (max-width: 480px) {
+  .cadastroPetContainer {
+    padding: 20px 0;
+  }
+
+  .adocaoContainer {
+    width: 100%;
+    padding: 15px;
+    gap: 15px;
+    border-radius: 15px;
+    border: 4px solid var(--bg-soft);
+  }
+
+  .leftSide,
+  .rightSide {
+    padding: 15px;
+    border-radius: 15px;
+    border: 3px solid var(--card);
+  }
+
+  .tituloCadastro {
+    font-size: 20px;
+    margin-bottom: 12px;
+  }
+
+  .formCadastro {
+    width: 100%;
+    gap: 12px;
+  }
+
+  .campo input,
+  .campo select {
+    padding: 8px 12px 8px 40px;
+    font-size: 13px;
+    border-radius: 25px;
+    border: 3px solid var(--heading);
+  }
+
+  .iconeInput {
+    width: 20px;
+    height: 20px;
+    left: 10px;
+  }
+
+  .dateInput {
+    padding: 8px 12px 8px 40px;
+    font-size: 13px;
+    border-radius: 25px;
+    border: 3px solid var(--heading);
+  }
+
+  .calendarIcon {
+    width: 18px;
+    height: 18px;
+    right: 12px;
+  }
+
+  .uploadBox {
+    width: 150px;
+    height: 150px;
+    border-radius: 15px;
+    border: 3px solid var(--border);
+  }
+
+  .iconeAddImg {
+    width: 55px;
+    height: 55px;
+  }
+
+  .uploadBox span {
+    font-size: 12px;
+    margin-top: 6px;
+  }
+
+  .campoDescricao {
+    margin-top: 15px;
+  }
+
+  .iconeDescricao {
+    width: 24px;
+    height: 24px;
+    left: 12px;
+    top: 14px;
+  }
+
+  .descricaoTextarea {
+    min-height: 100px;
+    padding: 12px 12px 12px 45px;
+    font-size: 13px;
+    border-radius: 15px;
+    border: 3px solid var(--heading);
+  }
+
+  .btnCadastrar {
+    display: block;
+    margin: 10px auto 0 auto;
+    width: 100%;
+    max-width: 320px;
+    padding: 8px 12px;
+    font-size: 16px;
+    border-radius: 12px;
+    border: 3px solid var(--border);
+    margin-top: 10px;
+  }
+
+  .btnCadastrar:hover {
+    transform: translateY(-1px);
+  }
+}
+
+/* MOBILE MUITO PEQUENO (atÃ© 360px) */
+@media (max-width: 360px) {
+  .adocaoContainer {
+    width: 100%;
+    padding: 10px;
+    gap: 12px;
+  }
+
+  .leftSide,
+  .rightSide {
+    padding: 12px;
+  }
+
+  .tituloCadastro {
+    font-size: 18px;
+  }
+
+  .uploadBox {
+    width: 130px;
+    height: 130px;
+  }
+
+  .iconeAddImg {
+    width: 45px;
+    height: 45px;
+  }
+
+  .uploadBox span {
+    font-size: 11px;
+  }
+
+  .campo input,
+  .campo select {
+    padding: 6px 10px 6px 35px;
+    font-size: 12px;
+  }
+
+  .dateInput {
+    padding: 6px 10px 6px 35px;
+    font-size: 12px;
+  }
+
+  .calendarIcon {
+    width: 16px;
+    height: 16px;
+    right: 10px;
+  }
+
+  .descricaoTextarea {
+    min-height: 80px;
+    padding: 10px 10px 10px 40px;
+    font-size: 12px;
+  }
+
+  .btnCadastrar {
+    display: block;
+    margin: 10px auto 0 auto;
+    width: 100%;
+    padding: 6px;
+    font-size: 14px;
   }
 }
 
 
+.botoesEdicao {
+  display: flex;
+  justify-content: space-between;
+  gap: 20px;
+  margin-top: 20px;
+  width: 100%;
+}
 
+.btnSalvar {
+  flex: 1;
+  padding: 12px;
+  border-radius: 18px;
+  font-size: 22px;
+  font-weight: 700;
+  color: white;
+  background-color: var(--nav);
+  border: 4px solid var(--border);
+  cursor: pointer;
+  
+  margin-left: 30px;
+}
+
+
+/* BOTÕES DE EDIÇÃO - SALVAR / EXCLUIR */
+.botoesEdicao {
+  width: 80%;
+  margin-left: 30px;
+  display: flex;
+  gap: 12px;
+  justify-content: space-between;
+  margin-top: 18px;
+}
+
+.btnExcluir {
+  flex: 1;
+  padding: 12px 18px;
+  border-radius: 18px;
+  font-size: 18px;
+  font-weight: 700;
+  color: var(--nav);
+  background: #ffffff;
+  border: 3px solid var(--border);
+  cursor: pointer;
+  box-shadow: 0 4px 10px rgba(0,0,0,0.06);
+}
