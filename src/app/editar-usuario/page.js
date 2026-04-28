@@ -5,9 +5,9 @@ import { useRouter } from "next/navigation";
 import { FaPaw } from "react-icons/fa";
 import styles from "./editar-usuario.module.css";
 import useSafeToast from "@/components/Toast/useSafeToast";
+import { getApiUrl } from '@/lib/apiUrl'
 
-const API_URL = process.env.NEXT_PUBLIC_API_URL || "http://localhost:3000";
-
+const API_URL = getApiUrl();
 export default function EditarUsuarioPage() {
   const { showToast } = useSafeToast();
   const router = useRouter();

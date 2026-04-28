@@ -4,9 +4,9 @@ import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
 import styles from "../admin.module.css";
+import { getApiUrl } from '@/lib/apiUrl'
 
-const API_URL = process.env.NEXT_PUBLIC_PETZ_API_URL || process.env.NEXT_PUBLIC_API_URL || "http://localhost:3000";
-
+const API_URL = getApiUrl();
 // Função para obter URL da imagem (BLOB ou URL direta)
 const getImageUrl = (pet) => {
   if (pet.hasImage) {

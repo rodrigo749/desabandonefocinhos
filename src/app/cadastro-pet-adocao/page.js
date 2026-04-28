@@ -4,6 +4,7 @@ import React, { useState, useEffect, useCallback } from "react";
 import { useRouter } from "next/navigation";
 import styles from "./adocao.module.css";
 import useSafeToast from "@/components/Toast/useSafeToast";
+import { getApiUrl } from '@/lib/apiUrl'
 
 export default function CadastroAdocao() {
   const { showToast } = useSafeToast();
@@ -37,11 +38,7 @@ export default function CadastroAdocao() {
   }, [router, showToast]);
 
   // --- HELPERS ---
-  const getBaseUrl = useCallback(() => {
-    return (process.env.NEXT_PUBLIC_PETZ_API_URL || "http://localhost:3000")
-      .trim()
-      .replace(/\/$/, "");
-  }, []);
+  const getBaseUrl = useCallback(() => getApiUrl(), []);
 
   const handleChange = (field, value) => {
     setFormData((prev) => ({ ...prev, [field]: value }));

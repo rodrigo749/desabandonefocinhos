@@ -4,6 +4,10 @@ import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { FaPaw, FaEye, FaEyeSlash } from "react-icons/fa";
 import styles from "../../login-usuario/login.module.css";
+import { getApiUrl } from '@/lib/apiUrl'
+
+const getApiBaseUrl = () => getApiUrl();
+
 
 export default function AdminLoginPage() {
   const router = useRouter();
@@ -22,7 +26,7 @@ export default function AdminLoginPage() {
     }
 
     try {
-      const res = await fetch("http://localhost:3000/api/admin/login", {
+        const res = await fetch(`${getApiBaseUrl()}/api/admin/login`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ email, password }),

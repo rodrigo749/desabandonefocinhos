@@ -8,6 +8,7 @@ import BottomNav from "@/components/BottomNav";
 import { NAV_LINKS } from "@/constants/navigation";
 import { getAccountLinks } from "@/components/BottomNav/AccountMenu";
 import styles from "./header.module.css";
+import { getApiUrl } from "@/lib/apiUrl";
 
 export default function Header() {
   const pathname = usePathname();
@@ -15,7 +16,7 @@ export default function Header() {
   const [accountOpen, setAccountOpen] = useState(false);
   const accountWrapRef = useRef(null);
 
-  const API_URL = process.env.NEXT_PUBLIC_API_URL || "http://localhost:3000";
+  const API_URL = getApiUrl();
 
   useEffect(() => {
     const syncAuth = () => {

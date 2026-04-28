@@ -4,8 +4,9 @@ import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import { FaPaw } from "react-icons/fa";
 import styles from "./perfilUsuario.module.css";
+import { getApiUrl } from '@/lib/apiUrl'
 
-const API_URL = process.env.NEXT_PUBLIC_API_URL || "http://localhost:3000";
+const API_URL = getApiUrl();
 
 // Helper para obter URL completa da imagem
 const getImageUrl = (imagem) => {
