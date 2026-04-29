@@ -6,7 +6,7 @@ import styles from "../editarpetperdidos.module.css";
 import ConfirmModal from "../../../components/ConfirmModal/ConfirmModal"; // adicionado
 
 const getBaseUrl = () =>
-  (process.env.NEXT_PUBLIC_PETZ_API_URL || "http://localhost:3000")
+  (process.env.NEXT_PUBLIC_PETZ_API_URL || "https://petz-api-6xqa.onrender.com")
     .trim()
     .replace(/\/$/, "");
 
